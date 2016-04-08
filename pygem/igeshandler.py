@@ -116,78 +116,77 @@ class IgesHandler(fh.FileHandler):
 		self.outfile = filename	
 
 		## init the ouput file writer
-		iges_writer = IGESControl_Writer()
+		writer = IGESControl_Writer()
 
 		## read in the IGES file
-		iges_reader = IGESControl_Reader()
-		iges_reader.ReadFile(self.infile)
-		iges_reader.TransferRoots()
-		shapeIn = iges_reader.Shape()
+		reader = IGESControl_Reader()
+		reader.ReadFile(self.infile)
+		reader.TransferRoots()
+		shape_read = reader.Shape()
 
 		## cycle on the faces to update the control points position
 		# init some quantities
-		explorer = TopExp_Explorer(shapeIn, TopAbs_FACE)
-		nbFaces = 0
-		controlPointPosition = self._control_point_position
+		faces_explorer = TopExp_Explorer(shape_read, TopAbs_FACE)
+		n_faces = 0
+		control_point_position = self._control_point_position
 
-		while explorer.More():
+		while faces_explorer.More():
 	
-			# TODO: togliere tutta questa merda e salvarsi prima il numero di punti e gli occObjs
-			face = OCC.TopoDS.topods_Face(explorer.Current())
-			iges_nurbs_converter = BRepBuilderAPI_NurbsConvert(face)
-			iges_nurbs_converter.Perform(face)
-			face = iges_nurbs_converter.Shape()
-			face_aux = OCC.TopoDS.topods_Face(face)
-			brep_face = BRep_Tool.Surface(face_aux)
+			# similar to the parser method
+			iges_face = OCC.TopoDS.topods_Face(faces_explorer.Current())
+			iges_nurbs_converter = BRepBuilderAPI_NurbsConvert(iges_face)
+			iges_nurbs_converter.Perform(iges_face)
+			nurbs_face = iges_nurbs_converter.Shape()
+			face_aux = OCC.TopoDS.topods_Face(nurbs_face) # TODO change name
+			brep_face = BRep_Tool.Surface(OCC.TopoDS.topods_Face(nurbs_face))
 			bspline_face = geomconvert_SurfaceToBSplineSurface(brep_face)
-			occObj = bspline_face.GetObject()
+			occ_face = bspline_face.GetObject()
 
-			nU = occObj.NbUPoles()
-			nV = occObj.NbVPoles()
+			n_poles_u = occ_face.NbUPoles()
+			n_poles_v = occ_face.NbVPoles()
 
 			i = 0
-
-			for poleU in xrange(nU):
-				for poleV in xrange(nV):
-					point = mesh_points[i+controlPointPosition[nbFaces],:]
-					point_XYZ = gp_XYZ(point[0], point[1], point[2])
-					gp_point = gp_Pnt(point_XYZ)
-					occObj.SetPole(poleU+1,poleV+1,gp_point)
+			for pole_u_direction in xrange(n_poles_u):
+				for pole_v_direction in xrange(n_poles_v):
+					control_point_coordinates = mesh_points[i+control_point_position[n_faces],:]
+					point_xyz = gp_XYZ(control_point_coordinates[0], control_point_coordinates[1], control_point_coordinates[2])
+					gp_point = gp_Pnt(point_xyz)
+					occ_face.SetPole(pole_u_direction+1,pole_v_direction+1,gp_point)
 					i += 1
 
 			## construct the deformed wire for the trimmed surfaces
 			wireMaker = BRepBuilderAPI_MakeWire()
 			tol = ShapeFix_ShapeTolerance()
-			brep = BRepBuilderAPI_MakeFace(occObj.GetHandle(), 1e-4).Face()
+			brep = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), 1e-4).Face()
 			brep_face = BRep_Tool.Surface(brep)
 		
 			# cycle on the edges
-			edgeExplorer = TopExp_Explorer(face, TopAbs_EDGE)
-			while edgeExplorer.More():
-				edge = OCC.TopoDS.topods_Edge(edgeExplorer.Current())
+			edge_explorer = TopExp_Explorer(nurbs_face, TopAbs_EDGE)
+			while edge_explorer.More():
+				edge = OCC.TopoDS.topods_Edge(edge_explorer.Current())
 				# edge in the (u,v) coordinates
-				edgeUV = OCC.BRep.BRep_Tool.CurveOnSurface(edge, face_aux)
+				edge_uv_coordinates = OCC.BRep.BRep_Tool.CurveOnSurface(edge, face_aux)
 				# evaluating the new edge: same (u,v) coordinates, but different (x,y,x) ones
-				edgeStar = BRepBuilderAPI_MakeEdge(edgeUV[0], brep_face)
-				edgeStarEdge = edgeStar.Edge()
-				tol.SetTolerance(edgeStarEdge, 1e-4)
-				wireMaker.Add(edgeStarEdge)
-				edgeExplorer.Next()
+				edge_phis_coordinates_aux = BRepBuilderAPI_MakeEdge(edge_uv_coordinates[0], brep_face)
+				edge_phis_coordinates = edge_phis_coordinates_aux.Edge()
+				tol.SetTolerance(edge_phis_coordinates, 1e-4)
+				wireMaker.Add(edge_phis_coordinates)
+				edge_explorer.Next()
 
 			#grouping the edges in a wire
 			wire = wireMaker.Wire()
 
-			## trimming the surfaces (TODO: check if a surface is actually trimmed)
-			brep = BRepBuilderAPI_MakeFace(occObj.GetHandle(), wire, 1e-4).Face()
-			iges_writer.AddShape(brep)
+			## trimming the surfaces
+			brep_surf = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), wire, 1e-4).Face()
+			writer.AddShape(brep_surf)
 			
-			#print iges_writer
+			#print writer
 
-			nbFaces += 1
-			explorer.Next()	
+			n_faces += 1
+			faces_explorer.Next()	
 
 		## write out the iges file
-		iges_writer.Write(self.outfile)
+		writer.Write(self.outfile)
 		
 		
 	def plot(self, plot_file=None, save_fig=False):
@@ -207,10 +206,10 @@ class IgesHandler(fh.FileHandler):
 			self._check_filename_type(plot_file)
 
 		## read in the IGES file
-		iges_reader = IGESControl_Reader()
-		iges_reader.ReadFile(plot_file)
-		iges_reader.TransferRoots()
-		shape = iges_reader.Shape()
+		reader = IGESControl_Reader()
+		reader.ReadFile(plot_file)
+		reader.TransferRoots()
+		shape = reader.Shape()
 		
 		display, start_display, add_menu, add_function_to_menu = init_display()
 		display.FitAll()
@@ -218,8 +217,6 @@ class IgesHandler(fh.FileHandler):
 		
 		# Show the plot to the screen
 		if not save_fig:
-			#my_renderer = threejs_renderer.ThreejsRenderer(background_color="#123345")
-			#my_renderer.DisplayShape(shape)
 			start_display()
 		else:
 			display.View.Dump(plot_file.split('.')[0] + '.ppm')
