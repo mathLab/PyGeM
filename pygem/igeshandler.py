@@ -3,6 +3,13 @@ Utilities for reading and writing different CAD files.
 """
 import numpy as np
 import pygem.filehandler as fh
+from OCC.IGESControl import IGESControl_Reader
+from OCC.BRep import BRep_Tool
+from OCC.BRepBuilderAPI import BRepBuilderAPI_NurbsConvert
+from OCC.GeomConvert import geomconvert_SurfaceToBSplineSurface
+import OCC.TopoDS
+from OCC.TopAbs import TopAbs_FACE
+from OCC.TopExp import TopExp_Explorer
 
 
 class IgesHandler(fh.FileHandler):
@@ -34,24 +41,59 @@ class IgesHandler(fh.FileHandler):
 		self._check_extension(filename)
 
 		self.infile = filename
+		
+		## read in the IGES file
+		reader = IGESControl_Reader()
+		reader.ReadFile(self.infile)
+		reader.TransferRoots()
+		shape = reader.Shape()
 
-		reader = vtk.vtkDataSetReader()
-		reader.SetFileName(self.infile)
-		reader.ReadAllVectorsOn()
-		reader.ReadAllScalarsOn()
-		reader.Update()
-		data = reader.GetOutput()
+		## cycle on the faces to get the control points
+		# init some quantities
+		n_faces = 0
+		control_point_position = [0]
+		faces_explorer = TopExp_Explorer(shape, TopAbs_FACE)
+		mesh_points = np.zeros(shape=(0,3)) # inizializzare
+		
+		while faces_explorer.More():
 
-		n_points = data.GetNumberOfPoints()
-		mesh_points = np.zeros([n_points, 3])
+			# performing some conversions to get the right format (BSplineSurface)
+			face = OCC.TopoDS.topods_Face(faces_explorer.Current())
+			converter = BRepBuilderAPI_NurbsConvert(face)
+			converter.Perform(face)
+			face = converter.Shape()
+			brep_surf = BRep_Tool.Surface(OCC.TopoDS.topods_Face(face))
+			bspline_surf_handle = geomconvert_SurfaceToBSplineSurface(brep_surf)
 
-		for i in range(n_points):
-			mesh_points[i, 0], mesh_points[i, 1], mesh_points[i, 2] = data.GetPoint(i)
+			# openCascade object
+			occ_object = bspline_surf_handle.GetObject()
 
-		return mesh_points
+			# extract the Control Points
+			n_poles_u = occ_object.NbUPoles()
+			n_poles_v = occ_object.NbVPoles()
+			controlPolygonCoordinates = np.zeros(shape=(n_poles_u*n_poles_v,3))
+
+			# cycle over the poles to get their coordinates
+			i = 0
+			for poleU in xrange(n_poles_u):
+				for poleV in xrange(n_poles_v):
+					pnt = occ_object.Pole(poleU+1,poleV+1)
+					weight = occ_object.Weight(poleU+1,poleV+1)
+					controlPolygonCoordinates[i,:] = [pnt.X(), pnt.Y(), pnt.Z()]
+					i += 1
+
+			# pushing the control points coordinates to the meshPoints array (used for FFD)
+			mesh_points = np.append(mesh_points, controlPolygonCoordinates, axis=0)
+			control_point_position.append(control_point_position[-1] + n_poles_u*n_poles_v)
+
+			n_faces += 1
+			faces_explorer.Next()
 
 
-	def write(self, mesh_points, filename):
+		return mesh_points, control_point_position
+
+
+	'''def write(self, mesh_points, filename):
 		"""
 		Writes a vtk file, called filename, copying all the structures from self.filename but
 		the coordinates. mesh_points is a matrix that contains the new coordinates to
@@ -91,4 +133,4 @@ class IgesHandler(fh.FileHandler):
 		else:
 			writer.SetInputData(data)
 
-		writer.Write()
+		writer.Write()'''

@@ -44,6 +44,11 @@ class TestPackage(TestCase):
 		vtkh = pg.vtkhandler.VtkHandler()
 
 
+	def test_import_pg_8(self):
+		import pygem as pg
+		igesh = pg.igeshandler.IgesHandler()
+	
+
 	def test_modules_name(self):
 		import pygem
 		package = pygem
