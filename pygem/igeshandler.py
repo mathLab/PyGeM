@@ -13,8 +13,8 @@ from OCC.TopExp import TopExp_Explorer
 from OCC.Geom import Geom_BSplineSurface
 from OCC.gp import (gp_Pnt, gp_XYZ)
 from OCC.Display.SimpleGui import init_display
-from OCC.Graphic3d import (Graphic3d_MaterialAspect, Graphic3d_NOM_GOLD, Graphic3d_NOM_SILVER) #maybe to remove
 from OCC.ShapeFix import ShapeFix_ShapeTolerance
+#from OCC.Display.WebGl import threejs_renderer
 
 
 class IgesHandler(fh.FileHandler):
@@ -185,56 +185,13 @@ class IgesHandler(fh.FileHandler):
 			brep = BRepBuilderAPI_MakeFace(occObj.GetHandle(), wire, 1e-4).Face()
 			iges_writer.AddShape(brep)
 			
-			print iges_writer
+			#print iges_writer
 
 			nbFaces += 1
 			explorer.Next()	
 
 		## write out the iges file
 		iges_writer.Write(self.outfile)
-		
-
-	'''def write(self, mesh_points, filename):
-		"""
-		Writes a vtk file, called filename, copying all the structures from self.filename but
-		the coordinates. mesh_points is a matrix that contains the new coordinates to
-		write in the vtk file.
-
-		:param numpy.ndarray mesh_points: it is a `n_points`-by-3 matrix containing
-			the coordinates of the points of the mesh
-		:param string filename: name of the output file.
-
-		.. todo:: DOCS
-		"""
-		self._check_filename_type(filename)
-		self._check_extension(filename)
-		self._check_infile_instantiation(self.infile)
-
-		self.outfile = filename
-
-		reader = vtk.vtkDataSetReader()
-		reader.SetFileName(self.infile)
-		reader.ReadAllVectorsOn()
-		reader.ReadAllScalarsOn()
-		reader.Update()
-		data = reader.GetOutput()
-
-		points = vtk.vtkPoints()
-
-		for i in range(data.GetNumberOfPoints()):
-			points.InsertNextPoint(mesh_points[i, :])
-
-		data.SetPoints(points)
-
-		writer = vtk.vtkDataSetWriter()
-		writer.SetFileName(self.outfile)
-
-		if vtk.VTK_MAJOR_VERSION <= 5:
-			writer.SetInput(data)
-		else:
-			writer.SetInputData(data)
-
-		writer.Write()'''
 		
 		
 	def plot(self, plot_file=None, save_fig=False):
@@ -244,6 +201,9 @@ class IgesHandler(fh.FileHandler):
 		:param string plot_file: the iges filename you want to plot.
 		:param bool save_fig: a flag to save the figure in png or not. If True the
 			plot is not shown.
+			
+		.. todo::
+			It does not work well up to now
 		"""
 		if plot_file is None:
 			plot_file = self.infile
@@ -255,13 +215,16 @@ class IgesHandler(fh.FileHandler):
 		iges_reader.ReadFile(plot_file)
 		iges_reader.TransferRoots()
 		shape = iges_reader.Shape()
-
+		
+		display, start_display, add_menu, add_function_to_menu = init_display()
+		display.FitAll()
+		display.DisplayShape(shape, update=True)
+		
 		# Show the plot to the screen
 		if not save_fig:
-			display, start_display, add_menu, add_function_to_menu = init_display()
-			display.FitAll()
-			display.DisplayShape(shape, update=True)
+			#my_renderer = threejs_renderer.ThreejsRenderer(background_color="#123345")
+			#my_renderer.DisplayShape(shape)
 			start_display()
 		else:
-			figure.savefig(plot_file.split('.')[0] + '.png') # da mettere sicuro a posto
+			display.View.Dump(plot_file.split('.')[0] + '.ppm')
 

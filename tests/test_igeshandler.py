@@ -83,56 +83,56 @@ class TestIgesHandler(TestCase):
 		np.testing.assert_almost_equal(mesh_points[-1][2], 10000.0)		
 
 
-	'''def test_iges_write_failing_filename_type(self):
+	def test_iges_write_failing_filename_type(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		with self.assertRaises(TypeError):
 			iges_handler.write(mesh_points, -2)
 
 
 	def test_iges_write_failing_check_extension(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		with self.assertRaises(ValueError):
-			iges_handler.write(mesh_points, 'tests/test_datasets/test_square.iges')
+			iges_handler.write(mesh_points, 'tests/test_datasets/test_square.stl')
 
 
 	def test_iges_write_failing_infile_instantiation(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = np.zeros((20, 3))
+		mesh_points = np.zeros((20, 3))
 		with self.assertRaises(RuntimeError):
- 			iges_handler.write(mesh_points, 'tests/test_datasets/test_red_blood_cell_out.iges')
+ 			iges_handler.write(mesh_points, 'tests/test_datasets/test_pipe_out.iges')
 
 
 	def test_iges_write_outfile(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
-		outfilename = 'tests/test_datasets/test_red_blood_cell_out.iges'
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		outfilename = 'tests/test_datasets/test_pipe_out.iges'
 		iges_handler.write(mesh_points, outfilename)
 		assert iges_handler.outfile == outfilename
 		os.remove(outfilename)
 
 
 	def test_iges_write_comparison(self):
-		import iges
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		mesh_points[0][0] = 2.2
 		mesh_points[5][1] = 4.3
 		mesh_points[9][2] = 0.5
-		mesh_points[45][0] = 7.2
-		mesh_points[132][1] = -1.2
-		mesh_points[255][2] = -3.6
+		mesh_points[12][0] = 7.2
+		mesh_points[16][1] = -1.2
+		mesh_points[31][2] = -3.6
 
-		outfilename = 'tests/test_datasets/test_red_blood_cell_out.iges'
-		if iges.VTK_MAJOR_VERSION <= 5:
-			outfilename_expected = 'tests/test_datasets/test_red_blood_cell_out_true_version5.iges'
-		else:
-			outfilename_expected = 'tests/test_datasets/test_red_blood_cell_out_true_version6.iges'
+		outfilename = 'tests/test_datasets/test_pipe_out.iges'
+		outfilename_expected = 'tests/test_datasets/test_pipe_out_true.iges'
 		
 		iges_handler.write(mesh_points, outfilename)
+		
+		print os.stat(outfilename)
+		print os.stat(outfilename_expected)
+		
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
-		os.remove(outfilename)'''
+		os.remove(outfilename)
 		
 	def test_iges_plot_failing_outfile_type(self):
 		iges_handler = ih.IgesHandler()
