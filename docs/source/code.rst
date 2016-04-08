@@ -14,4 +14,5 @@ Code Documentation
    stlhandler
    vtkhandler
    unvhandler
+   igeshandler
 

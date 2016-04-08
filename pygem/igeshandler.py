@@ -11,10 +11,9 @@ import OCC.TopoDS
 from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE)
 from OCC.TopExp import TopExp_Explorer
 from OCC.Geom import Geom_BSplineSurface
-from OCC.gp import (gp_Pnt, gp_XYZ)
+from OCC.gp import (gp_control_point_coordinates, gp_XYZ)
 from OCC.Display.SimpleGui import init_display
 from OCC.ShapeFix import ShapeFix_ShapeTolerance
-#from OCC.Display.WebGl import threejs_renderer
 
 
 class IgesHandler(fh.FileHandler):
@@ -59,33 +58,33 @@ class IgesHandler(fh.FileHandler):
 		n_faces = 0
 		control_point_position = [0]
 		faces_explorer = TopExp_Explorer(shape, TopAbs_FACE)
-		mesh_points = np.zeros(shape=(0,3)) # inizializzare
+		mesh_points = np.zeros(shape=(0,3))
 		
 		while faces_explorer.More():
 
 			# performing some conversions to get the right format (BSplineSurface)
-			face = OCC.TopoDS.topods_Face(faces_explorer.Current())
-			converter = BRepBuilderAPI_NurbsConvert(face)
-			converter.Perform(face)
-			face = converter.Shape()
-			brep_surf = BRep_Tool.Surface(OCC.TopoDS.topods_Face(face))
-			bspline_surf_handle = geomconvert_SurfaceToBSplineSurface(brep_surf)
+			iges_face = OCC.TopoDS.topods_Face(faces_explorer.Current())
+			iges_nurbs_converter = BRepBuilderAPI_NurbsConvert(iges_face)
+			iges_nurbs_converter.Perform(iges_face)
+			nurbs_face = iges_nurbs_converter.Shape()
+			brep_face = BRep_Tool.Surface(OCC.TopoDS.topods_Face(nurbs_face))
+			bspline_face = geomconvert_SurfaceToBSplineSurface(brep_face)
 
 			# openCascade object
-			occ_object = bspline_surf_handle.GetObject()
+			occ_face = bspline_face.GetObject()
 
 			# extract the Control Points of each face
-			n_poles_u = occ_object.NbUPoles()
-			n_poles_v = occ_object.NbVPoles()
+			n_poles_u = occ_face.NbUPoles()
+			n_poles_v = occ_face.NbVPoles()
 			control_polygon_coordinates = np.zeros(shape=(n_poles_u*n_poles_v,3))
 
 			# cycle over the poles to get their coordinates
 			i = 0
 			for pole_u_direction in xrange(n_poles_u):
 				for pole_v_direction in xrange(n_poles_v):
-					pnt = occ_object.Pole(pole_u_direction+1,pole_v_direction+1)
-					weight = occ_object.Weight(pole_u_direction+1,pole_v_direction+1)
-					control_polygon_coordinates[i,:] = [pnt.X(), pnt.Y(), pnt.Z()]
+					control_point_coordinates = occ_face.Pole(pole_u_direction+1,pole_v_direction+1)
+					weight = occ_face.Weight(pole_u_direction+1,pole_v_direction+1)
+					control_polygon_coordinates[i,:] = [control_point_coordinates.X(), control_point_coordinates.Y(), control_point_coordinates.Z()]
 					i += 1
 
 			# pushing the control points coordinates to the mesh_points array (used for FFD)
@@ -109,9 +108,6 @@ class IgesHandler(fh.FileHandler):
 		:param numpy.ndarray mesh_points: it is a `n_points`-by-3 matrix containing
 			the coordinates of the points of the mesh
 		:param string filename: name of the output file.
-
-		.. todo:: DOCS
-			- control_point_position
 		"""
 		self._check_filename_type(filename)
 		self._check_extension(filename)
@@ -138,13 +134,13 @@ class IgesHandler(fh.FileHandler):
 	
 			# TODO: togliere tutta questa merda e salvarsi prima il numero di punti e gli occObjs
 			face = OCC.TopoDS.topods_Face(explorer.Current())
-			converter = BRepBuilderAPI_NurbsConvert(face)
-			converter.Perform(face)
-			face = converter.Shape()
+			iges_nurbs_converter = BRepBuilderAPI_NurbsConvert(face)
+			iges_nurbs_converter.Perform(face)
+			face = iges_nurbs_converter.Shape()
 			face_aux = OCC.TopoDS.topods_Face(face)
-			brep_surf = BRep_Tool.Surface(face_aux)
-			bspline_surf_handle = geomconvert_SurfaceToBSplineSurface(brep_surf)
-			occObj = bspline_surf_handle.GetObject()
+			brep_face = BRep_Tool.Surface(face_aux)
+			bspline_face = geomconvert_SurfaceToBSplineSurface(brep_face)
+			occObj = bspline_face.GetObject()
 
 			nU = occObj.NbUPoles()
 			nV = occObj.NbVPoles()
@@ -155,7 +151,7 @@ class IgesHandler(fh.FileHandler):
 				for poleV in xrange(nV):
 					point = mesh_points[i+controlPointPosition[nbFaces],:]
 					point_XYZ = gp_XYZ(point[0], point[1], point[2])
-					gp_point = gp_Pnt(point_XYZ)
+					gp_point = gp_control_point_coordinates(point_XYZ)
 					occObj.SetPole(poleU+1,poleV+1,gp_point)
 					i += 1
 
@@ -163,7 +159,7 @@ class IgesHandler(fh.FileHandler):
 			wireMaker = BRepBuilderAPI_MakeWire()
 			tol = ShapeFix_ShapeTolerance()
 			brep = BRepBuilderAPI_MakeFace(occObj.GetHandle(), 1e-4).Face()
-			brep_surf = BRep_Tool.Surface(brep)
+			brep_face = BRep_Tool.Surface(brep)
 		
 			# cycle on the edges
 			edgeExplorer = TopExp_Explorer(face, TopAbs_EDGE)
@@ -172,7 +168,7 @@ class IgesHandler(fh.FileHandler):
 				# edge in the (u,v) coordinates
 				edgeUV = OCC.BRep.BRep_Tool.CurveOnSurface(edge, face_aux)
 				# evaluating the new edge: same (u,v) coordinates, but different (x,y,x) ones
-				edgeStar = BRepBuilderAPI_MakeEdge(edgeUV[0], brep_surf)
+				edgeStar = BRepBuilderAPI_MakeEdge(edgeUV[0], brep_face)
 				edgeStarEdge = edgeStar.Edge()
 				tol.SetTolerance(edgeStarEdge, 1e-4)
 				wireMaker.Add(edgeStarEdge)
@@ -202,7 +198,7 @@ class IgesHandler(fh.FileHandler):
 		:param bool save_fig: a flag to save the figure in png or not. If True the
 			plot is not shown.
 			
-		.. todo::
+		.. warning::
 			It does not work well up to now
 		"""
 		if plot_file is None:
