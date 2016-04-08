@@ -43,49 +43,43 @@ class TestIgesHandler(TestCase):
 
 	def test_iges_parse_infile(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		assert iges_handler.infile == 'tests/test_datasets/test_pipe.iges'
 
 
 	def test_iges_parse_shape(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		assert mesh_points.shape == (32, 3)
 		
-	
-	def test_iges_parse_shape_position(self):
-		iges_handler = ih.IgesHandler()
-		__, control_point_position = iges_handler.parse('tests/test_datasets/test_pipe.iges')
-		assert control_point_position == [0, 6, 12, 18, 24, 28, 32]
-
 
 	def test_iges_parse_coords_1(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		np.testing.assert_almost_equal(mesh_points[6][0], -1000.0)
 
 
 	def test_iges_parse_coords_2(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		np.testing.assert_almost_equal(mesh_points[8][1], 999.99999997448208)
 
 
 	def test_iges_parse_coords_3(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		np.testing.assert_almost_equal(mesh_points[30][2], 10000.0)
 
 
 	def test_iges_parse_coords_4(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		np.testing.assert_almost_equal(mesh_points[0][0], 0.0)
 		
 		
 	def test_iges_parse_coords_5(self):
 		iges_handler = ih.IgesHandler()
-		mesh_points, __ = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		np.testing.assert_almost_equal(mesh_points[-1][2], 10000.0)		
 
 
