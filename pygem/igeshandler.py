@@ -3,13 +3,18 @@ Utilities for reading and writing different CAD files.
 """
 import numpy as np
 import pygem.filehandler as fh
-from OCC.IGESControl import IGESControl_Reader
+from OCC.IGESControl import (IGESControl_Reader, IGESControl_Writer)
 from OCC.BRep import BRep_Tool
-from OCC.BRepBuilderAPI import BRepBuilderAPI_NurbsConvert
+from OCC.BRepBuilderAPI import (BRepBuilderAPI_NurbsConvert, BRepBuilderAPI_MakeWire, BRepBuilderAPI_MakeEdge)
 from OCC.GeomConvert import geomconvert_SurfaceToBSplineSurface
 import OCC.TopoDS
-from OCC.TopAbs import TopAbs_FACE
+from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE)
 from OCC.TopExp import TopExp_Explorer
+from OCC.Geom import Geom_BSplineSurface
+from OCC.gp import (gp_Pnt, gp_XYZ)
+from OCC.Display.SimpleGui import init_display
+from OCC.Graphic3d import (Graphic3d_MaterialAspect, Graphic3d_NOM_GOLD, Graphic3d_NOM_SILVER) #maybe to remove
+from OCC.ShapeFix import ShapeFix_ShapeTolerance
 
 
 class IgesHandler(fh.FileHandler):
@@ -36,6 +41,7 @@ class IgesHandler(fh.FileHandler):
 		.. todo::
 
 			- specify when it works
+			- control_point_position return
 		"""
 		self._check_filename_type(filename)
 		self._check_extension(filename)
@@ -91,7 +97,98 @@ class IgesHandler(fh.FileHandler):
 
 
 		return mesh_points, control_point_position
+		
 
+	def write(self, mesh_points, filename, control_point_position):
+		"""
+		Writes a iges file, called filename, copying all the structures from self.filename but
+		the coordinates. mesh_points is a matrix that contains the new coordinates to
+		write in the iges file.
+
+		:param numpy.ndarray mesh_points: it is a `n_points`-by-3 matrix containing
+			the coordinates of the points of the mesh
+		:param string filename: name of the output file.
+
+		.. todo:: DOCS
+			- control_point_position
+		"""
+		self._check_filename_type(filename)
+		self._check_extension(filename)
+		self._check_infile_instantiation(self.infile)
+
+		self.outfile = filename	
+
+		## init the ouput file writer
+		iges_writer = IGESControl_Writer()
+
+		## read in the IGES file
+		iges_reader = IGESControl_Reader()
+		iges_reader.ReadFile(finput)
+		iges_reader.TransferRoots()
+		shapeIn = iges_reader.Shape()
+
+		## cycle on the faces to update the control points position
+		# init some quantities
+		explorer = TopExp_Explorer(shapeIn, TopAbs_FACE)
+		nbFaces = 0
+
+		while explorer.More():
+	
+			# TODO: togliere tutta questa merda e salvarsi prima il numero di punti e gli occObjs
+			face = OCC.TopoDS.topods_Face(explorer.Current())
+			converter = BRepBuilderAPI_NurbsConvert(face)
+			converter.Perform(face)
+			face = converter.Shape()
+			face_aux = OCC.TopoDS.topods_Face(face)
+			brep_surf = BRep_Tool.Surface(face_aux)
+			bspline_surf_handle = geomconvert_SurfaceToBSplineSurface(brep_surf)
+			occObj = bspline_surf_handle.GetObject()
+
+			nU = occObj.NbUPoles()
+			nV = occObj.NbVPoles()
+
+			i = 0
+
+			for poleU in xrange(nU):
+				for poleV in xrange(nV):
+					point = meshPoints[i+controlPointPosition[nbFaces],:]
+					point_XYZ = gp_XYZ(point[0], point[1], point[2])
+					gp_point = gp_Pnt(point_XYZ)
+					occObj.SetPole(poleU+1,poleV+1,gp_point)
+					i += 1
+
+			## construct the deformed wire for the trimmed surfaces
+			wireMaker = BRepBuilderAPI_MakeWire()
+			tol = ShapeFix_ShapeTolerance()
+			brep = BRepBuilderAPI_MakeFace(occObj.GetHandle(), 1e-6).Face()
+			brep_surf = BRep_Tool.Surface(brep)
+		
+			# cycle on the edges
+			edgeExplorer = TopExp_Explorer(face, TopAbs_EDGE)
+			while edgeExplorer.More():
+				edge = OCC.TopoDS.topods_Edge(edgeExplorer.Current())
+				# edge in the (u,v) coordinates
+				edgeUV = OCC.BRep.BRep_Tool.CurveOnSurface(edge, face_aux)
+				# evaluating the new edge: same (u,v) coordinates, but different (x,y,x) ones
+				edgeStar = BRepBuilderAPI_MakeEdge(edgeUV[0], brep_surf)
+				edgeStarEdge = edgeStar.Edge()
+				tol.SetTolerance(edgeStarEdge, 1e-6)
+				wireMaker.Add(edgeStarEdge)
+				edgeExplorer.Next()
+
+			#grouping the edges in a wire
+			wire = wireMaker.Wire()
+
+			## trimming the surfaces (TODO: check if a surface is actually trimmed)
+			brep = BRepBuilderAPI_MakeFace(occObj.GetHandle(), wire, 1e-6).Face()
+			iges_writer.AddShape(brep)
+
+			nbFaces += 1
+			explorer.Next()	
+
+		## write out the iges file
+		iges_writer.Write(foutput)
+		
 
 	'''def write(self, mesh_points, filename):
 		"""
@@ -134,3 +231,33 @@ class IgesHandler(fh.FileHandler):
 			writer.SetInputData(data)
 
 		writer.Write()'''
+		
+		
+	def plot(self, plot_file=None, save_fig=False):
+		"""
+		Method to plot an iges file. If `plot_file` is not given it plots `self.infile`.
+
+		:param string plot_file: the iges filename you want to plot.
+		:param bool save_fig: a flag to save the figure in png or not. If True the
+			plot is not shown.
+		"""
+		if plot_file is None:
+			plot_file = self.infile
+		else:
+			self._check_filename_type(plot_file)
+
+		## read in the IGES file
+		iges_reader = IGESControl_Reader()
+		iges_reader.ReadFile(plot_file)
+		iges_reader.TransferRoots()
+		shape = iges_reader.Shape()
+
+		# Show the plot to the screen
+		if not save_fig:
+			display, start_display, add_menu, add_function_to_menu = init_display()
+			display.FitAll()
+			display.DisplayShape(shape, update=True)
+			start_display()
+		else:
+			figure.savefig(plot_file.split('.')[0] + '.png') # da mettere sicuro a posto
+

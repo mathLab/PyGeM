@@ -139,3 +139,8 @@ class TestIgesHandler(TestCase):
 		iges_handler.write(mesh_points, outfilename)
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
 		os.remove(outfilename)'''
+		
+	def test_iges_plot_failing_outfile_type(self):
+		iges_handler = ih.IgesHandler()
+		with self.assertRaises(TypeError):
+			iges_handler.plot(plot_file=3)
