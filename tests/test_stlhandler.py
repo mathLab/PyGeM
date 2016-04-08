@@ -140,7 +140,43 @@ class TestStlHandler(TestCase):
 		os.remove(outfilename)
 		
 	
-	def test_stl_write_binary_in_comparison(self):
+	def test_stl_write_binary_from_binary(self):
+		stl_handler = sh.StlHandler()
+		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere_bin.stl')
+		mesh_points[0] = [-40.2, -20.5, 60.9]
+		mesh_points[1] = [-40.2, -10.5, 60.9]
+		mesh_points[2] = [-40.2, -10.5, 60.9]
+		mesh_points[2000] = [-40.2, -20.5, 60.9]
+		mesh_points[2001] = [-40.2, -10.5, 60.9]
+		mesh_points[2002] = [-40.2, -10.5, 60.9]
+		mesh_points[6100] = [-40.2, -20.5, 60.9]
+		mesh_points[6101] = [-40.2, -10.5, 60.9]
+		mesh_points[6102] = [-40.2, -10.5, 60.9]
+
+		outfilename = 'tests/test_datasets/test_sphere_out.stl'
+
+		stl_handler.write(mesh_points, outfilename, write_bin=True)
+		
+		
+	def test_stl_write_binary_from_ascii(self):
+		stl_handler = sh.StlHandler()
+		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
+		mesh_points[0] = [-40.2, -20.5, 60.9]
+		mesh_points[1] = [-40.2, -10.5, 60.9]
+		mesh_points[2] = [-40.2, -10.5, 60.9]
+		mesh_points[2000] = [-40.2, -20.5, 60.9]
+		mesh_points[2001] = [-40.2, -10.5, 60.9]
+		mesh_points[2002] = [-40.2, -10.5, 60.9]
+		mesh_points[6100] = [-40.2, -20.5, 60.9]
+		mesh_points[6101] = [-40.2, -10.5, 60.9]
+		mesh_points[6102] = [-40.2, -10.5, 60.9]
+
+		outfilename = 'tests/test_datasets/test_sphere_out.stl'
+
+		stl_handler.write(mesh_points, outfilename, write_bin=True)
+		
+		
+	def test_stl_write_ascii_from_binary(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere_bin.stl')
 		mesh_points[0] = [-40.2, -20.5, 60.9]
@@ -159,31 +195,7 @@ class TestStlHandler(TestCase):
 		stl_handler.write(mesh_points, outfilename, write_bin=False)
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
 		os.remove(outfilename)
-
 		
-		
-	def test_stl_write_binary_in_out_comparison(self):
-		stl_handler = sh.StlHandler()
-		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere_bin.stl')
-		mesh_points[0] = [-40.2, -20.5, 60.9]
-		mesh_points[1] = [-40.2, -10.5, 60.9]
-		mesh_points[2] = [-40.2, -10.5, 60.9]
-		mesh_points[2000] = [-40.2, -20.5, 60.9]
-		mesh_points[2001] = [-40.2, -10.5, 60.9]
-		mesh_points[2002] = [-40.2, -10.5, 60.9]
-		mesh_points[6100] = [-40.2, -20.5, 60.9]
-		mesh_points[6101] = [-40.2, -10.5, 60.9]
-		mesh_points[6102] = [-40.2, -10.5, 60.9]
-
-		outfilename = 'tests/test_datasets/test_sphere_out_bin.stl'
-		outfilename_expected = 'tests/test_datasets/test_sphere_out_true_bin.stl'
-
-		stl_handler.write(mesh_points, outfilename, write_bin=True)
-		print os.stat(outfilename)
-		print os.stat(outfilename_expected)
-		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
-		os.remove(outfilename)
-
 
 	def test_stl_plot_save_fig(self):
 		stl_handler = sh.StlHandler()
