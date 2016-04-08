@@ -68,22 +68,22 @@ class IgesHandler(fh.FileHandler):
 			# openCascade object
 			occ_object = bspline_surf_handle.GetObject()
 
-			# extract the Control Points
+			# extract the Control Points of each face
 			n_poles_u = occ_object.NbUPoles()
 			n_poles_v = occ_object.NbVPoles()
-			controlPolygonCoordinates = np.zeros(shape=(n_poles_u*n_poles_v,3))
+			control_polygon_coordinates = np.zeros(shape=(n_poles_u*n_poles_v,3))
 
 			# cycle over the poles to get their coordinates
 			i = 0
-			for poleU in xrange(n_poles_u):
-				for poleV in xrange(n_poles_v):
-					pnt = occ_object.Pole(poleU+1,poleV+1)
-					weight = occ_object.Weight(poleU+1,poleV+1)
-					controlPolygonCoordinates[i,:] = [pnt.X(), pnt.Y(), pnt.Z()]
+			for pole_u_direction in xrange(n_poles_u):
+				for pole_v_direction in xrange(n_poles_v):
+					pnt = occ_object.Pole(pole_u_direction+1,pole_v_direction+1)
+					weight = occ_object.Weight(pole_u_direction+1,pole_v_direction+1)
+					control_polygon_coordinates[i,:] = [pnt.X(), pnt.Y(), pnt.Z()]
 					i += 1
 
-			# pushing the control points coordinates to the meshPoints array (used for FFD)
-			mesh_points = np.append(mesh_points, controlPolygonCoordinates, axis=0)
+			# pushing the control points coordinates to the mesh_points array (used for FFD)
+			mesh_points = np.append(mesh_points, control_polygon_coordinates, axis=0)
 			control_point_position.append(control_point_position[-1] + n_poles_u*n_poles_v)
 
 			n_faces += 1
