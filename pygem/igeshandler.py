@@ -11,7 +11,7 @@ import OCC.TopoDS
 from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE)
 from OCC.TopExp import TopExp_Explorer
 from OCC.Geom import Geom_BSplineSurface
-from OCC.gp import (gp_control_point_coordinates, gp_XYZ)
+from OCC.gp import (gp_Pnt, gp_XYZ)
 from OCC.Display.SimpleGui import init_display
 from OCC.ShapeFix import ShapeFix_ShapeTolerance
 
@@ -85,7 +85,7 @@ class IgesHandler(fh.FileHandler):
 					control_point_coordinates = occ_face.Pole(pole_u_direction+1,pole_v_direction+1)
 					weight = occ_face.Weight(pole_u_direction+1,pole_v_direction+1)
 					control_polygon_coordinates[i,:] = [control_point_coordinates.X(), control_point_coordinates.Y(), control_point_coordinates.Z()]
-					i += 1
+					i += 1	
 
 			# pushing the control points coordinates to the mesh_points array (used for FFD)
 			mesh_points = np.append(mesh_points, control_polygon_coordinates, axis=0)
@@ -151,7 +151,7 @@ class IgesHandler(fh.FileHandler):
 				for poleV in xrange(nV):
 					point = mesh_points[i+controlPointPosition[nbFaces],:]
 					point_XYZ = gp_XYZ(point[0], point[1], point[2])
-					gp_point = gp_control_point_coordinates(point_XYZ)
+					gp_point = gp_Pnt(point_XYZ)
 					occObj.SetPole(poleU+1,poleV+1,gp_point)
 					i += 1
 
