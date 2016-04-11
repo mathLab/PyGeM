@@ -35,13 +35,27 @@ If you find this collection useful, feel free to download, use it and suggest pu
 **PyGeM** requires:
 - **numpy**;
 - **numpy-stl**;
+- **scipy**;
 - **matplotlib**;
-- **vtk**;
 
 
 The official distribution is on GitHub, and you can clone the repository using
 
 	git clone https://github.com/mathLab/PyGeM
+
+
+To install the package just type:
+
+```bash
+> python setup.py install
+```
+
+To uninstall the package you have to rerun the installation and record the installed files in order to remove them:
+
+```bash
+> python setup.py install --record installed_files.txt
+> cat installed_files.txt | xargs rm -rf
+```
 
 
 ## Documentation
