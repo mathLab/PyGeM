@@ -28,6 +28,7 @@ class IgesHandler(fh.FileHandler):
 	def __init__(self):
 		super(IgesHandler, self).__init__()
 		self.extension = '.iges'	# TODO: also igs could be accepted
+		self._control_point_position = None
 
 
 	def parse(self, filename):
@@ -93,6 +94,8 @@ class IgesHandler(fh.FileHandler):
 
 			n_faces += 1
 			faces_explorer.Next()
+			
+		print control_point_position
 
 		self._control_point_position = control_point_position
 
@@ -137,7 +140,7 @@ class IgesHandler(fh.FileHandler):
 			iges_nurbs_converter = BRepBuilderAPI_NurbsConvert(iges_face)
 			iges_nurbs_converter.Perform(iges_face)
 			nurbs_face = iges_nurbs_converter.Shape()
-			face_aux = OCC.TopoDS.topods_Face(nurbs_face) # TODO change name
+			face_aux = OCC.TopoDS.topods_Face(nurbs_face)
 			brep_face = BRep_Tool.Surface(OCC.TopoDS.topods_Face(nurbs_face))
 			bspline_face = geomconvert_SurfaceToBSplineSurface(brep_face)
 			occ_face = bspline_face.GetObject()
@@ -177,7 +180,7 @@ class IgesHandler(fh.FileHandler):
 			wire = wireMaker.Wire()
 
 			## trimming the surfaces
-			brep_surf = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), wire, 1e-4).Face()
+			brep_surf = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), wire).Face()
 			writer.AddShape(brep_surf)
 			
 			#print writer

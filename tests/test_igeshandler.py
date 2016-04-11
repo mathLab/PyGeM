@@ -17,6 +17,11 @@ class TestIgesHandler(TestCase):
 	def test_iges_default_infile_member(self):
 		iges_handler = ih.IgesHandler()
 		assert iges_handler.infile == None
+		
+		
+	def test_iges_default_control_point_position_member(self):
+		iges_handler = ih.IgesHandler()
+		assert iges_handler._control_point_position == None
 
 
 	def test_iges_default_outfile_member(self):
@@ -45,6 +50,12 @@ class TestIgesHandler(TestCase):
 		iges_handler = ih.IgesHandler()
 		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
 		assert iges_handler.infile == 'tests/test_datasets/test_pipe.iges'
+		
+		
+	def test_iges_parse_control_point_position_member(self):
+		iges_handler = ih.IgesHandler()
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		assert iges_handler._control_point_position == [0, 6, 12, 18, 24, 28, 32]
 
 
 	def test_iges_parse_shape(self):
