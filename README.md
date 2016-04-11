@@ -46,25 +46,22 @@ The official distribution is on GitHub, and you can clone the repository using
 
 To install the package just type:
 
-```bash
-> python setup.py install
-```
+	python setup.py install
+
 
 To uninstall the package you have to rerun the installation and record the installed files in order to remove them:
 
-```bash
-> python setup.py install --record installed_files.txt
-> cat installed_files.txt | xargs rm -rf
-```
+	python setup.py install --record installed_files.txt
+	cat installed_files.txt | xargs rm -rf
+
 
 
 ## Documentation
 **PyGeM** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. To build the html versions of the docs simply:
 
-```bash
-> cd docs
-> make html
-```
+	cd docs
+	make html
+
 
 The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse.
 
@@ -74,9 +71,8 @@ We are using Travis CI for continuous intergration testing. You can check out th
 
 To run tests locally:
 
-```bash
-> python test.py
-```
+	python test.py
+
 
 
 ## Authors and contributors
