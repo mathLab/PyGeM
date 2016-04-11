@@ -17,7 +17,7 @@ install:
     - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION
     - source activate test
     - conda install --yes numpy scipy matplotlib pip nose vtk
-    - conda install -c https://conda.anaconda.org/dlr-sc pythonocc-core
+    - conda install --yes -c https://conda.anaconda.org/dlr-sc pythonocc-core
     - pip install setuptools
     - pip install enum34
     - pip install numpy-stl
