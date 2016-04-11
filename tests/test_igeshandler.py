@@ -138,16 +138,6 @@ class TestIgesHandler(TestCase):
 		
 		iges_handler.write(mesh_points, outfilename)
 		os.remove(outfilename)
-		
-	# this test makes some problems on the test_vtk_write_comparison (put commas instead of dots in the output file)
-	'''def test_iges_plot_save_fig(self):
-		iges_handler = ih.IgesHandler()
-		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
-		iges_handler.plot(save_fig=True)
-		if not os.path.isfile('tests/test_datasets/test_pipe.ppm'):
-			assert False
-		else:
-			os.remove('tests/test_datasets/test_pipe.ppm')'''
 			
 			
 	def test_iges_plot_failing_outfile_type(self):
