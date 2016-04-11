@@ -26,7 +26,8 @@ setup(name='pygem',
 	  		'numpy-stl',
 	  		'scipy',
 	  		'matplotlib',
-	  		'enum34'
+	  		'enum34',
+	  		'pythonocc-core'
 	  ],
 	  test_suite='nose.collector',
 	  tests_require=['nose'],
