@@ -2,7 +2,7 @@
 Utilities for reading and writing different CAD files.
 """
 import numpy as np
-import sys
+import os
 import pygem.filehandler as fh
 from OCC.IGESControl import (IGESControl_Reader, IGESControl_Writer)
 from OCC.BRep import (BRep_Tool, BRep_Builder)
@@ -14,6 +14,10 @@ from OCC.TopExp import TopExp_Explorer
 from OCC.gp import (gp_Pnt, gp_XYZ)
 from OCC.Display.SimpleGui import init_display
 from OCC.ShapeFix import ShapeFix_ShapeTolerance
+from OCC.StlAPI import StlAPI_Writer
+from mpl_toolkits import mplot3d
+from matplotlib import pyplot
+from stl import mesh
 
 
 class IgesHandler(fh.FileHandler):
@@ -198,9 +202,49 @@ class IgesHandler(fh.FileHandler):
 		:param string plot_file: the iges filename you want to plot.
 		:param bool save_fig: a flag to save the figure in png or not. If True the
 			plot is not shown.
+		"""
+		if plot_file is None:
+			plot_file = self.infile
+		else:
+			self._check_filename_type(plot_file)
+
+		## read in the IGES file
+		reader = IGESControl_Reader()
+		reader.ReadFile(plot_file)
+		reader.TransferRoots()
+		shape = reader.Shape()		
+		
+		stl_writer = StlAPI_Writer()
+		# Do not switch SetASCIIMode() from False to True.
+		stl_writer.SetASCIIMode(False)
+		stl_writer.Write(shape,'aux_figure.stl')
+		
+		# Create a new plot
+		figure = pyplot.figure()
+		axes = mplot3d.Axes3D(figure)
+
+		# Load the STL files and add the vectors to the plot
+		stl_mesh = mesh.Mesh.from_file('aux_figure.stl')
+		axes.add_collection3d(mplot3d.art3d.Poly3DCollection(stl_mesh.vectors))
+
+		# Auto scale to the mesh size
+		scale = stl_mesh.points.flatten(-1)
+		axes.auto_scale_xyz(scale, scale, scale)
+		
+		# Show the plot to the screen
+		if not save_fig:
+			pyplot.show()
+		else:
+			figure.savefig(plot_file.split('.')[0] + '.png')
 			
-		.. warning::
-			It does not work well up to now
+		os.remove('aux_figure.stl')
+			
+			
+	def show(self, plot_file=None):
+		"""
+		Method to plot an iges file. If `plot_file` is not given it plots `self.infile`.
+
+		:param string plot_file: the iges filename you want to plot.
 		"""
 		if plot_file is None:
 			plot_file = self.infile
@@ -217,36 +261,6 @@ class IgesHandler(fh.FileHandler):
 		display.FitAll()
 		display.DisplayShape(shape, update=True)
 		
-		def export_to_BMP(event=None):
-			display.View.Dump('./capture_bmp.bmp')
-
-
-		def export_to_PNG(event=None):
-			display.View.Dump('./capture_png.png')
-
-
-		def export_to_JPEG(event=None):
-			display.View.Dump('./capture_jpeg.jpeg')
-
-
-		def export_to_TIFF(event=None):
-			display.View.Dump('./capture_tiff.tiff')
-
-
-		def exit(event=None):
-			sys.exit()
-		
-		add_menu('screencapture')
-		add_function_to_menu('screencapture', export_to_BMP)
-		add_function_to_menu('screencapture', export_to_PNG)
-		add_function_to_menu('screencapture', export_to_JPEG)
-		add_function_to_menu('screencapture', export_to_TIFF)
-		add_function_to_menu('screencapture', exit)
-		
 		# Show the plot to the screen
-		if not save_fig:
-			start_display()
-		else:
-			f = display.View.View().GetObject()
-			display.View.Dump(plot_file.split('.')[0] + '.ppm')
+		start_display()
 

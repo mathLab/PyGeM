@@ -138,6 +138,14 @@ class TestIgesHandler(TestCase):
 		
 		iges_handler.write(mesh_points, outfilename)
 		os.remove(outfilename)
+		
+		
+	def test_iges_plot_save_fig(self):
+		iges_handler = ih.IgesHandler()
+		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
+		iges_handler.plot(save_fig=True)
+		self.assertTrue(os.path.isfile('tests/test_datasets/test_pipe.png'))
+		os.remove('tests/test_datasets/test_pipe.png')
 			
 			
 	def test_iges_plot_failing_outfile_type(self):
