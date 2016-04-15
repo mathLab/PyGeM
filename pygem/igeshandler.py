@@ -240,16 +240,14 @@ class IgesHandler(fh.FileHandler):
 		os.remove('aux_figure.stl')
 			
 			
-	def show(self, plot_file=None):
+	def show(self):
 		"""
-		Method to plot an iges file. If `plot_file` is not given it plots `self.infile`.
+		Method to show an iges file.
 
-		:param string plot_file: the iges filename you want to plot.
 		"""
-		if plot_file is None:
-			plot_file = self.infile
-		else:
-			self._check_filename_type(plot_file)
+		
+		plot_file = self.infile
+		self._check_filename_type(plot_file)
 
 		## read in the IGES file
 		reader = IGESControl_Reader()
