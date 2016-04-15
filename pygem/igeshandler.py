@@ -242,16 +242,18 @@ class IgesHandler(fh.FileHandler):
 			
 	def show(self):
 		"""
-		Method to show an iges file.
+		Method to show an iges file. If `show_file` is not given it plots `self.infile`.
 
+		:param string show_file: the iges filename you want to plot.
 		"""
-		
-		plot_file = self.infile
-		self._check_filename_type(plot_file)
+		if show_file is None:
+			show_file = self.infile
+		else:
+			self._check_filename_type(show_file)
 
 		## read in the IGES file
 		reader = IGESControl_Reader()
-		reader.ReadFile(plot_file)
+		reader.ReadFile(show_file)
 		reader.TransferRoots()
 		shape = reader.Shape()		
 		
