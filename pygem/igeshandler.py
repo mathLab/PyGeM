@@ -240,7 +240,7 @@ class IgesHandler(fh.FileHandler):
 		os.remove('aux_figure.stl')
 			
 			
-	def show(self):
+	def show(self, show_file=None):
 		"""
 		Method to show an iges file. If `show_file` is not given it plots `self.infile`.
 
