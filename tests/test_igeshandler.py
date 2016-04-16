@@ -153,3 +153,8 @@ class TestIgesHandler(TestCase):
 		with self.assertRaises(TypeError):
 			iges_handler.plot(plot_file=3)
 			
+
+	def test_iges_show_failing_outfile_type(self):
+		iges_handler = ih.IgesHandler()
+		with self.assertRaises(TypeError):
+			iges_handler.show(show_file=1.1)
