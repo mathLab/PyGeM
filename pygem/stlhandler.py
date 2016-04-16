@@ -73,7 +73,7 @@ class StlHandler(fh.FileHandler):
 		for i in range(0, n_triplets):
 			for j in range(0, 3):
 				data['vectors'][i][j] = mesh_points[3*i + j]
-				
+
 		if not write_bin:
 			stl_mesh.save(self.outfile, mode=1, update_normals=True)
 		else:

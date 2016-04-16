@@ -1,12 +1,14 @@
 """
 Utilities for reading and writing different CAD files.
 """
-import numpy as np
 import os
-import pygem.filehandler as fh
+import numpy as np
+from mpl_toolkits import mplot3d
+from matplotlib import pyplot
 from OCC.IGESControl import (IGESControl_Reader, IGESControl_Writer)
 from OCC.BRep import (BRep_Tool, BRep_Builder)
-from OCC.BRepBuilderAPI import (BRepBuilderAPI_NurbsConvert, BRepBuilderAPI_MakeWire, BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeFace)
+from OCC.BRepBuilderAPI import (BRepBuilderAPI_NurbsConvert, BRepBuilderAPI_MakeWire)
+from OCC.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeFace)
 from OCC.GeomConvert import geomconvert_SurfaceToBSplineSurface
 import OCC.TopoDS
 from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE)
@@ -15,9 +17,8 @@ from OCC.gp import (gp_Pnt, gp_XYZ)
 from OCC.Display.SimpleGui import init_display
 from OCC.ShapeFix import ShapeFix_ShapeTolerance
 from OCC.StlAPI import StlAPI_Writer
-from mpl_toolkits import mplot3d
-from matplotlib import pyplot
 from stl import mesh
+import pygem.filehandler as fh
 
 
 class IgesHandler(fh.FileHandler):
@@ -27,7 +28,8 @@ class IgesHandler(fh.FileHandler):
 	:cvar string infile: name of the input file to be processed.
 	:cvar string outfile: name of the output file where to write in.
 	:cvar string extension: extension of the input/output files. It is equal to '.iges'.
-	:cvar list control_point_position: index of the first NURBS control point (or pole) of each face of the iges file.
+	:cvar list control_point_position: index of the first NURBS control point (or pole)
+		of each face of the iges file.
 	"""
 	def __init__(self):
 		super(IgesHandler, self).__init__()
@@ -51,22 +53,21 @@ class IgesHandler(fh.FileHandler):
 		self._check_extension(filename)
 
 		self.infile = filename
-		
-		## read in the IGES file
+
+		# read in the IGES file
 		reader = IGESControl_Reader()
 		reader.ReadFile(self.infile)
 		reader.TransferRoots()
 		shape = reader.Shape()
 
-		## cycle on the faces to get the control points
+		# cycle on the faces to get the control points
 		# init some quantities
 		n_faces = 0
 		control_point_position = [0]
 		faces_explorer = TopExp_Explorer(shape, TopAbs_FACE)
-		mesh_points = np.zeros(shape=(0,3))
-		
-		while faces_explorer.More():
+		mesh_points = np.zeros(shape=(0, 3))
 
+		while faces_explorer.More():
 			# performing some conversions to get the right format (BSplineSurface)
 			iges_face = OCC.TopoDS.topods_Face(faces_explorer.Current())
 			iges_nurbs_converter = BRepBuilderAPI_NurbsConvert(iges_face)
@@ -81,19 +82,20 @@ class IgesHandler(fh.FileHandler):
 			# extract the Control Points of each face
 			n_poles_u = occ_face.NbUPoles()
 			n_poles_v = occ_face.NbVPoles()
-			control_polygon_coordinates = np.zeros(shape=(n_poles_u*n_poles_v,3))
+			control_polygon_coordinates = np.zeros(shape=(n_poles_u * n_poles_v, 3))
 
 			# cycle over the poles to get their coordinates
 			i = 0
 			for pole_u_direction in xrange(n_poles_u):
 				for pole_v_direction in xrange(n_poles_v):
-					control_point_coordinates = occ_face.Pole(pole_u_direction+1,pole_v_direction+1)
-					control_polygon_coordinates[i,:] = [control_point_coordinates.X(), control_point_coordinates.Y(), control_point_coordinates.Z()]
-					i += 1	
+					control_point_coordinates = occ_face.Pole(pole_u_direction+1, pole_v_direction+1)
+					control_polygon_coordinates[i, :] = [control_point_coordinates.X(), \
+						control_point_coordinates.Y(), control_point_coordinates.Z()]
+					i += 1
 
 			# pushing the control points coordinates to the mesh_points array (used for FFD)
 			mesh_points = np.append(mesh_points, control_polygon_coordinates, axis=0)
-			control_point_position.append(control_point_position[-1] + n_poles_u*n_poles_v)
+			control_point_position.append(control_point_position[-1] + n_poles_u * n_poles_v)
 
 			n_faces += 1
 			faces_explorer.Next()
@@ -101,7 +103,7 @@ class IgesHandler(fh.FileHandler):
 		self._control_point_position = control_point_position
 
 		return mesh_points
-		
+
 
 	def write(self, mesh_points, filename):
 		"""
@@ -117,18 +119,18 @@ class IgesHandler(fh.FileHandler):
 		self._check_extension(filename)
 		self._check_infile_instantiation(self.infile)
 
-		self.outfile = filename	
+		self.outfile = filename
 
-		## init the ouput file writer
+		# init the ouput file writer
 		writer = IGESControl_Writer()
 
-		## read in the IGES file
+		# read in the IGES file
 		reader = IGESControl_Reader()
 		reader.ReadFile(self.infile)
 		reader.TransferRoots()
 		shape_read = reader.Shape()
 
-		## cycle on the faces to update the control points position
+		# cycle on the faces to update the control points position
 		# init some quantities
 		faces_explorer = TopExp_Explorer(shape_read, TopAbs_FACE)
 		n_faces = 0
@@ -137,9 +139,8 @@ class IgesHandler(fh.FileHandler):
 		compound_builder = BRep_Builder()
 		compound = OCC.TopoDS.TopoDS_Compound()
 		compound_builder.MakeCompound(compound)
-		
+
 		while faces_explorer.More():
-	
 			# similar to the parser method
 			iges_face = OCC.TopoDS.topods_Face(faces_explorer.Current())
 			iges_nurbs_converter = BRepBuilderAPI_NurbsConvert(iges_face)
@@ -156,18 +157,19 @@ class IgesHandler(fh.FileHandler):
 			i = 0
 			for pole_u_direction in xrange(n_poles_u):
 				for pole_v_direction in xrange(n_poles_v):
-					control_point_coordinates = mesh_points[i+control_point_position[n_faces],:]
-					point_xyz = gp_XYZ(control_point_coordinates[0], control_point_coordinates[1], control_point_coordinates[2])
+					control_point_coordinates = mesh_points[i+control_point_position[n_faces], :]
+					point_xyz = gp_XYZ(control_point_coordinates[0], control_point_coordinates[1], \
+						control_point_coordinates[2])
 					gp_point = gp_Pnt(point_xyz)
-					occ_face.SetPole(pole_u_direction+1,pole_v_direction+1,gp_point)
+					occ_face.SetPole(pole_u_direction+1, pole_v_direction+1, gp_point)
 					i += 1
 
-			## construct the deformed wire for the trimmed surfaces
+			# construct the deformed wire for the trimmed surfaces
 			wire_maker = BRepBuilderAPI_MakeWire()
 			tol = ShapeFix_ShapeTolerance()
 			brep = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), 1e-4).Face()
 			brep_face = BRep_Tool.Surface(brep)
-		
+
 			# cycle on the edges
 			edge_explorer = TopExp_Explorer(nurbs_face, TopAbs_EDGE)
 			while edge_explorer.More():
@@ -181,10 +183,10 @@ class IgesHandler(fh.FileHandler):
 				wire_maker.Add(edge_phis_coordinates)
 				edge_explorer.Next()
 
-			#grouping the edges in a wire
+			# grouping the edges in a wire
 			wire = wire_maker.Wire()
 
-			## trimming the surfaces
+			# trimming the surfaces
 			brep_surf = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), wire).Shape()
 			compound_builder.Add(compound, brep_surf)
 			n_faces += 1
@@ -193,8 +195,8 @@ class IgesHandler(fh.FileHandler):
 		writer.AddShape(compound)
 
 		writer.Write(self.outfile)
-		
-		
+
+
 	def plot(self, plot_file=None, save_fig=False):
 		"""
 		Method to plot an iges file. If `plot_file` is not given it plots `self.infile`.
@@ -212,55 +214,54 @@ class IgesHandler(fh.FileHandler):
 		reader = IGESControl_Reader()
 		reader.ReadFile(plot_file)
 		reader.TransferRoots()
-		shape = reader.Shape()		
-		
+		shape = reader.Shape()
+
 		stl_writer = StlAPI_Writer()
 		# Do not switch SetASCIIMode() from False to True.
 		stl_writer.SetASCIIMode(False)
-		stl_writer.Write(shape,'aux_figure.stl')
-		
+		stl_writer.Write(shape, 'aux_figure.stl')
+
 		# Create a new plot
 		figure = pyplot.figure()
 		axes = mplot3d.Axes3D(figure)
 
 		# Load the STL files and add the vectors to the plot
 		stl_mesh = mesh.Mesh.from_file('aux_figure.stl')
+		os.remove('aux_figure.stl')
 		axes.add_collection3d(mplot3d.art3d.Poly3DCollection(stl_mesh.vectors))
 
 		# Auto scale to the mesh size
 		scale = stl_mesh.points.flatten(-1)
 		axes.auto_scale_xyz(scale, scale, scale)
-		
+
 		# Show the plot to the screen
 		if not save_fig:
 			pyplot.show()
 		else:
 			figure.savefig(plot_file.split('.')[0] + '.png')
-			
-		os.remove('aux_figure.stl')
-			
-			
+
+
 	def show(self, show_file=None):
 		"""
 		Method to show an iges file. If `show_file` is not given it plots `self.infile`.
 
-		:param string show_file: the iges filename you want to plot.
+		:param string show_file: the iges filename you want to show.
 		"""
 		if show_file is None:
 			show_file = self.infile
 		else:
 			self._check_filename_type(show_file)
 
-		## read in the IGES file
+		# read in the IGES file
 		reader = IGESControl_Reader()
 		reader.ReadFile(show_file)
 		reader.TransferRoots()
-		shape = reader.Shape()		
-		
-		display, start_display, add_menu, add_function_to_menu = init_display()
+		shape = reader.Shape()
+
+		display, start_display, __, __ = init_display()
 		display.FitAll()
 		display.DisplayShape(shape, update=True)
-		
+
 		# Show the plot to the screen
 		start_display()
 

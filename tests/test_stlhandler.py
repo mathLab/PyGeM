@@ -215,6 +215,13 @@ class TestStlHandler(TestCase):
 		os.remove('tests/test_datasets/test_sphere_bin.png')
 
 
+	def test_stl_plot_save_fig_plot_file(self):
+		stl_handler = sh.StlHandler()
+		stl_handler.plot(plot_file='tests/test_datasets/test_sphere.stl', save_fig=True)
+		self.assertTrue(os.path.isfile('tests/test_datasets/test_sphere.png'))
+		os.remove('tests/test_datasets/test_sphere.png')
+
+
 	def test_stl_plot_failing_outfile_type(self):
 		stl_handler = sh.StlHandler()
 		with self.assertRaises(TypeError):
