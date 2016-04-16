@@ -1,1 +1,6 @@
 Sphinx>=1.4
+numpy
+numpy-stl
+scipy
+matplotlib
+enum34
