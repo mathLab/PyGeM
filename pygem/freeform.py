@@ -1,5 +1,42 @@
 """
 Utilities for performing Free Form Deformation (FFD)
+
+:Theoretical Insight:
+
+	Free Form Deformation is a technique for the efficient, smooth and accurate geometrical 
+	parametrization. It has been proposed the first time in *Sederberg, Thomas W., and Scott 
+	R. Parry. "Free-form deformation of solid geometric models." ACM SIGGRAPH computer 
+	graphics 20.4 (1986): 151-160*. It consists in three different step:
+	
+	- Mapping the physical domain to the reference one with map :math:`\\boldsymbol{\psi}`. 
+	  In the code it is named *transformation*.
+	  
+	- Moving some control points to deform the lattice with :math:`\\hat{T}`.
+	  The movement of the control points is basically the weight (or displacement) 
+	  :math:`\\boldsymbol{\mu}` we set in the *parameters file*.
+	  
+	- Mapping back to the physical domain with map :math:`\\boldsymbol{\psi}^-1`.
+	  In the code it is named *inverse_transformation*.
+	  
+	FFD map (:math:`T`) is the composition of the three maps, that is
+	
+	.. math::
+		T(\\cdot, \\boldsymbol{\\mu}) = (\\Psi^{-1} \\circ \\hat{T} \\circ \\Psi) 
+		(\\cdot, \\boldsymbol{\\mu})
+			
+	In this way, every point inside the FFD box changes it position according to
+	
+	.. math::
+		\\boldsymbol{P} = \\boldsymbol{\psi}^-1 \\left( \\sum_{l=0} ^L \\sum_{m=0} ^M 
+		\\sum_{n=0} ^N \\mathsf{b}_{lmn}(\\boldsymbol{\\psi}(\\boldsymbol{P}_0)) 
+		\\boldsymbol{\\mu}_{lmn} \\right)
+		
+	where :math:`\\mathsf{b}_{lmn}` are Bernstein polynomials.
+	We improve the traditional version by allowing a rotation of the FFD lattice in order
+	to give more flexibility to the tool.
+	
+	You can try to add more shapes to the lattice to allow more and more involved transformations.
+
 """
 import numpy as np
 from scipy import special
@@ -31,6 +68,7 @@ class FFD(object):
 	>>> free_form = ffd.FFD(ffd_parameters, original_mesh_points)
 	>>> free_form.perform()
 	>>> new_mesh_points = free_form.modified_mesh_points
+			
     """
 	def __init__(self, ffd_parameters, original_mesh_points):
 		self.parameters = ffd_parameters
@@ -111,7 +149,7 @@ class FFD(object):
 
 		# Here shift_mesh_points needs to be transposed to be summed with reference_frame_mesh_points
 		self.modified_mesh_points = self._transform_points(np.transpose(shift_mesh_points) + \
-									reference_frame_mesh_points, inverse_transformation) + translation
+									reference_frame_mesh_points, inverse_transformatio) + translation
 
 
 	def _transform_points(self, original_points, transformation):
