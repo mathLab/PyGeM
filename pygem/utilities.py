@@ -17,6 +17,8 @@ def write_initial_box(parameters, latticeName):
 
 	boxPoints = np.dot(parameters.rotation_matrix,boxPoints) + np.transpose(np.tile(parameters.origin_box, (n_row,1)))
 	
+	#print boxPoints
+	
 	write_vtk_box(boxPoints, 'originalBox_' + latticeName + '.vtk')
 
 def write_modified_box(parameters, latticeName):
