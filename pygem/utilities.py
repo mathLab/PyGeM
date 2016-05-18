@@ -4,14 +4,17 @@ import numpy as np
 
 # TODO: add the connectivity to the ffd control points to visualize the lattice.
 
-def write_initial_box(parameters, lattice_name):
+def write_bounding_box(parameters, outfile, flag='original'):
 	"""
-	Method that writes a vtk file containing the undeformed FFD lattice. This method
+	Method that writes a vtk file containing the FFD lattice. This method
 	allows to visualize where the FFD control points are located before the geometrical morphing.
+	If the flag is set to original (default) the method writes out the undeformed lattice, 
+	if it is set to modified it writes out the deformed lattice.
 	
 	:param FFDParameters parameters: parameters of the Free Form Deformation.
-	:param string lattice_name: name related of the output file. The output file will 
-		be 'originalBox_lattice_name.vtk'
+	:param string outfile: name of the output file.
+	:param string flag: flag to write the original or modified FFD control lattice. 
+		The default is set to original.
 		
 	:Example:
 	
@@ -21,7 +24,7 @@ def write_initial_box(parameters, lattice_name):
 	
 	>>> params = pars.FFDParameters()
 	>>> params.read_parameters(filename='tests/test_datasets/parameters_test_ffd_sphere.prm')
-	>>> util.write_initial_box(params, 'test_on_sphere')
+	>>> util.write_initial_box(params, 'tests/test_datasets/box_test_sphere.vtk')
 	"""
 
 	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
@@ -29,51 +32,21 @@ def write_initial_box(parameters, lattice_name):
 	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
 	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(aux_y, aux_x, aux_z)
 
-	box_points = np.array([lattice_x_coords.ravel(), lattice_y_coords.ravel(), lattice_z_coords.ravel()])
-	n_rows = box_points.shape[1]
-
-	box_points = np.dot(parameters.rotation_matrix,box_points) + np.transpose(np.tile(parameters.origin_box, (n_rows,1)))
-	
-	write_vtk_box(box_points, 'originalBox_' + lattice_name + '.vtk')
-	
-
-def write_modified_box(parameters, lattice_name):
-	"""
-	Method that writes a vtk file containing the deformed FFD lattice. This method
-	allows to visualize where the FFD control points are located after the geometrical morphing.
-	
-	:param FFDParameters parameters: parameters of the Free Form Deformation.
-	:param string lattice_name: name related of the output file. The output file will 
-		be 'modifiedBox_lattice_name.vtk'
+	if flag == 'original':
+		box_points = np.array([lattice_x_coords.ravel(), lattice_y_coords.ravel(), lattice_z_coords.ravel()])
+	if flag == 'modified':
+		box_points = np.array([lattice_x_coords.ravel() + parameters.array_mu_x.ravel()*parameters.lenght_box_x, \
+		lattice_y_coords.ravel()  + parameters.array_mu_y.ravel()*parameters.lenght_box_y, \
+		lattice_z_coords.ravel()  + parameters.array_mu_z.ravel()*parameters.lenght_box_z])
 		
-	:Example:
-	
-	>>> import pygem.utilities as util
-	>>> import pygem.params as pars
-	>>> import numpy as np
-	
-	>>> params = pars.FFDParameters()
-	>>> params.read_parameters(filename='tests/test_datasets/parameters_test_ffd_sphere.prm')
-	>>> util.write_modified_box(params, 'test_on_sphere')
-	"""
-
-	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
-	aux_y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
-	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
-	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(aux_y, aux_x, aux_z)
-
-	box_points = np.array([lattice_x_coords.ravel() + parameters.array_mu_x.ravel()*parameters.lenght_box_x, \
-	lattice_y_coords.ravel()  + parameters.array_mu_y.ravel()*parameters.lenght_box_y, \
-	lattice_z_coords.ravel()  + parameters.array_mu_z.ravel()*parameters.lenght_box_z])
-
 	n_rows = box_points.shape[1]
 
 	box_points = np.dot(parameters.rotation_matrix,box_points) + np.transpose(np.tile(parameters.origin_box, (n_rows,1)))
 	
-	write_vtk_box(box_points, 'modifiedBox_' + lattice_name + '.vtk')	
+	_write_vtk_box(box_points, outfile)
 	
 	
-def write_vtk_box(box_points, filename):
+def _write_vtk_box(box_points, filename):
 	"""
 	Method that writes a vtk file containing FFD control points.
 	
