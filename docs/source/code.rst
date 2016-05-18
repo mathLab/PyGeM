@@ -15,4 +15,5 @@ Code Documentation
    vtkhandler
    unvhandler
    igeshandler
+   utilities
 

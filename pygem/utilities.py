@@ -2,55 +2,90 @@ import vtk
 import vtk.util.numpy_support as ns
 import numpy as np
 
-def write_initial_box(parameters, latticeName):
+# TODO: add the connectivity to the ffd control points to visualize the lattice.
+
+def write_initial_box(parameters, lattice_name):
 	"""
-	Writes a vtk files for the undeformed FFD lattice.
-	"""
-
-	x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
-	y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
-	z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
-	yy, xx, zz = np.meshgrid(y, x, z)
-
-	boxPoints = np.array([xx.ravel(), yy.ravel(), zz.ravel()])
-	n_row = boxPoints.shape[1]
-
-	boxPoints = np.dot(parameters.rotation_matrix,boxPoints) + np.transpose(np.tile(parameters.origin_box, (n_row,1)))
+	Method that writes a vtk file containing the undeformed FFD lattice. This method
+	allows to visualize where the FFD control points are located before the geometrical morphing.
 	
-	#print boxPoints
+	:param FFDParameters parameters: parameters of the Free Form Deformation.
+	:param string lattice_name: name related of the output file. The output file will 
+		be 'originalBox_lattice_name.vtk'
+		
+	:Example:
 	
-	write_vtk_box(boxPoints, 'originalBox_' + latticeName + '.vtk')
-
-def write_modified_box(parameters, latticeName):
+	>>> import pygem.utilities as util
+	>>> import pygem.params as pars
+	>>> import numpy as np
+	
+	>>> params = pars.FFDParameters()
+	>>> params.read_parameters(filename='tests/test_datasets/parameters_test_ffd_sphere.prm')
+	>>> util.write_initial_box(params, 'test_on_sphere')
 	"""
-	Writes a vtk files for the deformed FFD lattice.
+
+	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
+	aux_y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
+	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
+	points_in_y, xx, zz = np.meshgrid(aux_y, aux_x, aux_z)
+
+	box_points = np.array([xx.ravel(), points_in_y.ravel(), zz.ravel()])
+	n_row = box_points.shape[1]
+
+	box_points = np.dot(parameters.rotation_matrix,box_points) + np.transpose(np.tile(parameters.origin_box, (n_row,1)))
+	
+	write_vtk_box(box_points, 'originalBox_' + lattice_name + '.vtk')
+	
+
+def write_modified_box(parameters, lattice_name):
+	"""
+	Method that writes a vtk file containing the deformed FFD lattice. This method
+	allows to visualize where the FFD control points are located after the geometrical morphing.
+	
+	:param FFDParameters parameters: parameters of the Free Form Deformation.
+	:param string lattice_name: name related of the output file. The output file will 
+		be 'modifiedBox_lattice_name.vtk'
+		
+	:Example:
+	
+	>>> import pygem.utilities as util
+	>>> import pygem.params as pars
+	>>> import numpy as np
+	
+	>>> params = pars.FFDParameters()
+	>>> params.read_parameters(filename='tests/test_datasets/parameters_test_ffd_sphere.prm')
+	>>> util.write_modified_box(params, 'test_on_sphere')
 	"""
 
-	x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
-	y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
-	z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
-	yy, xx, zz = np.meshgrid(y, x, z)
+	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
+	aux_y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
+	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
+	points_in_y, xx, zz = np.meshgrid(aux_y, aux_x, aux_z)
 
-	boxPoints = np.array([xx.ravel() + parameters.array_mu_x.ravel()*parameters.lenght_box_x, \
-	yy.ravel()  + parameters.array_mu_y.ravel()*parameters.lenght_box_y, \
+	box_points = np.array([xx.ravel() + parameters.array_mu_x.ravel()*parameters.lenght_box_x, \
+	points_in_y.ravel()  + parameters.array_mu_y.ravel()*parameters.lenght_box_y, \
 	zz.ravel()  + parameters.array_mu_z.ravel()*parameters.lenght_box_z])
 
-	n_row = boxPoints.shape[1]
+	n_row = box_points.shape[1]
 
-	boxPoints = np.dot(parameters.rotation_matrix,boxPoints) + np.transpose(np.tile(parameters.origin_box, (n_row,1)))
+	box_points = np.dot(parameters.rotation_matrix,box_points) + np.transpose(np.tile(parameters.origin_box, (n_row,1)))
 	
-	write_vtk_box(boxPoints, 'modifiedBox_' + latticeName + '.vtk')	
+	write_vtk_box(box_points, 'modifiedBox_' + lattice_name + '.vtk')	
 	
-def write_vtk_box(boxPoints, filename):
+	
+def write_vtk_box(box_points, filename):
 	"""
-	Documentation
+	Method that writes a vtk file containing FFD control points.
+	
+	:param numpy.ndarray box_points: coordinates of the FFD control points.
+	:param string filename: name of the output file.
 	"""
 	# setup points and vertices
 	points = vtk.vtkPoints()
 	vertices = vtk.vtkCellArray()
 	
-	for index in range(0, boxPoints.shape[1]):
-		id = points.InsertNextPoint(boxPoints[0, index], boxPoints[1, index], boxPoints[2, index])
+	for index in range(0, box_points.shape[1]):
+		id = points.InsertNextPoint(box_points[0, index], box_points[1, index], box_points[2, index])
 		vertices.InsertNextCell(1)
 		vertices.InsertCellPoint(id)
 		
