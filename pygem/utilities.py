@@ -27,12 +27,12 @@ def write_initial_box(parameters, lattice_name):
 	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
 	aux_y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
 	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
-	points_in_y, xx, zz = np.meshgrid(aux_y, aux_x, aux_z)
+	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(aux_y, aux_x, aux_z)
 
-	box_points = np.array([xx.ravel(), points_in_y.ravel(), zz.ravel()])
-	n_row = box_points.shape[1]
+	box_points = np.array([lattice_x_coords.ravel(), lattice_y_coords.ravel(), lattice_z_coords.ravel()])
+	n_rows = box_points.shape[1]
 
-	box_points = np.dot(parameters.rotation_matrix,box_points) + np.transpose(np.tile(parameters.origin_box, (n_row,1)))
+	box_points = np.dot(parameters.rotation_matrix,box_points) + np.transpose(np.tile(parameters.origin_box, (n_rows,1)))
 	
 	write_vtk_box(box_points, 'originalBox_' + lattice_name + '.vtk')
 	
@@ -60,15 +60,15 @@ def write_modified_box(parameters, lattice_name):
 	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
 	aux_y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
 	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
-	points_in_y, xx, zz = np.meshgrid(aux_y, aux_x, aux_z)
+	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(aux_y, aux_x, aux_z)
 
-	box_points = np.array([xx.ravel() + parameters.array_mu_x.ravel()*parameters.lenght_box_x, \
-	points_in_y.ravel()  + parameters.array_mu_y.ravel()*parameters.lenght_box_y, \
-	zz.ravel()  + parameters.array_mu_z.ravel()*parameters.lenght_box_z])
+	box_points = np.array([lattice_x_coords.ravel() + parameters.array_mu_x.ravel()*parameters.lenght_box_x, \
+	lattice_y_coords.ravel()  + parameters.array_mu_y.ravel()*parameters.lenght_box_y, \
+	lattice_z_coords.ravel()  + parameters.array_mu_z.ravel()*parameters.lenght_box_z])
 
-	n_row = box_points.shape[1]
+	n_rows = box_points.shape[1]
 
-	box_points = np.dot(parameters.rotation_matrix,box_points) + np.transpose(np.tile(parameters.origin_box, (n_row,1)))
+	box_points = np.dot(parameters.rotation_matrix,box_points) + np.transpose(np.tile(parameters.origin_box, (n_rows,1)))
 	
 	write_vtk_box(box_points, 'modifiedBox_' + lattice_name + '.vtk')	
 	
