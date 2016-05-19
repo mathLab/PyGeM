@@ -1,10 +1,16 @@
+"""
+Auxiliary utilities for PyGeM.
+"""
+
 import vtk
 import vtk.util.numpy_support as ns
 import numpy as np
 
 # TODO: add the connectivity to the ffd control points to visualize the lattice.
 
-def write_bounding_box(parameters, outfile, flag='original'):
+
+
+def write_bounding_box(parameters, outfile, write_deformed=True):
 	"""
 	Method that writes a vtk file containing the FFD lattice. This method
 	allows to visualize where the FFD control points are located before the geometrical morphing.
@@ -13,8 +19,8 @@ def write_bounding_box(parameters, outfile, flag='original'):
 	
 	:param FFDParameters parameters: parameters of the Free Form Deformation.
 	:param string outfile: name of the output file.
-	:param string flag: flag to write the original or modified FFD control lattice. 
-		The default is set to original.
+	:param bool write_deformed: flag to write the original or modified FFD control lattice. 
+		The default is set to deformed.
 		
 	:Example:
 	
@@ -24,7 +30,7 @@ def write_bounding_box(parameters, outfile, flag='original'):
 	
 	>>> params = pars.FFDParameters()
 	>>> params.read_parameters(filename='tests/test_datasets/parameters_test_ffd_sphere.prm')
-	>>> util.write_initial_box(params, 'tests/test_datasets/box_test_sphere.vtk')
+	>>> util.write_bounding_box(params, 'tests/test_datasets/box_test_sphere.vtk')
 	"""
 
 	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
@@ -32,9 +38,9 @@ def write_bounding_box(parameters, outfile, flag='original'):
 	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
 	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(aux_y, aux_x, aux_z)
 
-	if flag == 'original':
+	if write_deformed == False:
 		box_points = np.array([lattice_x_coords.ravel(), lattice_y_coords.ravel(), lattice_z_coords.ravel()])
-	if flag == 'modified':
+	if write_deformed == True:
 		box_points = np.array([lattice_x_coords.ravel() + parameters.array_mu_x.ravel()*parameters.lenght_box_x, \
 		lattice_y_coords.ravel()  + parameters.array_mu_y.ravel()*parameters.lenght_box_y, \
 		lattice_z_coords.ravel()  + parameters.array_mu_z.ravel()*parameters.lenght_box_z])
