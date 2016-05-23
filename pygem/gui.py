@@ -82,7 +82,7 @@ class Gui(object):
 			
 		if file_extension_in == '.stl':
 			geo_handler = pg.stlhandler.StlHandler()
-		elif file_extension_in == '.iges' or file_extension_in == '.igs':
+		elif file_extension_in == '.iges' or '.igs':
 			geo_handler = pg.igeshandler.IgesHandler()
 		elif file_extension_in == '.unv':
 			geo_handler = pg.unvhandler.UnvHandler()
