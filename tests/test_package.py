@@ -49,9 +49,9 @@ class TestPackage(TestCase):
 		igesh = pg.igeshandler.IgesHandler()
 		
 	
-	def test_import_pg_9(self):
+	'''def test_import_pg_9(self):
 		import pygem as pg
-		guih = pg.gui.Gui()
+		guih = pg.gui.Gui()'''
 	
 
 	def test_modules_name(self):
