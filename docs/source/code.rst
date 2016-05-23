@@ -16,4 +16,5 @@ Code Documentation
    unvhandler
    igeshandler
    utilities
+   gui
 

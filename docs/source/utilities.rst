@@ -1,5 +1,5 @@
 Utilities
 =====================
 
-.. automodule:: pygem.utilities
+.. automodule:: pygem.utils
 	:members:

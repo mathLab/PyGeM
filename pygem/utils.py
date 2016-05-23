@@ -59,7 +59,7 @@ def _write_vtk_box(box_points, filename, dimensions):
 	points = vtk.vtkPoints()
 	
 	for index in range(0, box_points.shape[1]):
-		ind = points.InsertNextPoint(box_points[0, index], box_points[1, index], box_points[2, index])
+		points.InsertNextPoint(box_points[0, index], box_points[1, index], box_points[2, index])
 		
 	grid = vtk.vtkStructuredGrid()
 	
