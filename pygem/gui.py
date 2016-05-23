@@ -61,9 +61,9 @@ class Gui(object):
 		self.label_geo.configure(fg='green')
 		
 	
-	def chose_parameters(self):
+	def _chose_parameters(self):
 		"""
-		The method explores the file system and allows to select the wanted parameters file.
+		The private method explores the file system and allows to select the wanted parameters file.
 		It visualizes only .prm files.
 		"""
 		self.filename_parameters = askopenfilename(filetypes=[("Params File","*.prm")])
@@ -71,9 +71,9 @@ class Gui(object):
 		self.label_params.configure(fg='green')
 		
 
-	def run_simulation(self):
+	def _run_simulation(self):
 		"""
-		The method runs the geometrical morphing.
+		The private method runs the geometrical morphing.
 		"""
 		params = pg.params.FFDParameters()
 		params.read_parameters(filename=self.filename_parameters)
@@ -107,9 +107,9 @@ class Gui(object):
 			pg.utils.write_bounding_box(params, self.outfilename_lattice_mod.get() + '.vtk', True)
 				
 		
-	def goto_website(self):
+	def _goto_website(self):
 		"""
-		The method opens the PyGeM main page on github. 
+		The private method opens the PyGeM main page on github. 
 		It is used for info about PyGeM in the menu.
 		"""
 		import webbrowser
@@ -141,7 +141,7 @@ class Gui(object):
 		params_frame = Frame(self.root)
 		params_frame.pack(anchor=W)
 		
-		button_2 = Tkinter.Button(params_frame, text ="Pick the parameters", command = self.chose_parameters)
+		button_2 = Tkinter.Button(params_frame, text ="Pick the parameters", command = self._chose_parameters)
 		button_2.pack(side=LEFT, padx = 5, pady = 5)
 		self.label_params = Label( params_frame, textvariable=self.print_parameter_path, fg='red')
 		self.print_parameter_path.set("No parameters file chosen!")
@@ -182,14 +182,14 @@ class Gui(object):
 		entry_lattice_mod.pack(side = LEFT)
 		
 		# Run button
-		button_run = Tkinter.Button(self.root, text ="Run PyGeM", command = self.run_simulation, bg='#065893', fg='#f19625', font='bold')
+		button_run = Tkinter.Button(self.root, text ="Run PyGeM", command = self._run_simulation, bg='#065893', fg='#f19625', font='bold')
 		button_run.pack()
 
 		# Menu
 		menubar = Menu(self.root)
 		
 		helpmenu = Menu(menubar, tearoff=0)
-		helpmenu.add_command(label="About...", command=self.goto_website)
+		helpmenu.add_command(label="About...", command=self._goto_website)
 		menubar.add_cascade(label="Help", menu=helpmenu)
 
 		self.root.config(menu=menubar)
