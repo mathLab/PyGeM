@@ -5,6 +5,7 @@ from PIL import ImageTk, Image
 import pygem as pg
 import sys
 import os
+import webbrowser
 
 # TODO: switch to Ttk instead of Tk for a better look
 
@@ -112,7 +113,6 @@ class Gui(object):
 		The private method opens the PyGeM main page on github. 
 		It is used for info about PyGeM in the menu.
 		"""
-		import webbrowser
 		webbrowser.open('https://github.com/mathLab/PyGeM')
 	
 	
