@@ -15,6 +15,7 @@ before_script:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         "sh -e /etc/init.d/xvfb start";
         sleep 3 # give xvfb some time to start
+      fi
 
 before_install:
     # We do this conditionally because it saves us some downloading if the
