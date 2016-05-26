@@ -1,5 +1,5 @@
-'''import Tkinter
-from Tkinter import *
+import Tkinter
+'''from Tkinter import *
 from tkFileDialog import askopenfilename
 from PIL import ImageTk, Image
 import pygem as pg
