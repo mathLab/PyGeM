@@ -6,15 +6,12 @@ Utilities for handling the Graphic Unit Interface.
 """
 
 import Tkinter
-from Tkinter import *
 from tkFileDialog import askopenfilename
 from PIL import ImageTk, Image
 import pygem as pg
 import sys
 import os
 import webbrowser
-
-# TODO: switch to Ttk instead of Tk for a better look
 
 class Gui(object):
 	"""
@@ -31,30 +28,31 @@ class Gui(object):
 	:cvar string outfilename_lattice_mod: name of the dumped file for the morphed lattice.
 		The extension of the file is set automatically equal to '.vtk'.	
 	:cvar Tkinter.Tk root: main window object of the GUI.
-	
 	:cvar string print_geometry_path: geometry path to be printed close to the 'pick geometry' button.
 	:cvar string print_parameter_path: parameters file path to be printed close to the 'pick parameters' button.
-	:cvar Tkinter.Label label_geo: label related to 'print_geometry_path'
-	:cvar Tkinter.Label label_params: label related to 'print_parameters_path'
+	:cvar Tkinter.Label label_geo: label related to 'print_geometry_path'.
+	:cvar Tkinter.Label label_params: label related to 'print_parameters_path'.
+	:cvar string url: url of the github page of PyGeM.
 	
 	"""
 	
 	def __init__(self):
 	
-		self.root = Tk()
+		self.root = Tkinter.Tk()
 		self.root.title('PyGeM')
 		
-		self.filename_geometry = StringVar()
-		self.filename_parameters = StringVar()
-		self.check_var_1 = IntVar()
-		self.check_var_2 = IntVar()
-		self.outfilename = StringVar()
-		self.outfilename_lattice_orig = StringVar()
-		self.outfilename_lattice_mod = StringVar()
-		self.print_geometry_path = StringVar()
-		self.print_parameter_path = StringVar()
+		self.filename_geometry = Tkinter.StringVar()
+		self.filename_parameters = Tkinter.StringVar()
+		self.check_var_1 = Tkinter.IntVar()
+		self.check_var_2 = Tkinter.IntVar()
+		self.outfilename = Tkinter.StringVar()
+		self.outfilename_lattice_orig = Tkinter.StringVar()
+		self.outfilename_lattice_mod = Tkinter.StringVar()
+		self.print_geometry_path = Tkinter.StringVar()
+		self.print_parameter_path = Tkinter.StringVar()
 		self.label_geo = None
 		self.label_params = None
+		self.url = 'https://github.com/mathLab/PyGeM'
 		
 		
 		
@@ -90,7 +88,7 @@ class Gui(object):
 			
 		if file_extension_in == '.stl':
 			geo_handler = pg.stlhandler.StlHandler()
-		elif file_extension_in == '.iges' or '.igs':
+		elif file_extension_in in ['.iges', '.igs']:
 			geo_handler = pg.igeshandler.IgesHandler()
 		elif file_extension_in == '.unv':
 			geo_handler = pg.unvhandler.UnvHandler()
@@ -120,7 +118,7 @@ class Gui(object):
 		The private method opens the PyGeM main page on github. 
 		It is used for info about PyGeM in the menu.
 		"""
-		webbrowser.open('https://github.com/mathLab/PyGeM')
+		webbrowser.open(self.url)
 	
 	
 	def start(self):

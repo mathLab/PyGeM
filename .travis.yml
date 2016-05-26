@@ -28,6 +28,9 @@ before_install:
     - conda update -q conda
     # Useful for debugging any issues with conda
     - conda info -a
+    
+	- "export DISPLAY=:99.0"
+	- "sh -e /etc/init.d/xvfb start"
 
 install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
