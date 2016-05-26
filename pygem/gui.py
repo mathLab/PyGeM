@@ -1,8 +1,8 @@
 import Tkinter
 from Tkinter import *
 from tkFileDialog import askopenfilename
-'''from PIL import ImageTk, Image
-import pygem as pg
+from PIL import ImageTk, Image
+'''import pygem as pg
 import sys
 import os
 import webbrowser'''
