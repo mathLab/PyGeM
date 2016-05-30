@@ -54,6 +54,9 @@ class Gui(object):
 		self.label_params = None
 		self.url = 'https://github.com/mathLab/PyGeM'
 		
+		self.logo_label = None
+		self.img = None
+		
 		
 		
 	def _chose_geometry(self):
@@ -121,17 +124,17 @@ class Gui(object):
 		webbrowser.open(self.url)
 	
 	
-	def start(self):
+	def main(self):
 		"""
 		The method inizializes and visualizes the window.
 		"""
 		
-		logo_panel = Tkinter.Label()
-		logo_panel.pack(side = "bottom", padx = 5, pady = 5,anchor=Tkinter.SE)
+		self.logo_panel = Tkinter.Label()
+		self.logo_panel.pack(side = "bottom", padx = 5, pady = 5,anchor=Tkinter.SE)
 		image = Image.open('readme/logo_PyGeM_small.png')
 		image = image.resize((50, 50), Image.ANTIALIAS)
-		img = ImageTk.PhotoImage(image)
-		logo_panel.configure(image = img)
+		self.img = ImageTk.PhotoImage(image)
+		self.logo_panel.configure(image = self.img)
 
 		geo_frame = Tkinter.Frame(self.root)
 		geo_frame.pack(anchor=Tkinter.W)
@@ -200,5 +203,8 @@ class Gui(object):
 
 		self.root.config(menu=menubar)
 
+
+	def start(self):
+	
 		self.root.mainloop()
 

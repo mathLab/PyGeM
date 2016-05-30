@@ -77,4 +77,9 @@ class TestGui(TestCase):
 	def test_gui_init_all(self):
 		gui.Gui()
 		
+		
+	def test_gui_main(self):
+		interface = gui.Gui()
+		interface.main()
+		
 	
