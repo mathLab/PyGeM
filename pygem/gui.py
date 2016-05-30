@@ -125,75 +125,76 @@ class Gui(object):
 		"""
 		The method inizializes and visualizes the window.
 		"""
-
+		
+		logo_panel = Tkinter.Label()
+		logo_panel.pack(side = "bottom", padx = 5, pady = 5,anchor=Tkinter.SE)
 		image = Image.open('readme/logo_PyGeM_small.png')
 		image = image.resize((50, 50), Image.ANTIALIAS)
 		img = ImageTk.PhotoImage(image)
-		panel = Label(self.root, image = img)
-		panel.pack(side = "bottom", padx = 5, pady = 5,anchor=SE)
+		logo_panel.configure(image = img)
 
-		geo_frame = Frame(self.root)
-		geo_frame.pack(anchor=W)
+		geo_frame = Tkinter.Frame(self.root)
+		geo_frame.pack(anchor=Tkinter.W)
 
 		# Buttons 1
 		button_1 = Tkinter.Button(geo_frame, text ="Pick the geometry", command = self._chose_geometry)
-		button_1.pack(side=LEFT, padx = 5, pady = 5)
-		self.label_geo=Label(geo_frame, textvariable=self.print_geometry_path, fg='red')
+		button_1.pack(side=Tkinter.LEFT, padx = 5, pady = 5)
+		self.label_geo=Tkinter.Label(geo_frame, textvariable=self.print_geometry_path, fg='red')
 		self.print_geometry_path.set("No geometry chosen!")
-		self.label_geo.pack(side=LEFT, padx = 5, pady = 5)
+		self.label_geo.pack(side=Tkinter.LEFT, padx = 5, pady = 5)
 
 		# Button 2
-		params_frame = Frame(self.root)
-		params_frame.pack(anchor=W)
+		params_frame = Tkinter.Frame(self.root)
+		params_frame.pack(anchor=Tkinter.W)
 		
 		button_2 = Tkinter.Button(params_frame, text ="Pick the parameters", command = self._chose_parameters)
-		button_2.pack(side=LEFT, padx = 5, pady = 5)
-		self.label_params = Label( params_frame, textvariable=self.print_parameter_path, fg='red')
+		button_2.pack(side=Tkinter.LEFT, padx = 5, pady = 5)
+		self.label_params = Tkinter.Label( params_frame, textvariable=self.print_parameter_path, fg='red')
 		self.print_parameter_path.set("No parameters file chosen!")
-		self.label_params.pack(side=LEFT, padx = 5, pady = 5)
+		self.label_params.pack(side=Tkinter.LEFT, padx = 5, pady = 5)
 
 		# Entry
-		entryframe = Frame(self.root)
-		entryframe.pack(padx = 5, pady = 5, anchor=W)
+		entryframe = Tkinter.Frame(self.root)
+		entryframe.pack(padx = 5, pady = 5, anchor=Tkinter.W)
 
-		label_geo_out = Label(entryframe, text="Output geometry file")
-		label_geo_out.pack( side = LEFT)
-		entry_geo_out = Entry(entryframe, bd =5, textvariable=self.outfilename)
-		entry_geo_out.pack(side = LEFT)
+		label_geo_out = Tkinter.Label(entryframe, text="Output geometry file")
+		label_geo_out.pack( side = Tkinter.LEFT)
+		entry_geo_out = Tkinter.Entry(entryframe, bd =5, textvariable=self.outfilename)
+		entry_geo_out.pack(side = Tkinter.LEFT)
 
 		# Checkboxes
-		checkframe_orig = Frame(self.root)
-		checkframe_orig.pack(anchor=W)
+		checkframe_orig = Tkinter.Frame(self.root)
+		checkframe_orig.pack(anchor=Tkinter.W)
 		
-		check_lattice_orig = Checkbutton(checkframe_orig, text = "Dump Original FFD lattice", variable = self.check_var_1, \
+		check_lattice_orig = Tkinter.Checkbutton(checkframe_orig, text = "Dump Original FFD lattice", variable = self.check_var_1, \
 				         onvalue = 1, offvalue = 0, height=3, \
 				         width = 20)
 				         
-		check_lattice_orig.pack(side=LEFT)
+		check_lattice_orig.pack(side=Tkinter.LEFT)
 		
-		entry_lattice_orig = Entry(checkframe_orig, bd =5, textvariable=self.outfilename_lattice_orig)
-		entry_lattice_orig.pack(side = LEFT)
+		entry_lattice_orig = Tkinter.Entry(checkframe_orig, bd =5, textvariable=self.outfilename_lattice_orig)
+		entry_lattice_orig.pack(side = Tkinter.LEFT)
 		
-		checkframe_mod = Frame(self.root)
-		checkframe_mod.pack(anchor=W)         
+		checkframe_mod = Tkinter.Frame(self.root)
+		checkframe_mod.pack(anchor=Tkinter.W)         
 				         
-		check_lattice_mod = Checkbutton(checkframe_mod, text = "Dump Morphed FFD lattice", variable = self.check_var_2, \
+		check_lattice_mod = Tkinter.Checkbutton(checkframe_mod, text = "Dump Morphed FFD lattice", variable = self.check_var_2, \
 				         onvalue = 1, offvalue = 0, height=3, \
 				         width = 20)
 		
-		check_lattice_mod.pack(side=LEFT)
+		check_lattice_mod.pack(side=Tkinter.LEFT)
 		
-		entry_lattice_mod = Entry(checkframe_mod, bd =5, textvariable=self.outfilename_lattice_mod)
-		entry_lattice_mod.pack(side = LEFT)
+		entry_lattice_mod = Tkinter.Entry(checkframe_mod, bd =5, textvariable=self.outfilename_lattice_mod)
+		entry_lattice_mod.pack(side = Tkinter.LEFT)
 		
 		# Run button
 		button_run = Tkinter.Button(self.root, text ="Run PyGeM", command = self._run_simulation, bg='#065893', fg='#f19625', font='bold')
 		button_run.pack()
 
 		# Menu
-		menubar = Menu(self.root)
+		menubar = Tkinter.Menu(self.root)
 		
-		helpmenu = Menu(menubar, tearoff=0)
+		helpmenu = Tkinter.Menu(menubar, tearoff=0)
 		helpmenu.add_command(label="About...", command=self._goto_website)
 		menubar.add_cascade(label="Help", menu=helpmenu)
 
