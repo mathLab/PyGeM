@@ -2,9 +2,6 @@
 from unittest import TestCase
 import unittest
 import pygem.gui as gui
-import Tkinter
-from tkFileDialog import askopenfilename
-from PIL import ImageTk, Image
 
 
 class TestGui(TestCase):
