@@ -17,7 +17,7 @@ radius: 0.5
 # This section describes the RBF control points.
 
 # original control points collects the coordinates of the interpolation control points before the deformation.
-original control points: 0.0   0.0   0.0
+original control points: -0.1   0.0   0.0
                          0.0   0.0   1.0
                          0.0   1.0   0.0
                          1.0   0.0   0.0
@@ -27,11 +27,11 @@ original control points: 0.0   0.0   0.0
                          1.0   1.0   1.0
 
 # deformed control points collects the coordinates of the interpolation control points after the deformation.
-deformed control points: 0.0   0.0   0.0
+deformed control points: 0.1   0.2   0.3
                          0.0   0.0   1.0
                          0.0   1.0   0.0
                          1.0   0.0   0.0
-                         0.0   1.0   1.0
+                         0.0   0.8   1.0
                          1.0   0.0   1.0
                          1.0   1.0   0.0
-                         1.0   1.0   1.0
+                         1.2   1.2   1.2

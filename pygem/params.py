@@ -324,11 +324,11 @@ class RBFParameters(object):
 		self.deformed_control_points = None
 
 
-	def read_parameters(self, filename='parameters.prm'):
+	def read_parameters(self, filename='parameters_rbf.prm'):
 		"""
 		Reads in the parameters file and fill the self structure.
 
-		:param string filename: parameters file to be read in.
+		:param string filename: parameters file to be read in. Default value is parameters_rbf.prm.
 		"""
 		if not isinstance(filename, basestring):
 			raise TypeError('filename must be a string')
@@ -344,7 +344,7 @@ class RBFParameters(object):
 				0., 1., 1., 1., 0., 1., 1., 1., 0., 1., 1., 1.]).reshape((8, 3))
 			self.deformed_control_points = np.array([0., 0., 0., 0., 0., 1., 0., 1., 0., 1., 0., 0., \
 				0., 1., 1., 1., 0., 1., 1., 1., 0., 1., 1., 1.]).reshape((8, 3))
-			#self.write_parameters(filename)
+			self.write_parameters(filename)
 			return
 		
 		config = ConfigParser.RawConfigParser()
@@ -372,6 +372,56 @@ class RBFParameters(object):
 		for line, i in zip(lines, range(0, self.n_control_points)):
 			values = line.split()
 			self.deformed_control_points[i] = np.array([float(values[0]), float(values[1]), float(values[2])])
+
+
+	def write_parameters(self, filename='parameters_rbf.prm'):
+		"""
+		This method writes a parameters file (.prm) called `filename` and fills it with all
+		the parameters class members. Default value is parameters_rbf.prm.
+		
+		:param string filename: parameters file to be written out.
+		"""
+		if not isinstance(filename, basestring):
+			raise TypeError("filename must be a string")
+
+		with open(filename, 'w') as output_file:
+			output_file.write('\n[Radial Basis Functions]\n')
+			output_file.write('# This section describes the radial basis functions shape.\n')
+
+			output_file.write('\n# basis funtion is the name of the basis functions to use in the transformation. ' + \
+				'The functions\n')
+			output_file.write('# implemented so far are: gaussian_spline, multi_quadratic_biharmonic_spline,\n')
+			output_file.write('# inv_multi_quadratic_biharmonic_spline, thin_plate_spline, beckert_wendland_c2_basis.\n')
+			output_file.write('# For a comprehensive list with details see the class RBF.\n')
+			output_file.write('basis function: ' + str(self.basis) + '\n')
+
+			output_file.write('\n# radius is the scaling parameter r that affects the shape of the basis functions. ' + \
+				'See the documentation\n')
+			output_file.write('# of the class RBF for details.\n')
+			output_file.write('radius: ' + str(self.radius) + '\n')
+
+			output_file.write('\n\n[Control points]\n')
+			output_file.write('# This section describes the RBF control points.\n')
+			
+			output_file.write('\n# original control points collects the coordinates of the interpolation ' + \
+				'control points before the deformation.\n')
+			output_file.write('original control points:')
+			offset = 1
+			for i in range(0, self.n_control_points):
+					output_file.write(offset * ' ' + str(self.original_control_points[i][0]) + '   ' + \
+						str(self.original_control_points[i][1]) + '   ' + \
+						str(self.original_control_points[i][2]) + '\n')
+					offset = 25
+
+			output_file.write('\n# deformed control points collects the coordinates of the interpolation ' + \
+				'control points after the deformation.\n')
+			output_file.write('deformed control points:')
+			offset = 1
+			for i in range(0, self.n_control_points):
+					output_file.write(offset * ' ' + str(self.deformed_control_points[i][0]) + '   ' + \
+						str(self.deformed_control_points[i][1]) + '   ' + \
+						str(self.deformed_control_points[i][2]) + '\n')
+					offset = 25
 
 
 	def print_info(self):
