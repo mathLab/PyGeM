@@ -3,8 +3,9 @@ Python Geometrical Morphing.
 
 ![Python Geometrical Morphing](readme/logo_PyGeM_small.png)
 
+
 ## Description
-**PyGeM** is a python library using **Free Form Deformation** to parametrize and morph complex geometries.  It is ideally suited for actual industrial problems, since it allows to handle:
+**PyGeM** is a python library using **Free Form Deformation** and **Radial Basis Functions** to parametrize and morph complex geometries.  It is ideally suited for actual industrial problems, since it allows to handle:
 
 - Computer Aided Design files (in .iges and .stl formats)
 - Mesh files (in .unv and OpenFOAM formats)
@@ -12,6 +13,14 @@ Python Geometrical Morphing.
 
 By now, it has been used with meshes with up to 14 milions of cells. Try with more and more complicated input files! 
 See the **Examples** section below to have an idea of the potential of this package.
+
+
+## Graphic Unit Interface
+**PyGeM** is now provided with a very basic Graphic Unit Interface (GUI) that, in Ubuntu environment, looks like the one depicted below. This feature can be easily used even by the pythonists beginners with not much effort.
+
+![PyGeM gui](readme/gui_PyGeM.png)
+
+Up to now, PyGeM GUI works on linux and Mac OS X computers.
 
 
 ## Dependencies and installation
