@@ -50,7 +50,9 @@ install:
     - pip install numpy-stl
     - pip install coveralls
     - pip install coverage
-    - pip install Pillow
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        pip install Pillow;
+      fi
     - python setup.py install
 
 script: coverage run test.py
