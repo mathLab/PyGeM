@@ -7,7 +7,6 @@ Utilities for handling the Graphic Unit Interface.
 
 import Tkinter
 from tkFileDialog import askopenfilename
-from PIL import ImageTk, Image
 import pygem as pg
 import sys
 import os
@@ -54,7 +53,7 @@ class Gui(object):
 		self.label_params = None
 		self.url = 'https://github.com/mathLab/PyGeM'
 		
-		self.logo_label = None
+		self.canvas = None
 		self.img = None
 		
 		
@@ -129,70 +128,43 @@ class Gui(object):
 		The method inizializes and visualizes the window.
 		"""
 		
-		self.logo_panel = Tkinter.Label()
+		self.logo_panel = Tkinter.Canvas(self.root, height=60 , width=60)
 		self.logo_panel.pack(side = "bottom", padx = 5, pady = 5,anchor=Tkinter.SE)
-		image = Image.open('readme/logo_PyGeM_small.png')
-		image = image.resize((50, 50), Image.ANTIALIAS)
-		self.img = ImageTk.PhotoImage(image)
-		self.logo_panel.configure(image = self.img)
-
-		geo_frame = Tkinter.Frame(self.root)
-		geo_frame.pack(anchor=Tkinter.W)
+		self.img = Tkinter.PhotoImage(master=self.logo_panel, file='readme/logo_PyGeM_gui.gif')
+		self.logo_panel.create_image(35,35, image=self.img)
+		
+		code_frame = Tkinter.Frame(self.root)
+		code_frame.pack()
 
 		# Buttons 1
-		button_1 = Tkinter.Button(geo_frame, text ="Pick the geometry", command = self._chose_geometry)
-		button_1.pack(side=Tkinter.LEFT, padx = 5, pady = 5)
-		self.label_geo=Tkinter.Label(geo_frame, textvariable=self.print_geometry_path, fg='red')
+		Tkinter.Button(code_frame, text ="Pick the geometry", command = self._chose_geometry).grid(row=0, column=0, padx=3, pady=3)
+		self.label_geo=Tkinter.Label(code_frame, textvariable=self.print_geometry_path, fg='red')
 		self.print_geometry_path.set("No geometry chosen!")
-		self.label_geo.pack(side=Tkinter.LEFT, padx = 5, pady = 5)
+		self.label_geo.grid(row=0, column=1, padx=3, pady=3)
 
-		# Button 2
-		params_frame = Tkinter.Frame(self.root)
-		params_frame.pack(anchor=Tkinter.W)
-		
-		button_2 = Tkinter.Button(params_frame, text ="Pick the parameters", command = self._chose_parameters)
-		button_2.pack(side=Tkinter.LEFT, padx = 5, pady = 5)
-		self.label_params = Tkinter.Label( params_frame, textvariable=self.print_parameter_path, fg='red')
+		# Button 2		
+		Tkinter.Button(code_frame, text ="Pick the parameters", command = self._chose_parameters).grid(row=1, column=0, padx=3, pady=3)
+		self.label_params = Tkinter.Label(code_frame, textvariable=self.print_parameter_path, fg='red')
 		self.print_parameter_path.set("No parameters file chosen!")
-		self.label_params.pack(side=Tkinter.LEFT, padx = 5, pady = 5)
+		self.label_params.grid(row=1, column=1, padx=3, pady=3)
 
 		# Entry
-		entryframe = Tkinter.Frame(self.root)
-		entryframe.pack(padx = 5, pady = 5, anchor=Tkinter.W)
-
-		label_geo_out = Tkinter.Label(entryframe, text="Output geometry file")
-		label_geo_out.pack( side = Tkinter.LEFT)
-		entry_geo_out = Tkinter.Entry(entryframe, bd =5, textvariable=self.outfilename)
-		entry_geo_out.pack(side = Tkinter.LEFT)
+		Tkinter.Label(code_frame, text="Output geometry file").grid(row=2, column=0, padx=3, pady=3)
+		Tkinter.Entry(code_frame, bd =5, textvariable=self.outfilename).grid(row=2, column=1, padx=3, pady=3)
 
 		# Checkboxes
-		checkframe_orig = Tkinter.Frame(self.root)
-		checkframe_orig.pack(anchor=Tkinter.W)
-		
-		check_lattice_orig = Tkinter.Checkbutton(checkframe_orig, text = "Dump Original FFD lattice", variable = self.check_var_1, \
+		Tkinter.Checkbutton(code_frame, text = "Dump Original FFD lattice", variable = self.check_var_1, \
 				         onvalue = 1, offvalue = 0, height=3, \
-				         width = 20)
+				         width = 20).grid(row=3, column=0)
+		Tkinter.Entry(code_frame, bd =5, textvariable=self.outfilename_lattice_orig).grid(row=3, column=1)
 				         
-		check_lattice_orig.pack(side=Tkinter.LEFT)
-		
-		entry_lattice_orig = Tkinter.Entry(checkframe_orig, bd =5, textvariable=self.outfilename_lattice_orig)
-		entry_lattice_orig.pack(side = Tkinter.LEFT)
-		
-		checkframe_mod = Tkinter.Frame(self.root)
-		checkframe_mod.pack(anchor=Tkinter.W)         
-				         
-		check_lattice_mod = Tkinter.Checkbutton(checkframe_mod, text = "Dump Morphed FFD lattice", variable = self.check_var_2, \
+		Tkinter.Checkbutton(code_frame, text = "Dump Morphed FFD lattice", variable = self.check_var_2, \
 				         onvalue = 1, offvalue = 0, height=3, \
-				         width = 20)
-		
-		check_lattice_mod.pack(side=Tkinter.LEFT)
-		
-		entry_lattice_mod = Tkinter.Entry(checkframe_mod, bd =5, textvariable=self.outfilename_lattice_mod)
-		entry_lattice_mod.pack(side = Tkinter.LEFT)
+				         width = 20).grid(row=4, column=0)
+		Tkinter.Entry(code_frame, bd =5, textvariable=self.outfilename_lattice_mod).grid(row=4, column=1)
 		
 		# Run button
-		button_run = Tkinter.Button(self.root, text ="Run PyGeM", command = self._run_simulation, bg='#065893', fg='#f19625', font='bold')
-		button_run.pack()
+		Tkinter.Button(code_frame, text ="Run PyGeM", command = self._run_simulation, bg='#065893', fg='#f19625', font='bold').grid(row=5, column=0, padx=3, pady=3)
 
 		# Menu
 		menubar = Tkinter.Menu(self.root)
