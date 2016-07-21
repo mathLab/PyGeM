@@ -65,6 +65,19 @@ To uninstall the package you have to rerun the installation and record the insta
 The generated html can be found in `docs/build/html`. Open up the `index.html` you find there to browse.
 
 
+## Gui
+**PyGeM** comes with a very basic Graphic Unit Interface. 
+
+Pick the geometry, the parameters file, set the name of the output and decide whether dump the FFD lattice or not.
+Now just click on the `Run PyGeM` button and that is it.
+
+<p align="center">
+<img src="readme/gui_PyGeM.png" alt>
+</p>
+<p align="center">
+<em>PyGeM GUI: how it appears when it pops up.</em>
+</p>
+
 ## Testing
 We are using Travis CI for continuous intergration testing. You can check out the current status [here](https://travis-ci.org/mathLab/PyGeM).
 

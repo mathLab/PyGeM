@@ -50,7 +50,6 @@ install:
     - pip install numpy-stl
     - pip install coveralls
     - pip install coverage
-    - pip install Pillow
     - python setup.py install
 
 script: coverage run test.py

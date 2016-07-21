@@ -9,7 +9,7 @@ import os
 import vtk
 
 
-class TestVtkHandler(TestCase):
+class TestUtils(TestCase):
 
 	
 	def test_utils_write_original_box(self):
