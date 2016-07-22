@@ -70,6 +70,16 @@ class TestGui(TestCase):
 		gui_handler = gui.Gui()
 		assert gui_handler.label_params == None
 		
+	
+	def test_gui_init_none_3(self):
+		gui_handler = gui.Gui()
+		assert gui_handler.logo_panel == None
+		
+		
+	def test_gui_init_none_4(self):
+		gui_handler = gui.Gui()
+		assert gui_handler.img == None
+		
 
 	def test_gui_init_all(self):
 		gui.Gui()

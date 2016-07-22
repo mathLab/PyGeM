@@ -12,6 +12,10 @@ import sys
 import os
 import webbrowser
 
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+
+
 class Gui(object):
 	"""
 	The class for the Graphic Unit Interface.
@@ -32,12 +36,17 @@ class Gui(object):
 	:cvar Tkinter.Label label_geo: label related to 'print_geometry_path'.
 	:cvar Tkinter.Label label_params: label related to 'print_parameters_path'.
 	:cvar string url: url of the github page of PyGeM.
+	:cvar Tkinter.Canvas logo_panel: canvas for PyGeM logo.
+	:cvar Tkinter.PhotoImage img: PyGeM logo.
 	
 	"""
 	
 	def __init__(self):
 	
 		self.root = Tkinter.Tk()
+		self.root.resizable(width=False, height=False)
+		self.root.minsize(width=1400, height=400)
+		self.root.maxsize(width=1400, height=400)
 		self.root.title('PyGeM')
 		
 		self.filename_geometry = Tkinter.StringVar()
@@ -52,10 +61,12 @@ class Gui(object):
 		self.label_geo = None
 		self.label_params = None
 		self.url = 'https://github.com/mathLab/PyGeM'
-		
-		self.canvas = None
+		self.logo_panel = None
 		self.img = None
 		
+		
+		self.orig_geo_frame = None
+		self.mod_geo_frame = None
 		
 		
 	def _chose_geometry(self):
@@ -107,7 +118,16 @@ class Gui(object):
 		free_form.perform()
 		new_mesh_points = free_form.modified_mesh_points
 
-		geo_handler.write(new_mesh_points, self.outfilename.get() + file_extension_in)
+		geo_handler.write(new_mesh_points, self.outfilename.get() + file_extension_in)			
+		
+		if file_extension_in in ['.vtk', '.stl', '.iges', '.igs']:
+			figure_in = geo_handler.plot()
+			figure_in.set_size_inches(4, 3)
+			FigureCanvasTkAgg(figure_in, master=self.orig_geo_frame).get_tk_widget().grid(row=1, column=0, padx=5, pady=5)
+		
+			figure_out = geo_handler.plot(self.outfilename.get() + file_extension_in)
+			figure_out.set_size_inches(4, 3)
+			FigureCanvasTkAgg(figure_out, master=self.mod_geo_frame).get_tk_widget().grid(row=1, column=0, padx=5, pady=5)
 
 		if self.check_var_1.get() == 1:
 			pg.utils.write_bounding_box(params, self.outfilename_lattice_orig.get() + '.vtk', False)
@@ -129,12 +149,23 @@ class Gui(object):
 		"""
 		
 		self.logo_panel = Tkinter.Canvas(self.root, height=60 , width=60)
-		self.logo_panel.pack(side = "bottom", padx = 5, pady = 5,anchor=Tkinter.SE)
+		self.logo_panel.pack(side="bottom", padx=5, pady=5,anchor=Tkinter.SE)
 		self.img = Tkinter.PhotoImage(master=self.logo_panel, file='readme/logo_PyGeM_gui.gif')
 		self.logo_panel.create_image(35,35, image=self.img)
 		
-		code_frame = Tkinter.Frame(self.root)
-		code_frame.pack()
+		self.orig_geo_frame = Tkinter.Frame(self.root, height=450, width=360, bg='#c1d0f0')
+		self.orig_geo_frame.pack(side="left", padx=5, pady=5)
+		self.orig_geo_frame.pack_propagate(0)
+		Tkinter.Label(self.orig_geo_frame, text="INPUT GEOMETRY", bg='#c1d0f0', font=("Arial", 20)).grid(row=0, column=0, padx=3, pady=3)
+		
+		self.mod_geo_frame = Tkinter.Frame(self.root, height=450, width=360, bg='#80ff80', padx=5, pady=5)
+		self.mod_geo_frame.pack(side="right", padx=5, pady=5)
+		self.mod_geo_frame.pack_propagate(0)
+		Tkinter.Label(self.mod_geo_frame, text="OUTPUT GEOMETRY", bg='#80ff80', font=("Arial", 20)).grid(row=0, column=0, padx=3, pady=3)
+		
+		code_frame = Tkinter.Frame(self.root, height=490, width=360, relief=Tkinter.GROOVE, borderwidth=1)
+		code_frame.pack(padx=5, pady=5)
+		code_frame.pack_propagate(0)
 
 		# Buttons 1
 		Tkinter.Button(code_frame, text ="Pick the geometry", command = self._chose_geometry).grid(row=0, column=0, padx=3, pady=3)
@@ -164,7 +195,8 @@ class Gui(object):
 		Tkinter.Entry(code_frame, bd =5, textvariable=self.outfilename_lattice_mod).grid(row=4, column=1)
 		
 		# Run button
-		Tkinter.Button(code_frame, text ="Run PyGeM", command = self._run_simulation, bg='#065893', fg='#f19625', font='bold').grid(row=5, column=0, padx=3, pady=3)
+		Tkinter.Button(code_frame, text ="Run PyGeM", command = self._run_simulation, bg='#065893', fg='#f19625', \
+						 font='bold').grid(row=5, column=0, columnspan=2, padx=3, pady=3)
 
 		# Menu
 		menubar = Tkinter.Menu(self.root)

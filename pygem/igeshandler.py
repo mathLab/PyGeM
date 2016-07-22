@@ -254,6 +254,8 @@ class IgesHandler(fh.FileHandler):
 			pyplot.show()
 		else:
 			figure.savefig(plot_file.split('.')[0] + '.png')
+			
+		return figure
 
 
 	def show(self, show_file=None):

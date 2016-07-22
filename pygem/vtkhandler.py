@@ -147,6 +147,8 @@ class VtkHandler(fh.FileHandler):
 			plt.show()
 		else:
 			figure.savefig(plot_file.split('.')[0] + '.png')
+			
+		return figure
 
 
 	def show(self, show_file=None):
