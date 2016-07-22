@@ -80,6 +80,16 @@ class TestGui(TestCase):
 		gui_handler = gui.Gui()
 		assert gui_handler.img == None
 		
+		
+	def test_gui_init_none_5(self):
+		gui_handler = gui.Gui()
+		assert gui_handler.orig_geo_frame == None
+		
+		
+	def test_gui_init_none_6(self):
+		gui_handler = gui.Gui()
+		assert gui_handler.mod_geo_frame == None
+		
 
 	def test_gui_init_all(self):
 		gui.Gui()

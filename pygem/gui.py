@@ -38,6 +38,8 @@ class Gui(object):
 	:cvar string url: url of the github page of PyGeM.
 	:cvar Tkinter.Canvas logo_panel: canvas for PyGeM logo.
 	:cvar Tkinter.PhotoImage img: PyGeM logo.
+	:cvar Tkinter.Frame orig_geo_frame: frame for plotting of the original geometry.
+	:cvar Tkinter.Frame mod_geo_frame: frame for plotting of the final geometry.
 	
 	"""
 	
@@ -63,8 +65,6 @@ class Gui(object):
 		self.url = 'https://github.com/mathLab/PyGeM'
 		self.logo_panel = None
 		self.img = None
-		
-		
 		self.orig_geo_frame = None
 		self.mod_geo_frame = None
 		

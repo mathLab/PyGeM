@@ -106,6 +106,9 @@ class VtkHandler(fh.FileHandler):
 		:param string plot_file: the vtk filename you want to plot.
 		:param bool save_fig: a flag to save the figure in png or not. If True the
 			plot is not shown.
+			
+		:return: figure: matlplotlib structure for the figure of the chosen geometry
+		:rtype: matplotlib.pyplot.figure
 		"""
 		if plot_file is None:
 			plot_file = self.infile
