@@ -22,6 +22,8 @@ Pick the geometry, the parameters file, set the name of the output and decide wh
 
 <p align="center">
 <img src="readme/gui_PyGeM.png" alt>
+</p>
+<p align="center">
 <em>PyGeM GUI: how it appears when it pops up.</em>
 </p>
 
