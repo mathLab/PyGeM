@@ -18,7 +18,7 @@ See the **Examples** section below to have an idea of the potential of this pack
 ## Graphic Unit Interface
 **PyGeM** is now provided with a very basic Graphic Unit Interface (GUI) that, in Ubuntu environment, looks like the one depicted below. This feature can be easily used even by the pythonists beginners with not much effort. Up to now, PyGeM GUI works on linux and Mac OS X computers.
 
-Pick the geometry, the parameters file, set the name of the output and decide whether dump the FFD lattice or not. Now just click on the `Run PyGeM` button and that is it.
+Pick the geometry, the parameters file, set the name of the output and decide whether dump the FFD lattices or not. Now just click on the `Run PyGeM` button and that is it.
 
 <p align="center">
 <img src="readme/gui_PyGeM.png" alt>

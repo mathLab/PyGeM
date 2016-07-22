@@ -141,9 +141,19 @@ class VtkHandler(fh.FileHandler):
 			tri.set_color('b')
 			tri.set_edgecolor('k')
 			axes.add_collection3d(tri)
-
-		scale = vtx.flatten(-1)
-		axes.auto_scale_xyz(scale, scale, scale)
+		
+		## Get the limits of the axis and center the geometry
+		max_dim = np.array([np.max(vtx[:,:,0]), \
+						np.max(vtx[:,:,1]), \
+						np.max(vtx[:,:,2])])
+		min_dim = np.array([np.min(vtx[:,:,0]), \
+						np.min(vtx[:,:,1]), \
+						np.min(vtx[:,:,2])])
+		
+		max_lenght = np.max(max_dim - min_dim)
+		axes.set_xlim(-.6*max_lenght + (max_dim[0]+min_dim[0])/2, .6*max_lenght + (max_dim[0]+min_dim[0])/2)
+		axes.set_ylim(-.6*max_lenght + (max_dim[1]+min_dim[1])/2, .6*max_lenght + (max_dim[1]+min_dim[1])/2)
+		axes.set_zlim(-.6*max_lenght + (max_dim[2]+min_dim[2])/2, .6*max_lenght + (max_dim[2]+min_dim[2])/2)
 
 		# Show the plot to the screen
 		if not save_fig:
