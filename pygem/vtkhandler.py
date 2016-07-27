@@ -115,28 +115,23 @@ class VtkHandler(fh.FileHandler):
 		else:
 			self._check_filename_type(plot_file)
 
-		# Read the source file.
-		reader = vtk.vtkUnstructuredGridReader()
+		# Read the source file.		
+		reader = vtk.vtkDataSetReader()
 		reader.SetFileName(plot_file)
 		reader.Update()
 
 		data = reader.GetOutput()
 		points = data.GetPoints()
-		ncells = data.GetCells().GetNumberOfCells()
+		ncells = data.GetNumberOfCells()
 
 		# for each cell it contains the indeces of the points that define the cell
-		cells = np.zeros((ncells, 3))
-
-		for i in range(0, ncells):
-			for j in range(0, 3):
-				cells[i][j] = data.GetCell(i).GetPointId(j)
-
 		figure = plt.figure()
 		axes = a3.Axes3D(figure)
 		vtx = np.zeros((ncells, 3, 3))
 		for i in range(0, ncells):
 			for j in range(0, 3):
-				vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(int(cells[i][j]))
+				cell = data.GetCell(i).GetPointId(j)
+				vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(int(cell))
 			tri = a3.art3d.Poly3DCollection([vtx[i]])
 			tri.set_color('b')
 			tri.set_edgecolor('k')

@@ -119,7 +119,12 @@ class Gui(object):
 		new_mesh_points = free_form.modified_mesh_points
 
 		geo_handler.write(new_mesh_points, self.outfilename.get() + file_extension_in)			
-		
+
+		if self.check_var_1.get() == 1:
+			pg.utils.write_bounding_box(params, self.outfilename_lattice_orig.get() + '.vtk', False)
+		if self.check_var_2.get() == 1:
+			pg.utils.write_bounding_box(params, self.outfilename_lattice_mod.get() + '.vtk', True)
+			
 		if file_extension_in in ['.vtk', '.stl', '.iges', '.igs']:
 			figure_in = geo_handler.plot()
 			figure_in.set_size_inches(4, 3)
@@ -128,11 +133,6 @@ class Gui(object):
 			figure_out = geo_handler.plot(self.outfilename.get() + file_extension_in)
 			figure_out.set_size_inches(4, 3)
 			FigureCanvasTkAgg(figure_out, master=self.mod_geo_frame).get_tk_widget().grid(row=1, column=0, padx=5, pady=5)
-
-		if self.check_var_1.get() == 1:
-			pg.utils.write_bounding_box(params, self.outfilename_lattice_orig.get() + '.vtk', False)
-		if self.check_var_2.get() == 1:
-			pg.utils.write_bounding_box(params, self.outfilename_lattice_mod.get() + '.vtk', True)
 				
 		
 	def _goto_website(self):
