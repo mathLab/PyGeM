@@ -11,9 +11,9 @@ The module is analogous to the freeform one.
 
 	As reference please consult M. D. Buhmann. Radial Basis Functions, volume 12 of Cambridge
 	monographs on applied and computational mathematics. Cambridge University Press, UK, 2003.
-	RBF shape parametrization technique is based on the definition of a map, 
+	RBF shape parametrization technique is based on the definition of a map,
 	:math:`\\mathcal{M}(\\boldsymbol{x}) : \\mathbb{R}^n \\rightarrow \\mathbb{R}^n`, that allows the
-	possibility of transferring data across non-matching grids and facing the dynamic mesh handling. 
+	possibility of transferring data across non-matching grids and facing the dynamic mesh handling.
 	The map	introduced is defines as follows
 
 	.. math::
@@ -23,10 +23,10 @@ The module is analogous to the freeform one.
 	where :math:`p(\\boldsymbol{x})` is a low_degree polynomial term, :math:`\\gamma_i` is the weight,
 	corresponding to the a-priori selected :math:`\\mathcal{N}_C` control points, associated to the
 	:math:`i`-th basis function, and :math:`\\varphi(\\| \\boldsymbol{x} - \\boldsymbol{x_{C_i}} \\|)`
-	a radial function based on the Euclidean distance between the control points position 
+	a radial function based on the Euclidean distance between the control points position
 	:math:`\\boldsymbol{x_{C_i}}` and :math:`\\boldsymbol{x}`. A radial basis function, generally, is
-	a real-valued function whose value depends only on the distance from the origin, so that 
-	:math:`\\varphi(\\boldsymbol{x}) = \\tilde{\\varphi}(\\| \\boldsymbol{x} \\|)`. 
+	a real-valued function whose value depends only on the distance from the origin, so that
+	:math:`\\varphi(\\boldsymbol{x}) = \\tilde{\\varphi}(\\| \\boldsymbol{x} \\|)`.
 
 	The matrix version of the formula above is:
 
@@ -41,11 +41,7 @@ The module is analogous to the freeform one.
 	Gaussian splines, Multi-quadratic biharmonic splines, Inverted multi-quadratic biharmonic splines,
 	Thin-plate splines and Beckert and Wendland :math:`C^2` basis all defined and implemented below.
 """
-import os
-import params as rbfp
 import numpy as np
-from mpl_toolkits.mplot3d import axes3d
-import matplotlib.pyplot as plt
 
 
 class RBF(object):
@@ -64,7 +60,7 @@ class RBF(object):
 		implemented to the actual implementation.
 	:cvar numpy.matrix weights: the matrix formed by the weights corresponding to the a-priori
 		selected N control points, associated to the basis functions and c and Q terms that
-		describe the polynomial of order one p(x) = c + Qx. The shape is 
+		describe the polynomial of order one p(x) = c + Qx. The shape is
 		(n_control_points+1+3)-by-3. It is computed internally.
 
 	:Example:
@@ -73,7 +69,7 @@ class RBF(object):
 	>>> import pygem.params as rbfp
 	>>> import numpy as np
 
-	>>> rbf_parameters = rbfp.FFDParameters()
+	>>> rbf_parameters = rbfp.RBFParameters()
 	>>> rbf_parameters.read_parameters('tests/test_datasets/parameters_rbf_cube.prm')
 
 	>>> nx, ny, nz = (20, 20, 20)
@@ -84,7 +80,7 @@ class RBF(object):
 	>>> z, y, x = np.meshgrid(zv, yv, xv)
 	>>> mesh = np.array([x.ravel(), y.ravel(), z.ravel()])
 	>>> original_mesh_points = mesh.T
-	
+
 	>>> radial_trans = rbf.RBF(rbf_parameters, original_mesh_points)
 	>>> radial_trans.perform()
 	>>> new_mesh_points = radial_trans.modified_mesh_points
@@ -93,18 +89,17 @@ class RBF(object):
 		self.parameters = rbf_parameters
 		self.original_mesh_points = original_mesh_points
 		self.modified_mesh_points = None
-		
-		self.bases = {
-			'gaussian_spline': self.gaussian_spline,
-			'multi_quadratic_biharmonic_spline': self.multi_quadratic_biharmonic_spline,
-			'inv_multi_quadratic_biharmonic_spline': self.inv_multi_quadratic_biharmonic_spline,
-			'thin_plate_spline': self.thin_plate_spline,
-			'beckert_wendland_c2_basis': self.beckert_wendland_c2_basis
-		}
 
-		# to make the str callable we have to use a dictionary with all the implemented radial basis functions
-		if params.basis in self.bases:
-			self.basis = self.bases[params.basis]
+		self.bases = {'gaussian_spline': self.gaussian_spline, \
+			'multi_quadratic_biharmonic_spline': self.multi_quadratic_biharmonic_spline, \
+			'inv_multi_quadratic_biharmonic_spline': self.inv_multi_quadratic_biharmonic_spline, \
+			'thin_plate_spline': self.thin_plate_spline, \
+			'beckert_wendland_c2_basis': self.beckert_wendland_c2_basis}
+
+		# to make the str callable we have to use a dictionary with all the implemented
+		# radial basis functions
+		if self.parameters.basis in self.bases:
+			self.basis = self.bases[self.parameters.basis]
 		else:
 			raise NameError('The name of the basis function in the parameters file is not correct ' + \
 					'or not implemented. Check the documentation for all the available functions.')
@@ -112,7 +107,7 @@ class RBF(object):
 		self.weights = self._get_weights(self.parameters.original_control_points, \
 			self.parameters.deformed_control_points)
 
-	
+
 	@staticmethod
 	def gaussian_spline(X, r):
 		"""
@@ -128,10 +123,10 @@ class RBF(object):
 		:rtype: float
 		"""
 		norm = np.linalg.norm(X)
-		result = np.exp( -(norm * norm) / (r * r) )
+		result = np.exp(-(norm * norm) / (r * r))
 		return result
-	
-	
+
+
 	@staticmethod
 	def multi_quadratic_biharmonic_spline(X, r):
 		"""
@@ -147,10 +142,10 @@ class RBF(object):
 		:rtype: float
 		"""
 		norm = np.linalg.norm(X)
-		result = np.sqrt( (norm * norm) + (r * r) )
+		result = np.sqrt((norm * norm) + (r * r))
 		return result
-	
-	
+
+
 	@staticmethod
 	def inv_multi_quadratic_biharmonic_spline(X, r):
 		"""
@@ -165,17 +160,18 @@ class RBF(object):
 		:return: result: the result of the formula above.
 		:rtype: float
 		"""
-		result = 1.0/multi_quadratic_biharmonic_spline(X, r)
+		norm = np.linalg.norm(X)
+		result = 1.0 / (np.sqrt((norm * norm) + (r * r)))
 		return result
-	
-	
+
+
 	@staticmethod
 	def thin_plate_spline(X, r):
 		"""
 		It implements the following formula:
 
 		.. math::
-			\\varphi(\\| \\boldsymbol{x} \\|) = \\left\\| \\frac{\\boldsymbol{x} }{r} \\right\\|^2 
+			\\varphi(\\| \\boldsymbol{x} \\|) = \\left\\| \\frac{\\boldsymbol{x} }{r} \\right\\|^2
 			\\ln \\left\\| \\frac{\\boldsymbol{x} }{r} \\right\\|
 
 		:param numpy.ndarray X: the vector x in the formula above.
@@ -190,8 +186,8 @@ class RBF(object):
 		if norm > 0:
 			result *= np.log(norm)
 		return result
-	
-	
+
+
 	@staticmethod
 	def beckert_wendland_c2_basis(X, r):
 		"""
@@ -215,11 +211,11 @@ class RBF(object):
 		second = (4 * arg) + 1
 		result = first * second
 		return result
-	
+
 
 	def _distance_matrix(self, X1, X2):
 		"""
-		This private method returns the following matrix: 
+		This private method returns the following matrix:
 		:math:`\\boldsymbol{D_{ij}} = \\varphi(\\| \\boldsymbol{x_i} - \\boldsymbol{y_j} \\|)`
 
 		:param numpy.ndarray X1: the vector x in the formula above.
@@ -234,8 +230,8 @@ class RBF(object):
 			for j in range(0, n):
 				matrix[i][j] = self.basis(X1[i] - X2[j], self.parameters.radius)
 		return matrix
-	
-	
+
+
 	def _get_weights(self, X, Y):
 		"""
 		This private method, given the original control points and the deformed ones, returns the matrix
@@ -260,15 +256,14 @@ class RBF(object):
 		inv_H = np.linalg.inv(H)
 		weights = np.dot(inv_H, rhs)
 		return weights
-	
-	
+
+
 	def perform(self):
 		"""
 		This method performs the deformation of the mesh points. After the execution
 		it sets `self.modified_mesh_points`.
 		"""
 		n_points = self.original_mesh_points.shape[0]
-		dim = self.original_mesh_points.shape[1]
 		dist = self._distance_matrix(self.original_mesh_points, self.parameters.original_control_points)
 		identity = np.ones(n_points).reshape(n_points, 1)
 		H = np.bmat([[dist, identity, self.original_mesh_points]])
