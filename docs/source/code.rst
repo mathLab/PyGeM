@@ -8,6 +8,7 @@ Code Documentation
 
    affine
    freeform
+   radial
    params
    filehandler
    openfhandler
