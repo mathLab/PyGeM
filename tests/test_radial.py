@@ -52,7 +52,7 @@ class TestRadial(TestCase):
 		np.testing.assert_array_almost_equal(rbf.modified_mesh_points, self.get_cube_mesh_points())
 
 
-	def test_rbf_original_mesh_points_member(self):
+	def test_rbf_weights_member(self):
 		params = rbfp.RBFParameters()
 		params.read_parameters(filename='tests/test_datasets/parameters_rbf_cube.prm')
 		rbf = rad.RBF(params, self.get_cube_mesh_points())
@@ -75,4 +75,52 @@ class TestRadial(TestCase):
 		params.read_parameters('tests/test_datasets/parameters_rbf_bugged_02.prm')
 		with self.assertRaises(NameError):
 			rbf = rad.RBF(params, self.get_cube_mesh_points())
+
+
+	def test_gaussian_spline(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(filename='tests/test_datasets/parameters_rbf_default.prm')
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.gaussian_spline(np.array([0.5, 1, 2, 0.2]).reshape(4, 1), 0.2)
+		np.testing.assert_almost_equal(value, 0.0)
+
+	
+	def test_multi_quadratic_biharmonic_spline(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(filename='tests/test_datasets/parameters_rbf_default.prm')
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.multi_quadratic_biharmonic_spline(np.array([0.5, 1, 2, 0.2]).reshape(4, 1), 0.2)
+		np.testing.assert_almost_equal(value, 2.30867927612)
+
+
+	def test_inv_multi_quadratic_biharmonic_spline(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(filename='tests/test_datasets/parameters_rbf_default.prm')
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.inv_multi_quadratic_biharmonic_spline(np.array([0.5, 1, 2, 0.2]).reshape(4, 1), 0.2)
+		np.testing.assert_almost_equal(value, 0.433148081824)
+
+	
+	def test_thin_plate_spline(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(filename='tests/test_datasets/parameters_rbf_default.prm')
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.thin_plate_spline(np.array([0.5, 1, 2, 0.2]).reshape(4, 1), 0.2)
+		np.testing.assert_almost_equal(value, 323.000395428)
+
+
+	def test_beckert_wendland_c2_basis_01(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(filename='tests/test_datasets/parameters_rbf_default.prm')
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.beckert_wendland_c2_basis(np.array([0.5, 1, 2, 0.2]).reshape(4, 1), 0.2)
+		np.testing.assert_almost_equal(value, 0.0)
+
+
+	def test_beckert_wendland_c2_basis_02(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(filename='tests/test_datasets/parameters_rbf_default.prm')
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.beckert_wendland_c2_basis(np.array([0.1, 0.15, -0.2]).reshape(3, 1), 0.9)
+		np.testing.assert_almost_equal(value, 0.529916819595)
 
