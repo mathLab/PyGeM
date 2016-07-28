@@ -29,7 +29,7 @@ def write_bounding_box(parameters, outfile, write_deformed=True):
 	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
 	aux_y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
 	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
-	lattice_z_coords, lattice_y_coords, lattice_x_coords = np.meshgrid(aux_z, aux_y, aux_x)
+	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(aux_y, aux_x, aux_z)
 
 	if write_deformed:
 		box_points = np.array([lattice_x_coords.ravel() + parameters.array_mu_x.ravel() * parameters.lenght_box_x,\
@@ -47,13 +47,10 @@ def write_bounding_box(parameters, outfile, write_deformed=True):
 	# step necessary to set the correct order to the box points for vtkStructuredGrid:
 	# Data in vtkStructuredGrid are ordered with x increasing fastest, then y, then z
 	dims = lattice_y_coords.shape
-	aux_xx = box_points[0,:].reshape(dims)
-	aux_xxx = aux_xx.ravel(order='f')
-	aux_yy = box_points[1,:].reshape(dims)
-	aux_yyy = aux_yy.ravel(order='f')
-	aux_zz = box_points[2,:].reshape(dims)
-	aux_zzz = aux_zz.ravel(order='f')
-	reordered_box_points = np.array((aux_xxx, aux_yyy, aux_zzz))
+	aux_xx = box_points[0,:].reshape(dims).ravel(order='f')
+	aux_yy = box_points[1,:].reshape(dims).ravel(order='f')
+	aux_zz = box_points[2,:].reshape(dims).ravel(order='f')
+	reordered_box_points = np.array((aux_xx, aux_yy, aux_zz))
 	
 	_write_vtk_box(reordered_box_points, outfile, parameters.n_control_points)
 	
