@@ -43,8 +43,19 @@ def write_bounding_box(parameters, outfile, write_deformed=True):
 
 	box_points = np.dot(parameters.rotation_matrix, box_points) + \
 		np.transpose(np.tile(parameters.origin_box, (n_rows, 1)))
+		
+	# step necessary to set the correct order to the box points for vtkStructuredGrid:
+	# Data in vtkStructuredGrid are ordered with x increasing fastest, then y, then z
+	dims = lattice_y_coords.shape
+	aux_xx = box_points[0,:].reshape(dims)
+	aux_xxx = aux_xx.ravel(order='f')
+	aux_yy = box_points[1,:].reshape(dims)
+	aux_yyy = aux_yy.ravel(order='f')
+	aux_zz = box_points[2,:].reshape(dims)
+	aux_zzz = aux_zz.ravel(order='f')
+	reordered_box_points = np.array((aux_xxx, aux_yyy, aux_zzz))
 	
-	_write_vtk_box(box_points, outfile, parameters.n_control_points)
+	_write_vtk_box(reordered_box_points, outfile, parameters.n_control_points)
 	
 	
 def _write_vtk_box(box_points, filename, dimensions):
@@ -54,6 +65,11 @@ def _write_vtk_box(box_points, filename, dimensions):
 	:param numpy.ndarray box_points: coordinates of the FFD control points.
 	:param string filename: name of the output file.
 	:param list dimensions: dimension of the lattice in (x, y, z) directions.
+	
+	.. warning::
+			If you want to visualize in paraview the inner points, 
+			you have to slice the lattice because paraview does not visualize them automatically
+			even in the wireframe visualization.
 	"""
 	# setup points and vertices
 	points = vtk.vtkPoints()
