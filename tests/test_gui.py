@@ -53,12 +53,12 @@ class TestGui(TestCase):
 		
 	def test_gui_init_int_1(self):
 		gui_handler = gui.Gui()
-		assert gui_handler.check_var_1.get() == 0
+		assert gui_handler.check_var_dump_orig.get() == 0
 		
 		
 	def test_gui_init_int_2(self):
 		gui_handler = gui.Gui()
-		assert gui_handler.check_var_2.get() == 0
+		assert gui_handler.check_var_dump_morphed.get() == 0
 		
 		
 	def test_gui_init_none_1(self):
@@ -90,13 +90,9 @@ class TestGui(TestCase):
 		gui_handler = gui.Gui()
 		assert gui_handler.mod_geo_frame == None
 		
-
-	def test_gui_init_all(self):
-		gui.Gui()
-		
 		
 	def test_gui_main(self):
 		interface = gui.Gui()
-		interface.main()
+		interface._main()
 		
 	
