@@ -18,7 +18,7 @@ class TestUtils(TestCase):
 		
 		outfilename = 'tests/test_datasets/box_test_sphere.vtk'
 		
-		ut.write_bounding_box(params, outfilename, False)
+		ut.write_bounding_box(params, outfilename, write_deformed=False)
 		os.remove(outfilename)
 		
 	
@@ -42,7 +42,7 @@ class TestUtils(TestCase):
 		else:
 			outfilename_expected = 'tests/test_datasets/box_test_sphere_true_version6.vtk'
 		
-		ut.write_bounding_box(params, outfilename, False)
+		ut.write_bounding_box(params, outfilename, write_deformed=False)
 		
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
 		os.remove(outfilename)
@@ -63,3 +63,18 @@ class TestUtils(TestCase):
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
 		os.remove(outfilename)
 		
+
+	def test_utils_plot_rbf_control_points(self):
+		params = pars.RBFParameters()
+		params.read_parameters(filename='tests/test_datasets/parameters_rbf_cube.prm')
+		ut.plot_rbf_control_points(params, save_fig=False)
+
+
+	def test_utils_plot_rbf_control_points_save_fig(self):
+		params = pars.RBFParameters()
+		params.read_parameters(filename='tests/test_datasets/parameters_rbf_cube.prm')
+		ut.plot_rbf_control_points(params, save_fig=True)
+		self.assertTrue(os.path.isfile('RBF_control_points.png'))
+		os.remove('RBF_control_points.png')
+
+

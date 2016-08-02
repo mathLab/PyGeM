@@ -86,7 +86,7 @@ class StlHandler(fh.FileHandler):
 
 		:param string plot_file: the stl filename you want to plot.
 		:param bool save_fig: a flag to save the figure in png or not. If True the
-			plot is not shown.
+			plot is not shown. The default value is False.
 			
 		:return: figure: matlplotlib structure for the figure of the chosen geometry
 		:rtype: matplotlib.pyplot.figure
@@ -104,7 +104,7 @@ class StlHandler(fh.FileHandler):
 		stl_mesh = mesh.Mesh.from_file(plot_file)
 		axes.add_collection3d(mplot3d.art3d.Poly3DCollection(stl_mesh.vectors))
 
-		## Get the limits of the axis and center the geometry
+		# Get the limits of the axis and center the geometry
 		max_dim = np.array([np.max(stl_mesh.vectors[:,:,0]), \
 						np.max(stl_mesh.vectors[:,:,1]), \
 						np.max(stl_mesh.vectors[:,:,2])])
@@ -123,5 +123,5 @@ class StlHandler(fh.FileHandler):
 		else:
 			figure.savefig(plot_file.split('.')[0] + '.png')
 			
-		return figure	
+		return figure
 		

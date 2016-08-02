@@ -3,6 +3,8 @@ Auxiliary utilities for PyGeM.
 """
 import vtk
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 def write_bounding_box(parameters, outfile, write_deformed=True):
 	"""
@@ -32,29 +34,30 @@ def write_bounding_box(parameters, outfile, write_deformed=True):
 	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(aux_y, aux_x, aux_z)
 
 	if write_deformed:
-		box_points = np.array([lattice_x_coords.ravel() + parameters.array_mu_x.ravel() * parameters.lenght_box_x,\
+		box_points = np.array([ \
+			lattice_x_coords.ravel() + parameters.array_mu_x.ravel() * parameters.lenght_box_x, \
 			lattice_y_coords.ravel() + parameters.array_mu_y.ravel() * parameters.lenght_box_y, \
 			lattice_z_coords.ravel() + parameters.array_mu_z.ravel() * parameters.lenght_box_z])
 	else:
 		box_points = np.array([lattice_x_coords.ravel(), lattice_y_coords.ravel(), \
 			lattice_z_coords.ravel()])
-		
+
 	n_rows = box_points.shape[1]
 
 	box_points = np.dot(parameters.rotation_matrix, box_points) + \
 		np.transpose(np.tile(parameters.origin_box, (n_rows, 1)))
-		
+
 	# step necessary to set the correct order to the box points for vtkStructuredGrid:
 	# Data in vtkStructuredGrid are ordered with x increasing fastest, then y, then z
 	dims = lattice_y_coords.shape
-	aux_xx = box_points[0,:].reshape(dims).ravel(order='f')
-	aux_yy = box_points[1,:].reshape(dims).ravel(order='f')
-	aux_zz = box_points[2,:].reshape(dims).ravel(order='f')
+	aux_xx = box_points[0, :].reshape(dims).ravel(order='f')
+	aux_yy = box_points[1, :].reshape(dims).ravel(order='f')
+	aux_zz = box_points[2, :].reshape(dims).ravel(order='f')
 	reordered_box_points = np.array((aux_xx, aux_yy, aux_zz))
 	
 	_write_vtk_box(reordered_box_points, outfile, parameters.n_control_points)
-	
-	
+
+
 def _write_vtk_box(box_points, filename, dimensions):
 	"""
 	Private method that writes a vtk file containing FFD control points.
@@ -91,3 +94,40 @@ def _write_vtk_box(box_points, filename, dimensions):
 		
 	writer.Write()
 
+
+def plot_rbf_control_points(parameters, save_fig=False):
+	"""
+	Method to plot the control points of a RBFParameters class. It is possible to save the
+	resulting figure.
+
+	:param bool save_fig: a flag to save the figure in png or not. If True the
+		plot is not shown and the figure is saved with the name 'RBF_control_points.png'.
+		The default value is False.
+	"""
+	fig = plt.figure(1)
+	axes = fig.add_subplot(111, projection='3d')
+	orig = axes.scatter(parameters.original_control_points[:, 0], \
+		parameters.original_control_points[:, 1], \
+		parameters.original_control_points[:, 2], c='blue', marker='o')
+	defor = axes.scatter(parameters.deformed_control_points[:, 0], \
+		parameters.deformed_control_points[:, 1], \
+		parameters.deformed_control_points[:, 2], c='red', marker='x')
+	
+	axes.set_xlabel('X axis')
+	axes.set_ylabel('Y axis')
+	axes.set_zlabel('Z axis')
+	
+	plt.legend((orig, defor), \
+		('Original', 'Deformed'), \
+		scatterpoints=1, \
+		loc='lower left', \
+		ncol=2, \
+		fontsize=10)
+
+	# Show the plot to the screen
+	if not save_fig:
+		plt.show()
+	else:
+		fig.savefig('RBF_control_points.png')
+
+		
