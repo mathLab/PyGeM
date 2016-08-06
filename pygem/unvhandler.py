@@ -34,28 +34,28 @@ class UnvHandler(fh.FileHandler):
 
 		self.infile = filename
 
-            index = -9
-            mesh_points = []
-            with open(self.infile, 'r') as input_file:
-                for num, line in enumerate(input_file):
-                    if line.startswith('  2411'):
-                        index = num
-                    if num == index + 2:
-                        if line.startswith('    -1'):
-                            break
-                        else:
-                            line = line.replace('D', 'E')
-                            l = []
-                            for t in line.split():
-                                try:
-                                    l.append(float(t))
-                                except ValueError:
-                                    pass
-                            mesh_points.append(l)
-                            index = num
-                mesh_points = np.array(mesh_points)
+		index = -9
+		mesh_points = []
+		with open(self.infile, 'r') as input_file:
+			for num, line in enumerate(input_file):
+				if line.startswith('  2411'):
+					index = num
+				if num == index + 2:
+					if line.startswith('	-1'):
+						break
+					else:
+						line = line.replace('D', 'E')
+						l = []
+						for t in line.split():
+							try:
+								l.append(float(t))
+							except ValueError:
+								pass
+						mesh_points.append(l)
+						index = num
+			mesh_points = np.array(mesh_points)
 
-            return mesh_points
+		return mesh_points
 
 
 	def write(self, mesh_points, filename):
@@ -74,22 +74,22 @@ class UnvHandler(fh.FileHandler):
 
 		self.outfile = filename
 
-            index = -9
-            i = 0                        
-            with open(self.outfile, 'w') as output_file:
-                with open(self.infile, 'r') as input_file:
-                    for num, line in enumerate(input_file):
-                        if line.startswith('  2411'):
-                            index = num
-                        if num == index + 2:
-                            if line.startswith('    -1'):
-                                index = -9
-                                output_file.write(line)
-                            else:
-                                for j in range(0, 3):
-                                    output_file.write(3*' ' + '{:.16E}'.format(mesh_points[i][j]))
-                                output_file.write('\n')
-                                i += 1
-                                index = num
-                        else:
-                            output_file.write(line)
+		index = -9
+		i = 0
+		with open(self.outfile, 'w') as output_file:
+			with open(self.infile, 'r') as input_file:
+				for num, line in enumerate(input_file):
+					if line.startswith('  2411'):
+						index = num
+					if num == index + 2:
+						if line.startswith('	-1'):
+							index = -9
+							output_file.write(line)
+						else:
+							for j in range(0, 3):
+								output_file.write(3*' ' + '{:.16E}'.format(mesh_points[i][j]))
+							output_file.write('\n')
+							i += 1
+							index = num
+					else:
+						output_file.write(line)
