@@ -180,3 +180,4 @@ class FFD(object):
 			modified_points[i, :] = transformation(original_points[i])
 
 		return modified_points
+		
