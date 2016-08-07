@@ -116,15 +116,9 @@ class TestUnvHandler(TestCase):
 	def test_unv_write_comparison(self):
 		unv_handler = uh.UnvHandler()
 		mesh_points = unv_handler.parse('tests/test_datasets/test_square.unv')
-		mesh_points[0][0] = 2.2
-		mesh_points[5][1] = 4.3
-		mesh_points[9][2] = 0.5
-		mesh_points[45][0] = 7.2
-		mesh_points[132][1] = -1.2
-		mesh_points[255][2] = -3.6
 
 		outfilename = 'tests/test_datasets/test_square_out.unv'
-		outfilename_expected = 'tests/test_datasets/test_square_out_true.unv'
+		outfilename_expected = 'tests/test_datasets/test_square.unv'
 
 		unv_handler.write(mesh_points, outfilename)
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
