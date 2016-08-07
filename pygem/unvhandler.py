@@ -41,7 +41,7 @@ class UnvHandler(fh.FileHandler):
 				if line.startswith('  2411'):
 					index = num
 				if num == index + 2:
-					if line.startswith('	-1'):
+					if line.startswith('    -1'):
 						break
 					else:
 						line = line.replace('D', 'E')
@@ -82,7 +82,7 @@ class UnvHandler(fh.FileHandler):
 					if line.startswith('  2411'):
 						index = num
 					if num == index + 2:
-						if line.startswith('	-1'):
+						if line.startswith('    -1'):
 							index = -9
 							output_file.write(line)
 						else:
