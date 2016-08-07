@@ -100,6 +100,7 @@ def plot_rbf_control_points(parameters, save_fig=False):
 	Method to plot the control points of a RBFParameters class. It is possible to save the
 	resulting figure.
 
+	:param RBFParameters parameters: parameters of the Radial Basis Functions interpolation.
 	:param bool save_fig: a flag to save the figure in png or not. If True the
 		plot is not shown and the figure is saved with the name 'RBF_control_points.png'.
 		The default value is False.
