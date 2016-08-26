@@ -92,13 +92,21 @@ Contact us by email for further information or questions about **PyGeM**, or sug
 
 ## Examples
 You can find useful tutorials on how to use the package in the `tutorials` folder.
-Here we show two applications, taken from the **naval** and **automotive** engineering fields. On the other hand, the provided tutorials are related to easier geometries.
+Here we show three applications, taken from the **naval**, **nautical** and **automotive** engineering fields. On the other hand, the provided tutorials are related to easier geometries.
 <p align="center">
 <img src="readme/DTMB_ffd.png" alt>
 </p>
 <p align="center">
 <em>DTMB-5415 hull: morphing of the bulbous bow starting from an industrial .iges CAD file.</em>
 </p>
+
+<p align="center">
+<img src="readme/scafoYZshift.gif" alt>
+</p>
+<p align="center">
+<em>MCY hull: morphing of the exhaust gasses devices starting from an industrial .stl file.</em>
+</p>
+
 <p align="center">
 <img src="readme/drivAer_ffd.png" alt>
 </p>
