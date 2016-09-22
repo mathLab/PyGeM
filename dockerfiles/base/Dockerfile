@@ -1,12 +1,3 @@
-# Builds a base Docker image that all other pygem project images are
-# built off of (FROM). In this image we control the end user
-# experience, namely; creating the user PyGeM, setting up the users
-# environment and the default entry point and cmds.
-#
-# Authors:
-# Davide Baroli
-# <davide.baroli@uni.lu>
-#
 FROM phusion/baseimage:0.9.19
 
 # Get Ubuntu updates
