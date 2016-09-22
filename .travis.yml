@@ -1,4 +1,4 @@
-sudo: required
+sudo: true
 
 language: python
 
@@ -41,9 +41,9 @@ before_install:
     - conda info -a
     # Install with docker
     - cd dockerfiles/base  
-    - docker build --tag=pygem-base:phusion . 
+    - docker build -u root --tag=pygem-base:phusion . 
     - cd dockerfiles/dev-env-base 
-    - docker build --tag=pygem-dev-env:phusion .
+    - docker build -u root --tag=pygem-dev-env:phusion .
     # See the images
     - docker images
 install:
