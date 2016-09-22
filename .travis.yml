@@ -1,5 +1,6 @@
 sudo: true
-
+#Required for docker build 
+dist: trusty
 language: python
 
 services: 
