@@ -40,14 +40,15 @@ before_install:
     - conda update -q conda
     # Useful for debugging any issues with conda
     - conda info -a
-    # Install with docker
-    - cd dockerfiles/base  
-    - docker build  --tag=pygem-base:phusion . 
-    - cd ../dev-env-base 
-    - docker build  --tag=pygem-dev-env:phusion .
-    - cd ../..
-    # See the images
-    - docker images
+    # Install with docker only with linux in travis
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then       
+         cd dockerfiles/base;  
+         docker build  --tag=pygem-base:phusion .; 
+         cd ../dev-env-base;
+         docker build  --tag=pygem-dev-env:phusion .;
+         cd ../..;
+      fi
+
 install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         conda create --yes -n test python=$TRAVIS_PYTHON_VERSION;
@@ -66,8 +67,10 @@ install:
     
 script:
     - coverage run test.py
-    - docker run -u root pygem-dev-env:phusion /bin/sh -c "cd /home/PyGeM/build/PyGeM; coverage run test.py"
-
+    # Docker in travis works only with linux. 
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        docker run -u root pygem-dev-env:phusion /bin/sh -c "cd /home/PyGeM/build/PyGeM; coverage run test.py";
+      fi
 after_success:
     - coveralls
 
