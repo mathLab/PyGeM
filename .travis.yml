@@ -43,8 +43,9 @@ before_install:
     # Install with docker
     - cd dockerfiles/base  
     - docker build  --tag=pygem-base:phusion . 
-    - cd dockerfiles/dev-env-base 
+    - cd ../dev-env-base 
     - docker build  --tag=pygem-dev-env:phusion .
+    - cd $HOME
     # See the images
     - docker images
 install:
