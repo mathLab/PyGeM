@@ -1,4 +1,3 @@
-# Author Davide Baroli <davide.baroli@uni.lu>
 
 FROM pygem-base:phusion
 
