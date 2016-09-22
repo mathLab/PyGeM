@@ -45,7 +45,7 @@ before_install:
     - docker build  --tag=pygem-base:phusion . 
     - cd ../dev-env-base 
     - docker build  --tag=pygem-dev-env:phusion .
-    - cd $HOME
+    - cd ../..
     # See the images
     - docker images
 install:
@@ -66,7 +66,7 @@ install:
     
 script:
     - coverage run test.py
-    - docker run -u root pygem-dev-env:phusion /bin/sh -c "cd /home/PyGeM/build/PyGem; coverage run test.py"
+    - docker run -u root pygem-dev-env:phusion /bin/sh -c "cd /home/PyGeM/build/PyGeM; coverage run test.py"
 
 after_success:
     - coveralls
