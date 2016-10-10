@@ -223,8 +223,8 @@ class IgesHandler(fh.FileHandler):
 			wire = wire_maker.Wire()
 
 			# trimming the surfaces
-			brep_surf = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), wire
-												).Shape()
+			brep_surf = BRepBuilderAPI_MakeFace(occ_face.GetHandle(),
+												wire).Shape()
 			compound_builder.Add(compound, brep_surf)
 			n_faces += 1
 			faces_explorer.Next()
@@ -273,24 +273,24 @@ class IgesHandler(fh.FileHandler):
 
 		## Get the limits of the axis and center the geometry
 		max_dim = np.array([np.max(stl_mesh.vectors[:,:,0])/1000, \
-			np.max(stl_mesh.vectors[:,:,1])/1000, \
-			np.max(stl_mesh.vectors[:,:,2])/1000])
+		 np.max(stl_mesh.vectors[:,:,1])/1000, \
+		 np.max(stl_mesh.vectors[:,:,2])/1000])
 		min_dim = np.array([np.min(stl_mesh.vectors[:,:,0])/1000, \
-			np.min(stl_mesh.vectors[:,:,1])/1000, \
-			np.min(stl_mesh.vectors[:,:,2])/1000])
+		 np.min(stl_mesh.vectors[:,:,1])/1000, \
+		 np.min(stl_mesh.vectors[:,:,2])/1000])
 
 		max_lenght = np.max(max_dim - min_dim)
 		axes.set_xlim(
-			-.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2, .6 * max_lenght +
-			(max_dim[0] + min_dim[0]) / 2
+			-.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2,
+			.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2
 		)
 		axes.set_ylim(
-			-.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2, .6 * max_lenght +
-			(max_dim[1] + min_dim[1]) / 2
+			-.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2,
+			.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2
 		)
 		axes.set_zlim(
-			-.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2, .6 * max_lenght +
-			(max_dim[2] + min_dim[2]) / 2
+			-.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2,
+			.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2
 		)
 
 		# Show the plot to the screen
