@@ -40,14 +40,6 @@ before_install:
     - conda update -q conda
     # Useful for debugging any issues with conda
     - conda info -a
-    # Install with docker only with linux in travis
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then       
-         cd dockerfiles/base;  
-         docker build  --tag=pygem-base:phusion .; 
-         cd ../dev-env-base;
-         docker build  --tag=pygem-dev-env:phusion .;
-         cd ../..;
-      fi
 
 install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -56,7 +48,7 @@ install:
         conda create --yes -n test python="2.7";
       fi
     - source activate test
-    - conda install --yes numpy scipy matplotlib pip nose vtk
+    - conda install --yes numpy scipy matplotlib pip nose vtk sip=4.18
     - conda install --yes -c https://conda.anaconda.org/dlr-sc pythonocc-core
     - pip install setuptools
     - pip install enum34
@@ -69,7 +61,7 @@ script:
     - coverage run test.py
     # Docker in travis works only with linux. 
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        docker run -u root pygem-dev-env:phusion /bin/sh -c "cd /home/PyGeM/build/PyGeM; coverage run test.py";
+        docker run -u root docker.io/pygemdocker/pygem:latest /bin/sh -c "cd /home/PyGeM/build/PyGeM; coverage run test.py";
       fi
 after_success:
     - coveralls
