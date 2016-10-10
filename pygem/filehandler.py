@@ -3,6 +3,7 @@ Base module with the base class for reading and writing different CAD files.
 """
 import os
 
+
 class FileHandler(object):
 	"""
 	A base class for file handling.
@@ -12,11 +13,11 @@ class FileHandler(object):
 	:cvar string extension: extension of the input/output files. It is specific for each
 		subclass.
 	"""
+
 	def __init__(self):
 		self.infile = None
 		self.outfile = None
 		self.extension = None
-
 
 	def parse(self, *args):
 		"""
@@ -25,8 +26,7 @@ class FileHandler(object):
 		Not implemented, it has to be implemented in subclasses.
 		"""
 		raise NotImplementedError("Subclass must implement abstract method " \
-			+ self.__class__.__name__ + ".parse")
-
+		 + self.__class__.__name__ + ".parse")
 
 	def write(self, *args):
 		"""
@@ -35,8 +35,7 @@ class FileHandler(object):
 		Not implemented, it has to be implemented in subclasses.
 		"""
 		raise NotImplementedError("Subclass must implement abstract method " \
-			+ self.__class__.__name__ + ".write")
-
+		 + self.__class__.__name__ + ".write")
 
 	def _check_extension(self, filename):
 		"""
@@ -47,9 +46,10 @@ class FileHandler(object):
 		"""
 		__, file_ext = os.path.splitext(filename)
 		if not file_ext in self.extension:
-			raise ValueError('The input file does not have the proper extension. \
-				It is {0!s}, instead of {1!s}.'.format(file_ext, self.extension))
-
+			raise ValueError(
+				'The input file does not have the proper extension. \
+				It is {0!s}, instead of {1!s}.'.format(file_ext, self.extension)
+			)
 
 	@staticmethod
 	def _check_filename_type(filename):
@@ -59,8 +59,9 @@ class FileHandler(object):
 		:param string filename: file to check.
 		"""
 		if not isinstance(filename, basestring):
-			raise TypeError('The given filename ({0!s}) must be a string'.format(filename))
-
+			raise TypeError(
+				'The given filename ({0!s}) must be a string'.format(filename)
+			)
 
 	@staticmethod
 	def _check_infile_instantiation(infile):
@@ -72,4 +73,6 @@ class FileHandler(object):
 		:param string infile: file to check.
 		"""
 		if not infile:
-			raise RuntimeError("You can not write a file without having parsed one.")
+			raise RuntimeError(
+				"You can not write a file without having parsed one."
+			)

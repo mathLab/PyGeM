@@ -14,10 +14,10 @@ class OpenFoamHandler(fh.FileHandler):
 	:cvar string extension: extension of the input/output files. It is equal to '' since
 		openFOAM files do not have extension.
 	"""
+
 	def __init__(self):
 		super(OpenFoamHandler, self).__init__()
 		self.extension = ''
-
 
 	def parse(self, filename):
 		"""
@@ -56,8 +56,6 @@ class OpenFoamHandler(fh.FileHandler):
 
 		return mesh_points
 
-
-
 	def write(self, mesh_points, filename):
 		"""
 		Writes a openFOAM file, called filename, copying all the lines from self.filename but
@@ -79,14 +77,14 @@ class OpenFoamHandler(fh.FileHandler):
 		n_points = mesh_points.shape[0]
 		nrow = 0
 		i = 0
-		with open(self.infile, 'r') as input_file, open(self.outfile, 'w') as output_file:
+		with open(self.infile,
+				  'r') as input_file, open(self.outfile, 'w') as output_file:
 			for line in input_file:
 				nrow += 1
 				if 20 < nrow < 21 + n_points:
 					output_file.write('(' + str(mesh_points[i][0]) + ' ' + str(mesh_points[i][1]) + \
-									  ' ' + str(mesh_points[i][2]) +')')
+					   ' ' + str(mesh_points[i][2]) +')')
 					output_file.write('\n')
 					i += 1
 				else:
 					output_file.write(line)
-

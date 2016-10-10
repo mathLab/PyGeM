@@ -16,10 +16,10 @@ class VtkHandler(fh.FileHandler):
 	:cvar string outfile: name of the output file where to write in.
 	:cvar string extension: extension of the input/output files. It is equal to '.vtk'.
 	"""
+
 	def __init__(self):
 		super(VtkHandler, self).__init__()
 		self.extension = '.vtk'
-
 
 	def parse(self, filename):
 		"""
@@ -51,10 +51,11 @@ class VtkHandler(fh.FileHandler):
 		mesh_points = np.zeros([n_points, 3])
 
 		for i in range(n_points):
-			mesh_points[i][0], mesh_points[i][1], mesh_points[i][2] = data.GetPoint(i)
+			mesh_points[i][0], mesh_points[i][1], mesh_points[i][
+				2
+			] = data.GetPoint(i)
 
 		return mesh_points
-
 
 	def write(self, mesh_points, filename):
 		"""
@@ -98,7 +99,6 @@ class VtkHandler(fh.FileHandler):
 
 		writer.Write()
 
-
 	def plot(self, plot_file=None, save_fig=False):
 		"""
 		Method to plot a vtk file. If `plot_file` is not given it plots `self.infile`.
@@ -115,7 +115,7 @@ class VtkHandler(fh.FileHandler):
 		else:
 			self._check_filename_type(plot_file)
 
-		# Read the source file.		
+		# Read the source file.
 		reader = vtk.vtkDataSetReader()
 		reader.SetFileName(plot_file)
 		reader.Update()
@@ -131,33 +131,43 @@ class VtkHandler(fh.FileHandler):
 		for i in range(0, ncells):
 			for j in range(0, 3):
 				cell = data.GetCell(i).GetPointId(j)
-				vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(int(cell))
+				vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(
+					int(cell)
+				)
 			tri = a3.art3d.Poly3DCollection([vtx[i]])
 			tri.set_color('b')
 			tri.set_edgecolor('k')
 			axes.add_collection3d(tri)
-		
+
 		## Get the limits of the axis and center the geometry
 		max_dim = np.array([np.max(vtx[:,:,0]), \
-						np.max(vtx[:,:,1]), \
-						np.max(vtx[:,:,2])])
+		 np.max(vtx[:,:,1]), \
+		 np.max(vtx[:,:,2])])
 		min_dim = np.array([np.min(vtx[:,:,0]), \
-						np.min(vtx[:,:,1]), \
-						np.min(vtx[:,:,2])])
-		
+		 np.min(vtx[:,:,1]), \
+		 np.min(vtx[:,:,2])])
+
 		max_lenght = np.max(max_dim - min_dim)
-		axes.set_xlim(-.6*max_lenght + (max_dim[0]+min_dim[0])/2, .6*max_lenght + (max_dim[0]+min_dim[0])/2)
-		axes.set_ylim(-.6*max_lenght + (max_dim[1]+min_dim[1])/2, .6*max_lenght + (max_dim[1]+min_dim[1])/2)
-		axes.set_zlim(-.6*max_lenght + (max_dim[2]+min_dim[2])/2, .6*max_lenght + (max_dim[2]+min_dim[2])/2)
+		axes.set_xlim(
+			-.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2,
+			.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2
+		)
+		axes.set_ylim(
+			-.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2,
+			.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2
+		)
+		axes.set_zlim(
+			-.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2,
+			.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2
+		)
 
 		# Show the plot to the screen
 		if not save_fig:
 			plt.show()
 		else:
 			figure.savefig(plot_file.split('.')[0] + '.png')
-			
-		return figure
 
+		return figure
 
 	def show(self, show_file=None):
 		"""
@@ -173,7 +183,7 @@ class VtkHandler(fh.FileHandler):
 		# Read the source file.
 		reader = vtk.vtkUnstructuredGridReader()
 		reader.SetFileName(show_file)
-		reader.Update() # Needed because of GetScalarRange
+		reader.Update()	 # Needed because of GetScalarRange
 		output = reader.GetOutput()
 		scalar_range = output.GetScalarRange()
 
@@ -205,4 +215,3 @@ class VtkHandler(fh.FileHandler):
 		interactor.SetRenderWindow(renderer_window)
 		interactor.Initialize()
 		interactor.Start()
-

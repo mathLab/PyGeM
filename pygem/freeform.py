@@ -69,11 +69,11 @@ class FFD(object):
 	>>> free_form.perform()
 	>>> new_mesh_points = free_form.modified_mesh_points
 	"""
+
 	def __init__(self, ffd_parameters, original_mesh_points):
 		self.parameters = ffd_parameters
 		self.original_mesh_points = original_mesh_points
 		self.modified_mesh_points = None
-
 
 	def perform(self):
 		"""
@@ -86,25 +86,31 @@ class FFD(object):
 		# translation and then affine transformation
 		translation = self.parameters.origin_box
 
-		physical_frame = np.array([self.parameters.position_vertex_1 - translation,
-								   self.parameters.position_vertex_2 - translation,
-								   self.parameters.position_vertex_3 - translation,
-								   [0, 0, 0]])
+		physical_frame = np.array([
+			self.parameters.position_vertex_1 - translation,
+			self.parameters.position_vertex_2 - translation,
+			self.parameters.position_vertex_3 - translation, [0, 0, 0]
+		])
 		reference_frame = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]])
 
 		transformation = at.affine_points_fit(physical_frame, reference_frame)
-		inverse_transformation = at.affine_points_fit(reference_frame, physical_frame)
+		inverse_transformation = at.affine_points_fit(
+			reference_frame, physical_frame
+		)
 
 		# apply transformation to original mesh points
-		reference_frame_mesh_points = self._transform_points(self.original_mesh_points - translation, transformation)
+		reference_frame_mesh_points = self._transform_points(
+			self.original_mesh_points - translation, transformation
+		)
 
 		# select mesh points inside bounding box
-		mesh_points = reference_frame_mesh_points[(reference_frame_mesh_points[:,0] >= 0.) &
-												  (reference_frame_mesh_points[:,0] <= 1.) &
-												  (reference_frame_mesh_points[:,1] >= 0.) &
-												  (reference_frame_mesh_points[:,1] <= 1.) &
-												  (reference_frame_mesh_points[:,2] >= 0.) &
-												  (reference_frame_mesh_points[:,2] <= 1.)]
+		mesh_points = reference_frame_mesh_points[(
+			reference_frame_mesh_points[:, 0] >= 0.
+		) & (reference_frame_mesh_points[:, 0] <= 1.) & (
+			reference_frame_mesh_points[:, 1] >= 0.
+		) & (reference_frame_mesh_points[:, 1] <= 1.) & (
+			reference_frame_mesh_points[:, 2] >= 0.
+		) & (reference_frame_mesh_points[:, 2] <= 1.)]
 		(n_rows_mesh, n_cols_mesh) = mesh_points.shape
 
 		# Initialization. In order to exploit the contiguity in memory the following are transposed
@@ -115,20 +121,22 @@ class FFD(object):
 		shift_mesh_points = np.zeros((n_cols_mesh, n_rows_mesh))
 
 		for i in range(0, dim_n_mu):
-			aux1 = np.power((1-mesh_points[:, 0]), dim_n_mu-1-i)
+			aux1 = np.power((1 - mesh_points[:, 0]), dim_n_mu - 1 - i)
 			aux2 = np.power(mesh_points[:, 0], i)
-			bernstein_x[i, :] = special.binom(dim_n_mu-1, i) * np.multiply(aux1, aux2)
+			bernstein_x[i, :] = special.binom(dim_n_mu - 1,
+											  i) * np.multiply(aux1, aux2)
 
 		for i in range(0, dim_m_mu):
-			aux1 = np.power((1-mesh_points[:, 1]), dim_m_mu-1-i)
+			aux1 = np.power((1 - mesh_points[:, 1]), dim_m_mu - 1 - i)
 			aux2 = np.power(mesh_points[:, 1], i)
-			bernstein_y[i, :] = special.binom(dim_m_mu-1, i) * np.multiply(aux1, aux2)
+			bernstein_y[i, :] = special.binom(dim_m_mu - 1,
+											  i) * np.multiply(aux1, aux2)
 
 		for i in range(0, dim_t_mu):
-			aux1 = np.power((1-mesh_points[:, 2]), dim_t_mu-1-i)
+			aux1 = np.power((1 - mesh_points[:, 2]), dim_t_mu - 1 - i)
 			aux2 = np.power(mesh_points[:, 2], i)
-			bernstein_z[i, :] = special.binom(dim_t_mu-1, i) * np.multiply(aux1, aux2)
-
+			bernstein_z[i, :] = special.binom(dim_t_mu - 1,
+											  i) * np.multiply(aux1, aux2)
 
 		aux_x = 0.
 		aux_y = 0.
@@ -144,22 +152,22 @@ class FFD(object):
 		shift_mesh_points[0, :] += aux_x
 		shift_mesh_points[1, :] += aux_y
 		shift_mesh_points[2, :] += aux_z
-	
+
 		# shift_mesh_points needs to be transposed to be summed with mesh_points
 		# apply inverse transformation to shifted mesh points
 		new_mesh_points = self._transform_points(np.transpose(shift_mesh_points) +
-												 mesh_points, inverse_transformation) + \
-						  translation
+		  mesh_points, inverse_transformation) + \
+		   translation
 
 		# merge non-shifted mesh points with shifted ones
 		self.modified_mesh_points = np.copy(self.original_mesh_points)
 		self.modified_mesh_points[(reference_frame_mesh_points[:,0] >= 0.) &
-								  (reference_frame_mesh_points[:,0] <= 1.) &
-								  (reference_frame_mesh_points[:,1] >= 0.) &
-								  (reference_frame_mesh_points[:,1] <= 1.) &
-								  (reference_frame_mesh_points[:,2] >= 0.) &
-								  (reference_frame_mesh_points[:,2] <= 1.)] \
-			= new_mesh_points
+		  (reference_frame_mesh_points[:,0] <= 1.) &
+		  (reference_frame_mesh_points[:,1] >= 0.) &
+		  (reference_frame_mesh_points[:,1] <= 1.) &
+		  (reference_frame_mesh_points[:,2] >= 0.) &
+		  (reference_frame_mesh_points[:,2] <= 1.)] \
+		 = new_mesh_points
 
 	@staticmethod
 	def _transform_points(original_points, transformation):
@@ -180,4 +188,3 @@ class FFD(object):
 			modified_points[i, :] = transformation(original_points[i])
 
 		return modified_points
-		

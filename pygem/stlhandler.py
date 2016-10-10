@@ -16,10 +16,10 @@ class StlHandler(fh.FileHandler):
 	:cvar string outfile: name of the output file where to write in.
 	:cvar string extension: extension of the input/output files. It is equal to '.stl'.
 	"""
+
 	def __init__(self):
 		super(StlHandler, self).__init__()
 		self.extension = '.stl'
-
 
 	def parse(self, filename):
 		"""
@@ -41,11 +41,12 @@ class StlHandler(fh.FileHandler):
 		self.infile = filename
 
 		stl_mesh = mesh.Mesh.from_file(self.infile)
-		mesh_points = np.array([stl_mesh.x.ravel(), stl_mesh.y.ravel(), stl_mesh.z.ravel()])
+		mesh_points = np.array(
+			[stl_mesh.x.ravel(), stl_mesh.y.ravel(), stl_mesh.z.ravel()]
+		)
 		mesh_points = mesh_points.T
 
 		return mesh_points
-
 
 	def write(self, mesh_points, filename, write_bin=False):
 		"""
@@ -66,19 +67,18 @@ class StlHandler(fh.FileHandler):
 
 		n_vertices = mesh_points.shape[0]
 		# number of triplets of vertices
-		n_triplets = n_vertices/3
+		n_triplets = n_vertices / 3
 		data = np.zeros(n_triplets, dtype=mesh.Mesh.dtype)
 		stl_mesh = mesh.Mesh(data, remove_empty_areas=False)
 
 		for i in range(0, n_triplets):
 			for j in range(0, 3):
-				data['vectors'][i][j] = mesh_points[3*i + j]
+				data['vectors'][i][j] = mesh_points[3 * i + j]
 
 		if not write_bin:
 			stl_mesh.save(self.outfile, mode=Mode.ASCII, update_normals=True)
 		else:
 			stl_mesh.save(self.outfile, update_normals=True)
-
 
 	def plot(self, plot_file=None, save_fig=False):
 		"""
@@ -106,22 +106,30 @@ class StlHandler(fh.FileHandler):
 
 		# Get the limits of the axis and center the geometry
 		max_dim = np.array([np.max(stl_mesh.vectors[:,:,0]), \
-						np.max(stl_mesh.vectors[:,:,1]), \
-						np.max(stl_mesh.vectors[:,:,2])])
+		 np.max(stl_mesh.vectors[:,:,1]), \
+		 np.max(stl_mesh.vectors[:,:,2])])
 		min_dim = np.array([np.min(stl_mesh.vectors[:,:,0]), \
-						np.min(stl_mesh.vectors[:,:,1]), \
-						np.min(stl_mesh.vectors[:,:,2])])
-		
+		 np.min(stl_mesh.vectors[:,:,1]), \
+		 np.min(stl_mesh.vectors[:,:,2])])
+
 		max_lenght = np.max(max_dim - min_dim)
-		axes.set_xlim(-.6*max_lenght + (max_dim[0]+min_dim[0])/2, .6*max_lenght + (max_dim[0]+min_dim[0])/2)
-		axes.set_ylim(-.6*max_lenght + (max_dim[1]+min_dim[1])/2, .6*max_lenght + (max_dim[1]+min_dim[1])/2)
-		axes.set_zlim(-.6*max_lenght + (max_dim[2]+min_dim[2])/2, .6*max_lenght + (max_dim[2]+min_dim[2])/2)
+		axes.set_xlim(
+			-.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2,
+			.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2
+		)
+		axes.set_ylim(
+			-.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2,
+			.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2
+		)
+		axes.set_zlim(
+			-.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2,
+			.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2
+		)
 
 		# Show the plot to the screen
 		if not save_fig:
 			pyplot.show()
 		else:
 			figure.savefig(plot_file.split('.')[0] + '.png')
-			
+
 		return figure
-		

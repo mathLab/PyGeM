@@ -28,24 +28,32 @@ def write_bounding_box(parameters, outfile, write_deformed=True):
 	>>> params.read_parameters(filename='tests/test_datasets/parameters_test_ffd_sphere.prm')
 	>>> ut.write_bounding_box(params, 'tests/test_datasets/box_test_sphere.vtk')
 	"""
-	aux_x = np.linspace(0, parameters.lenght_box_x, parameters.n_control_points[0])
-	aux_y = np.linspace(0, parameters.lenght_box_y, parameters.n_control_points[1])
-	aux_z = np.linspace(0, parameters.lenght_box_z, parameters.n_control_points[2])
-	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(aux_y, aux_x, aux_z)
+	aux_x = np.linspace(
+		0, parameters.lenght_box_x, parameters.n_control_points[0]
+	)
+	aux_y = np.linspace(
+		0, parameters.lenght_box_y, parameters.n_control_points[1]
+	)
+	aux_z = np.linspace(
+		0, parameters.lenght_box_z, parameters.n_control_points[2]
+	)
+	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(
+		aux_y, aux_x, aux_z
+	)
 
 	if write_deformed:
 		box_points = np.array([ \
-			lattice_x_coords.ravel() + parameters.array_mu_x.ravel() * parameters.lenght_box_x, \
-			lattice_y_coords.ravel() + parameters.array_mu_y.ravel() * parameters.lenght_box_y, \
-			lattice_z_coords.ravel() + parameters.array_mu_z.ravel() * parameters.lenght_box_z])
+		 lattice_x_coords.ravel() + parameters.array_mu_x.ravel() * parameters.lenght_box_x, \
+		 lattice_y_coords.ravel() + parameters.array_mu_y.ravel() * parameters.lenght_box_y, \
+		 lattice_z_coords.ravel() + parameters.array_mu_z.ravel() * parameters.lenght_box_z])
 	else:
 		box_points = np.array([lattice_x_coords.ravel(), lattice_y_coords.ravel(), \
-			lattice_z_coords.ravel()])
+		 lattice_z_coords.ravel()])
 
 	n_rows = box_points.shape[1]
 
 	box_points = np.dot(parameters.rotation_matrix, box_points) + \
-		np.transpose(np.tile(parameters.origin_box, (n_rows, 1)))
+	 np.transpose(np.tile(parameters.origin_box, (n_rows, 1)))
 
 	# step necessary to set the correct order to the box points for vtkStructuredGrid:
 	# Data in vtkStructuredGrid are ordered with x increasing fastest, then y, then z
@@ -54,7 +62,7 @@ def write_bounding_box(parameters, outfile, write_deformed=True):
 	aux_yy = box_points[1, :].reshape(dims).ravel(order='f')
 	aux_zz = box_points[2, :].reshape(dims).ravel(order='f')
 	reordered_box_points = np.array((aux_xx, aux_yy, aux_zz))
-	
+
 	_write_vtk_box(reordered_box_points, outfile, parameters.n_control_points)
 
 
@@ -73,25 +81,27 @@ def _write_vtk_box(box_points, filename, dimensions):
 	"""
 	# setup points and vertices
 	points = vtk.vtkPoints()
-	
+
 	for index in range(0, box_points.shape[1]):
-		points.InsertNextPoint(box_points[0, index], box_points[1, index], box_points[2, index])
-		
+		points.InsertNextPoint(
+			box_points[0, index], box_points[1, index], box_points[2, index]
+		)
+
 	grid = vtk.vtkStructuredGrid()
-	
+
 	grid.SetPoints(points)
 	grid.SetDimensions(dimensions)
 	grid.Modified()
-	
+
 	writer = vtk.vtkStructuredGridWriter()
 	writer.SetFileName(filename)
-	
+
 	if vtk.VTK_MAJOR_VERSION <= 5:
 		grid.Update()
 		writer.SetInput(grid)
 	else:
 		writer.SetInputData(grid)
-		
+
 	writer.Write()
 
 
@@ -108,27 +118,25 @@ def plot_rbf_control_points(parameters, save_fig=False):
 	fig = plt.figure(1)
 	axes = fig.add_subplot(111, projection='3d')
 	orig = axes.scatter(parameters.original_control_points[:, 0], \
-		parameters.original_control_points[:, 1], \
-		parameters.original_control_points[:, 2], c='blue', marker='o')
+	 parameters.original_control_points[:, 1], \
+	 parameters.original_control_points[:, 2], c='blue', marker='o')
 	defor = axes.scatter(parameters.deformed_control_points[:, 0], \
-		parameters.deformed_control_points[:, 1], \
-		parameters.deformed_control_points[:, 2], c='red', marker='x')
-	
+	 parameters.deformed_control_points[:, 1], \
+	 parameters.deformed_control_points[:, 2], c='red', marker='x')
+
 	axes.set_xlabel('X axis')
 	axes.set_ylabel('Y axis')
 	axes.set_zlabel('Z axis')
-	
+
 	plt.legend((orig, defor), \
-		('Original', 'Deformed'), \
-		scatterpoints=1, \
-		loc='lower left', \
-		ncol=2, \
-		fontsize=10)
+	 ('Original', 'Deformed'), \
+	 scatterpoints=1, \
+	 loc='lower left', \
+	 ncol=2, \
+	 fontsize=10)
 
 	# Show the plot to the screen
 	if not save_fig:
 		plt.show()
 	else:
 		fig.savefig('RBF_control_points.png')
-
-		

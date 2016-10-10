@@ -40,15 +40,21 @@ def angles2matrix(rot_z=0, rot_y=0, rot_x=0):
 	if rot_z:
 		cos = math.cos(rot_z)
 		sin = math.sin(rot_z)
-		rot_matrix.append(np.array([cos, -sin, 0, sin, cos, 0, 0, 0, 1]).reshape((3, 3)))
+		rot_matrix.append(
+			np.array([cos, -sin, 0, sin, cos, 0, 0, 0, 1]).reshape((3, 3))
+		)
 	if rot_y:
 		cos = math.cos(rot_y)
 		sin = math.sin(rot_y)
-		rot_matrix.append(np.array([cos, 0, sin, 0, 1, 0, -sin, 0, cos]).reshape((3, 3)))
+		rot_matrix.append(
+			np.array([cos, 0, sin, 0, 1, 0, -sin, 0, cos]).reshape((3, 3))
+		)
 	if rot_x:
 		cos = math.cos(rot_x)
 		sin = math.sin(rot_x)
-		rot_matrix.append(np.array([1, 0, 0, 0, cos, -sin, 0, sin, cos]).reshape((3, 3)))
+		rot_matrix.append(
+			np.array([1, 0, 0, 0, cos, -sin, 0, sin, cos]).reshape((3, 3))
+		)
 	if rot_matrix:
 		return reduce(np.dot, rot_matrix[::-1])
 	return np.eye(3)
@@ -96,7 +102,9 @@ def to_reduced_row_echelon_form(matrix):
 		for i in range(row_count):
 			if i != r:
 				lv = matrix[i][lead]
-				matrix[i] = [iv - lv*rv for rv, iv in zip(matrix[r], matrix[i])]
+				matrix[i] = [
+					iv - lv * rv for rv, iv in zip(matrix[r], matrix[i])
+				]
 		lead += 1
 	return matrix
 
@@ -130,34 +138,36 @@ def affine_points_fit(points_start, points_end):
 
 	dim = len(points_start[0])
 	if len(points_start) < dim:
-		raise RuntimeError("Too few starting points => under-determined system.")
+		raise RuntimeError(
+			"Too few starting points => under-determined system."
+		)
 
 	# Fill an an empty (dim+1) x (dim) matrix
-	c = [[0.0 for a in range(dim)] for i in range(dim+1)]
+	c = [[0.0 for a in range(dim)] for i in range(dim + 1)]
 	for j in range(dim):
-		for k in range(dim+1):
+		for k in range(dim + 1):
 			for i, pnts_i in enumerate(points_start):
 				qt = list(pnts_i) + [1]
 				c[k][j] += qt[k] * points_end[i][j]
 
 	# Fill an an empty (dim+1) x (dim+1) matrix
-	Q = [[0.0 for a in range(dim)] + [0] for i in range(dim+1)]
+	Q = [[0.0 for a in range(dim)] + [0] for i in range(dim + 1)]
 	for qi in points_start:
 		qt = list(qi) + [1]
-		for i in range(dim+1):
-			for j in range(dim+1):
+		for i in range(dim + 1):
+			for j in range(dim + 1):
 				Q[i][j] += qt[i] * qt[j]
 
-
 	# Augement Q with c and get the reduced row echelon form of the result
-	affine_matrix = [Q[i] + c[i] for i in range(dim+1)]
+	affine_matrix = [Q[i] + c[i] for i in range(dim + 1)]
 
-	if np.linalg.cond(affine_matrix) < 1/sys.float_info.epsilon:
+	if np.linalg.cond(affine_matrix) < 1 / sys.float_info.epsilon:
 		rref_aff_matrix = to_reduced_row_echelon_form(affine_matrix)
 		rref_aff_matrix = np.array(rref_aff_matrix)
 	else:
-		raise RuntimeError("Error: singular matrix. Points are probably coplanar.")
-
+		raise RuntimeError(
+			"Error: singular matrix. Points are probably coplanar."
+		)
 
 	def transform_vector(source):
 		"""
@@ -171,9 +181,9 @@ def affine_points_fit(points_start, points_end):
 		destination = np.zeros(dim)
 		for i in range(dim):
 			for j in range(dim):
-				destination[j] += source[i] * rref_aff_matrix[i][j+dim+1]
+				destination[j] += source[i] * rref_aff_matrix[i][j + dim + 1]
 			# Add the last line of the rref
-			destination[i] += rref_aff_matrix[dim][i+dim+1]
+			destination[i] += rref_aff_matrix[dim][i + dim + 1]
 		return destination
 
 	return transform_vector
