@@ -35,7 +35,7 @@ Please see the table below for instructions on how to satisfy the requirements.
 
 | Package | Version  | Comment                                                                    |
 |---------|----------|----------------------------------------------------------------------------|
-| OCC     | >= 0.16  | See pythonocc.org or github.com.tpaviot/pythonocc-core for instructions or `conda install -c https://conda.anaconda.org/dlr-sc pythonocc-core` |
+| OCC     | == 0.17  | See pythonocc.org or github.com.tpaviot/pythonocc-core for instructions or `conda install -c https://conda.anaconda.org/dlr-sc pythonocc-core` |
 | vtk     | >= 5.0   | Simplest solution is `conda install vtk`                                   |
 
 
