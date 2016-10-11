@@ -85,6 +85,7 @@ To allow the X11 forwarding in the container, on Linux system just run:
 >  docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix  -v $(pwd):/home/PyGeM/shared  pygemdocker/pygem:latest
 ```
 
+For Windows system, you need to install Cygwin/X version and running the command in Cygwin terminal. While for mac system, you need to install xquartz. 
 
 ## Documentation
 **PyGeM** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. To build the html versions of the docs simply:
