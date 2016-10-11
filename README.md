@@ -68,7 +68,7 @@ Now we will pull the docker.io/pygemdocker/pygem image from our cloud infrastruc
 ```bash
 >  docker pull docker.io/pygemdocker/pygem:latest
 ```
-Docker will pull the latest tag of the image pygemdocker/pygem from docker.io. The download is around 1.3GB. The  image is a great place to start experimenting with PyGeM and includes all dependencies already compiled for you.
+Docker will pull the latest tag of the image pygemdocker/pygem from docker.io. The download is around 3.246 GB. The  image is a great place to start experimenting with PyGeM and includes all dependencies already compiled for you.
 Once the download is complete you can start PyGeM for the first time. Just run:
 ```bash
 >  docker run -ti  pygemdocker/pygem:latest
