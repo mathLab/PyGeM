@@ -1,5 +1,10 @@
-
+sudo: true
+#Required for docker build 
+dist: trusty
 language: python
+
+services: 
+  - docker
 
 matrix:
     include:
@@ -43,7 +48,7 @@ install:
         conda create --yes -n test python="2.7";
       fi
     - source activate test
-    - conda install --yes numpy scipy matplotlib pip nose vtk
+    - conda install --yes numpy scipy matplotlib pip nose vtk sip=4.18
     - conda install --yes -c https://conda.anaconda.org/dlr-sc pythonocc-core
     - pip install setuptools
     - pip install enum34
@@ -51,9 +56,13 @@ install:
     - pip install coveralls
     - pip install coverage
     - python setup.py install
-
-script: coverage run test.py
-
+    
+script:
+    - coverage run test.py
+    # Docker in travis works only with linux. 
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        docker run -u root docker.io/pygemdocker/pygem:latest /bin/sh -c "cd /home/PyGeM/build/PyGeM; coverage run test.py";
+      fi
 after_success:
     - coveralls
 
