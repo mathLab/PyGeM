@@ -58,6 +58,33 @@ To uninstall the package you have to rerun the installation and record the insta
 > cat installed_files.txt | xargs rm -rf
 ```
 
+Alternatively, a way to run the PyGeM library is to use our prebuilt and high-performance Docker images.
+Docker containers are extremely lightweight, secure, and are based on open standards that run on all major Linux distributions, macOS and Microsoft Windows platforms.
+
+Install Docker for your platform by following [these instructions](https://docs.docker.com/engine/getstarted/step_one/).
+If using the Docker Toolbox (macOS versions < 10.10 or Windows versions < 10), make sure you run all commands inside the Docker Quickstart Terminal.
+
+Now we will pull the docker.io/pygemdocker/pygem image from our cloud infrastructure:
+```bash
+>  docker pull docker.io/pygemdocker/pygem:latest
+```
+Docker will pull the latest tag of the image pygemdocker/pygem from docker.io. The download is around 1.3GB. The  image is a great place to start experimenting with PyGeM and includes all dependencies already compiled for you.
+Once the download is complete you can start PyGeM for the first time. Just run:
+```bash
+>  docker run -ti  docker.io/pygemdocker/pygem:latest
+```
+To facilitate the devoloping, using the text editor,version control and other tools already installed on your computers,
+it is possible to share files from the host into the container:
+
+```bash
+>  docker run -ti -v $(pwd):/home/PyGeM/shared  docker.io/pygemdocker/pygem:latest
+```
+To allow the X11 forwarding in the container, on Linux system just run:
+
+```bash
+>  docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix  -v $(pwd):/home/PyGeM/shared  docker.io/pygemdocker/pygem:latest
+```
+
 
 ## Documentation
 **PyGeM** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. To build the html versions of the docs simply:
