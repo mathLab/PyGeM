@@ -71,18 +71,18 @@ Now we will pull the docker.io/pygemdocker/pygem image from our cloud infrastruc
 Docker will pull the latest tag of the image pygemdocker/pygem from docker.io. The download is around 1.3GB. The  image is a great place to start experimenting with PyGeM and includes all dependencies already compiled for you.
 Once the download is complete you can start PyGeM for the first time. Just run:
 ```bash
->  docker run -ti  docker.io/pygemdocker/pygem:latest
+>  docker run -ti  pygemdocker/pygem:latest
 ```
 To facilitate the devoloping, using the text editor,version control and other tools already installed on your computers,
 it is possible to share files from the host into the container:
 
 ```bash
->  docker run -ti -v $(pwd):/home/PyGeM/shared  docker.io/pygemdocker/pygem:latest
+>  docker run -ti -v $(pwd):/home/PyGeM/shared  pygemdocker/pygem:latest
 ```
 To allow the X11 forwarding in the container, on Linux system just run:
 
 ```bash
->  docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix  -v $(pwd):/home/PyGeM/shared  docker.io/pygemdocker/pygem:latest
+>  docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix  -v $(pwd):/home/PyGeM/shared  pygemdocker/pygem:latest
 ```
 
 
