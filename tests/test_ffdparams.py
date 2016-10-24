@@ -1,9 +1,13 @@
-from unittest import TestCase
-import unittest
-import pygem.params as ffdp
-import numpy as np
 import filecmp
 import os
+from unittest import TestCase
+
+import numpy as np
+from OCC.BRepAlgoAPI import BRepAlgoAPI_Cut
+from OCC.BRepPrimAPI import BRepPrimAPI_MakeSphere, BRepPrimAPI_MakeBox
+from OCC.gp import gp_Pnt
+
+import pygem.params as ffdp
 
 
 class TestFFDParameters(TestCase):
@@ -220,8 +224,9 @@ class TestFFDParameters(TestCase):
 	def test_read_parameters_rotation_matrix(self):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
 		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
-		rotation_matrix_exact = np.array([0.98162718, 0., 0.190809, 0.06619844, 0.93788893, \
-		 -0.34056147, -0.17895765, 0.34693565, 0.92065727]).reshape((3,3))
+		rotation_matrix_exact = np.array([
+			0.98162718, 0., 0.190809, 0.06619844, 0.93788893, -0.34056147, -0.17895765, 0.34693565, 0.92065727
+		]).reshape((3, 3))
 		np.testing.assert_array_almost_equal(
 			params.rotation_matrix, rotation_matrix_exact
 		)
@@ -325,3 +330,76 @@ class TestFFDParameters(TestCase):
 	def test_print_info(self):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
 		params.print_info()
+
+	def test_set_box_origin(self):
+		origin = np.array([0., 0., 0.])
+
+		params = ffdp.FFDParameters()
+		params._set_box_origin(origin)
+		np.testing.assert_almost_equal(params.origin_box, origin)
+
+	def test_set_box_dimension(self):
+		origin = np.array([0., 0., 0.])
+		tops = np.array([10., 10., 10.])
+		params = ffdp.FFDParameters()
+		params._set_box_origin(origin)
+		params._set_box_dimensions(origin, tops)
+		self.assertEqual(params.lenght_box_x, tops[0])
+		self.assertEqual(params.lenght_box_y, tops[1])
+		self.assertEqual(params.lenght_box_z, tops[2])
+
+	def test_set_position_of_vertices(self):
+		vertex_0 = [0., 0., 0.]
+		vertex_1 = [1., 0., 0.]
+		vertex_2 = [0., 1., 0.]
+		vertex_3 = [0., 0., 1.]
+		tops = np.array([1., 1., 1.])
+		params = ffdp.FFDParameters()
+		params._set_box_origin(vertex_0)
+		params._set_box_dimensions(vertex_0, tops)
+		params._set_position_of_vertices()
+		np.testing.assert_equal(params.position_vertex_0, vertex_0)
+		np.testing.assert_equal(params.position_vertex_1, vertex_1)
+		np.testing.assert_equal(params.position_vertex_2, vertex_2)
+		np.testing.assert_equal(params.position_vertex_3, vertex_3)
+
+	def test_set_mapping(self):
+		origin = np.array([0., 0., 0.])
+		tops = np.array([10., 10., 10.])
+		params = ffdp.FFDParameters()
+		params._set_box_origin(origin)
+		params._set_box_dimensions(origin, tops)
+		params._set_mapping()
+		for i in range(3):
+			self.assertEqual(params.psi_mapping[i][i], 1. / tops[i])
+			self.assertEqual(params.inv_psi_mapping[i][i], tops[i])
+
+	def test_set_modification_parameters_to_zero(self):
+		params = ffdp.FFDParameters([5, 5, 5])
+		params._set_transformation_params_to_zero()
+		np.testing.assert_almost_equal(params.array_mu_x, np.zeros(shape=(5, 5, 5)))
+		np.testing.assert_almost_equal(params.array_mu_y, np.zeros(shape=(5, 5, 5)))
+		np.testing.assert_almost_equal(params.array_mu_z, np.zeros(shape=(5, 5, 5)))
+
+	def test_calculate_bb_dimensions(self):
+		min_vals = np.zeros(3)
+		max_vals = np.ones(3)
+		cube = BRepPrimAPI_MakeBox(1, 1, 1).Shape()
+		params = ffdp.FFDParameters()
+		xyz_min, xyz_max = params._calculate_bb_dimension(cube)
+		np.testing.assert_almost_equal(xyz_min, min_vals, decimal=5)
+		np.testing.assert_almost_equal(xyz_max, max_vals, decimal=5)
+
+	def test_calculate_bb_dimensions_triangulate(self):
+		a = gp_Pnt(-1, -1, -1)
+		b = gp_Pnt(3, 3, 3)
+
+		box = BRepPrimAPI_MakeBox(a, b).Shape()
+		sphere = BRepPrimAPI_MakeSphere(3).Shape()
+		section = BRepAlgoAPI_Cut(box, sphere).Shape()
+		params = ffdp.FFDParameters()
+		xyz_min, xyz_max = params._calculate_bb_dimension(section, triangualte=True)
+		correct_min = -1 * np.ones(3)
+		correct_max = 3 * np.ones(3)
+		np.testing.assert_almost_equal(xyz_min, correct_min, decimal=1)
+		np.testing.assert_almost_equal(xyz_max, correct_max, decimal=1)

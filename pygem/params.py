@@ -1,9 +1,14 @@
 """
 Utilities for reading and writing parameters files to perform the desired geometrical morphing.
 """
-import os
 import ConfigParser
+import os
+
 import numpy as np
+from OCC.BRepBndLib import brepbndlib_Add
+from OCC.BRepMesh import BRepMesh_IncrementalMesh
+from OCC.Bnd import Bnd_Box
+
 import pygem.affine as at
 
 
@@ -63,7 +68,7 @@ class FFDParameters(object):
 	>>> # it is created with that name). So it is possible to manually edit it and read it again.
 	>>> params2 = ffdp.FFDParameters(n_control_points=[2, 3, 2])
 	>>> params2.read_parameters(filename='parameters_test.prm')
-	
+
 	.. note::
 		Four vertex (non coplanar) are sufficient to uniquely identify a parallelepiped.
 		If the four vertex are coplanar, an assert is thrown when affine_points_fit is used.
@@ -116,7 +121,7 @@ class FFDParameters(object):
 		if not os.path.isfile(filename):
 			self.write_parameters(filename)
 			return
-		
+
 		config = ConfigParser.RawConfigParser()
 		config.read(filename)
 
@@ -175,12 +180,12 @@ class FFDParameters(object):
 		self.psi_mapping = np.diag([1./self.lenght_box_x, 1./self.lenght_box_y, 1./self.lenght_box_z])
 		self.inv_psi_mapping = np.diag([self.lenght_box_x, self.lenght_box_y, self.lenght_box_z])
 
-	
+
 	def write_parameters(self, filename='parameters.prm'):
 		"""
 		This method writes a parameters file (.prm) called `filename` and fills it with all
 		the parameters class members.
-		
+
 		:param string filename: parameters file to be written out.
 		"""
 		if not isinstance(filename, basestring):
@@ -230,7 +235,7 @@ class FFDParameters(object):
 			output_file.write('# |    0    |    1    |    1    |  0.0   | --> you can erase this line without effects\n')
 			output_file.write('# |    0    |    1    |    0    | -2.1   |\n')
 			output_file.write('# |    0    |    0    |    1    |  3.4   |\n')
-			
+
 			output_file.write('\n# parameter x collects the displacements along x, normalized with the box lenght x.')
 			output_file.write('\nparameter x:')
 			offset = 1
@@ -294,6 +299,79 @@ class FFDParameters(object):
 		print '\nposition_vertex_3 ='
 		print self.position_vertex_3
 
+	def build_bounding_box(self, shape, tol=1e-6, triangualte=False, triangulate_tol=1e-1):
+		min_xyz, max_xyz = self._calculate_bb_dimension(shape, tol, triangualte, triangulate_tol)
+		self.origin_box = min_xyz
+		self._set_box_dimensions(min_xyz, max_xyz)
+		self._set_position_of_vertices()
+		self._set_mapping()
+		self._set_transformation_params_to_zero()
+
+	def _set_box_origin(self, xyz):
+		self.origin_box = xyz
+
+	def _set_box_dimensions(self, min_xyz, max_xyz):
+		"""
+		Dimensions of the cage are set as distance from the origin (minimum) of the cage to
+		the maximal point in each dimension.
+		:return:
+		"""
+		dims = [max_xyz[i] - min_xyz[i] for i in range(3)]
+		self.lenght_box_x = dims[0]
+		self.lenght_box_y = dims[1]
+		self.lenght_box_z = dims[2]
+
+	def _set_position_of_vertices(self):
+		"""
+		Vertices of the control box around the object are set in this method.
+		Four vertex (non coplanar) are sufficient to uniquely identify a parallelepiped -- the
+		second half of the box is created as a mirror reflection of the first four vertices.
+		:return:
+		"""
+		origin_array = np.array(self.origin_box)
+		dim = [self.lenght_box_x, self.lenght_box_y, self.lenght_box_z]
+		self.position_vertex_0 = origin_array
+		self.position_vertex_1 = origin_array + np.array([dim[0], .0, .0])
+		self.position_vertex_2 = origin_array + np.array([.0, dim[1], .0])
+		self.position_vertex_3 = origin_array + np.array([.0, .0, dim[2]])
+
+	def _set_mapping(self):
+		dim = [self.lenght_box_x, self.lenght_box_y, self.lenght_box_z]
+		self.psi_mapping = np.diag([1. / dim[i] for i in range(3)])
+		self.inv_psi_mapping = np.diag(dim)
+
+	def _set_transformation_params_to_zero(self):
+		ctrl_pnts = self.n_control_points
+		self.array_mu_x = np.zeros(ctrl_pnts)
+		self.array_mu_y = np.zeros(ctrl_pnts)
+		self.array_mu_z = np.zeros(ctrl_pnts)
+
+	def _calculate_bb_dimension(self, shape, tol=1e-6, triangualte=False, triangulate_tol=1e-1):
+		""" return the bounding box of the TopoDS_Shape `shape`
+		Parameters
+		----------
+		shape : TopoDS_Shape or a subclass such as TopoDS_Face
+			the shape to compute the bounding box from
+		tol: float
+			tolerance of the computed boundingbox
+		triangualte : bool
+			if True only the dimensions of the bb will take into account every part of the shape (also not 'visible')
+			if False only the 'visible' part is taken into account
+			*** Explanation: every UV-Surface has to be rectangular. When a solid is created surfaces are trimmed.
+			*** the trimmed part, however, is still saved inside a file. It is just 'invisible' when drawn in a program
+		Returns
+		-------
+			tuple: consisting of two tuples: first one has coords of minimum, the second one coords of maximum
+		"""
+		bbox = Bnd_Box()
+		bbox.SetGap(tol)
+		if triangualte:
+			BRepMesh_IncrementalMesh(shape, triangulate_tol)
+		brepbndlib_Add(shape, bbox, triangualte)
+		xmin, ymin, zmin, xmax, ymax, zmax = bbox.Get()
+		xyz_min = np.array([xmin, ymin, zmin])
+		xyz_max = np.array([xmax, ymax, zmax])
+		return xyz_min, xyz_max
 
 
 class RBFParameters(object):
@@ -346,7 +424,7 @@ class RBFParameters(object):
 				0., 1., 1., 1., 0., 1., 1., 1., 0., 1., 1., 1.]).reshape((8, 3))
 			self.write_parameters(filename)
 			return
-		
+
 		config = ConfigParser.RawConfigParser()
 		config.read(filename)
 
@@ -378,7 +456,7 @@ class RBFParameters(object):
 		"""
 		This method writes a parameters file (.prm) called `filename` and fills it with all
 		the parameters class members. Default value is parameters_rbf.prm.
-		
+
 		:param string filename: parameters file to be written out.
 		"""
 		if not isinstance(filename, basestring):
@@ -402,7 +480,7 @@ class RBFParameters(object):
 
 			output_file.write('\n\n[Control points]\n')
 			output_file.write('# This section describes the RBF control points.\n')
-			
+
 			output_file.write('\n# original control points collects the coordinates of the interpolation ' + \
 				'control points before the deformation.\n')
 			output_file.write('original control points:')
@@ -435,4 +513,3 @@ class RBFParameters(object):
 		print self.original_control_points
 		print '\ndeformed_control_points ='
 		print self.deformed_control_points
-
