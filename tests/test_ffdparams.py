@@ -331,13 +331,6 @@ class TestFFDParameters(TestCase):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
 		params.print_info()
 
-	def test_set_box_origin(self):
-		origin = np.array([0., 0., 0.])
-
-		params = ffdp.FFDParameters()
-		params.origin_box = origin
-		np.testing.assert_almost_equal(params.origin_box, origin)
-
 	def test_set_box_dimension(self):
 		origin = np.array([0., 0., 0.])
 		tops = np.array([10., 10., 10.])

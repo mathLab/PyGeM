@@ -299,8 +299,23 @@ class FFDParameters(object):
 		print '\nposition_vertex_3 ='
 		print self.position_vertex_3
 
-	def build_bounding_box(self, shape, tol=1e-6, triangualte=False, triangulate_tol=1e-1):
-		min_xyz, max_xyz = self._calculate_bb_dimension(shape, tol, triangualte, triangulate_tol)
+	def build_bounding_box(self, shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
+		"""
+		Builds a bounding box around the given shape. ALl parameters (with the exception of array_mu_x/y/z)
+		are set to match the computed box.
+		----------
+		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
+			the shape to compute the bounding box from
+		:param float tol: tolerance of the computed bounding box
+		:param bool triangulate :
+			if True only the dimensions of the bb will take into account every part of the shape (also not 'visible')
+			if False only the 'visible' part is taken into account
+			*** Explanation: every UV-Surface has to be rectangular. When a solid is created surfaces are trimmed.
+			*** the trimmed part, however, is still saved inside a file. It is just 'invisible' when drawn in a program
+		:param float triangulate_tol: tolerance of triangulation (size of created triangles)
+		:return:
+		"""
+		min_xyz, max_xyz = self._calculate_bb_dimension(shape, tol, triangulate, triangulate_tol)
 		self.origin_box = min_xyz
 		self._set_box_dimensions(min_xyz, max_xyz)
 		self._set_position_of_vertices()
@@ -311,6 +326,8 @@ class FFDParameters(object):
 		"""
 		Dimensions of the cage are set as distance from the origin (minimum) of the cage to
 		the maximal point in each dimension.
+		:param iterable min_xyz: three values representing the minimal values of the bounding box in XYZ respectively
+		:param iterable max_xyz: three values representing the maximal values of the bounding box in XYZ respectively
 		:return:
 		"""
 		dims = [max_xyz[i] - min_xyz[i] for i in range(3)]
@@ -344,20 +361,17 @@ class FFDParameters(object):
 		self.array_mu_z = np.zeros(ctrl_pnts)
 
 	def _calculate_bb_dimension(self, shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
-		""" return the bounding box of the TopoDS_Shape `shape`
+		""" Calculate dimensions (minima and maxima) of a box bounding the given shape
 		----------
 		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
 			the shape to compute the bounding box from
-		:param float tol: tolerance of the computed boundingbox
+		:param float tol: tolerance of the computed bounding box
 		:param bool triangulate :
 			if True only the dimensions of the bb will take into account every part of the shape (also not 'visible')
 			if False only the 'visible' part is taken into account
-			*** Explanation: every UV-Surface has to be rectangular. When a solid is created surfaces are trimmed.
-			*** the trimmed part, however, is still saved inside a file. It is just 'invisible' when drawn in a program
+			*See: `build_bounding_box`
 		:param float triangulate_tol: tolerance of triangulation (size of created triangles)
-		Returns
-		-------
-			tuple: consisting of two tuples: first one has coords of minimum, the second one coords of maximum
+		:return tuple: consisting of two tuples: first one has coords of minimum, the second one coords of maximum
 		"""
 		bbox = Bnd_Box()
 		bbox.SetGap(tol)
