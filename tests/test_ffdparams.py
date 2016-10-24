@@ -335,14 +335,14 @@ class TestFFDParameters(TestCase):
 		origin = np.array([0., 0., 0.])
 
 		params = ffdp.FFDParameters()
-		params._set_box_origin(origin)
+		params.origin_box = origin
 		np.testing.assert_almost_equal(params.origin_box, origin)
 
 	def test_set_box_dimension(self):
 		origin = np.array([0., 0., 0.])
 		tops = np.array([10., 10., 10.])
 		params = ffdp.FFDParameters()
-		params._set_box_origin(origin)
+		params.origin_box = origin
 		params._set_box_dimensions(origin, tops)
 		self.assertEqual(params.lenght_box_x, tops[0])
 		self.assertEqual(params.lenght_box_y, tops[1])
@@ -355,7 +355,7 @@ class TestFFDParameters(TestCase):
 		vertex_3 = [0., 0., 1.]
 		tops = np.array([1., 1., 1.])
 		params = ffdp.FFDParameters()
-		params._set_box_origin(vertex_0)
+		params.origin_box = vertex_0
 		params._set_box_dimensions(vertex_0, tops)
 		params._set_position_of_vertices()
 		np.testing.assert_equal(params.position_vertex_0, vertex_0)
@@ -367,7 +367,7 @@ class TestFFDParameters(TestCase):
 		origin = np.array([0., 0., 0.])
 		tops = np.array([10., 10., 10.])
 		params = ffdp.FFDParameters()
-		params._set_box_origin(origin)
+		params.origin_box = origin
 		params._set_box_dimensions(origin, tops)
 		params._set_mapping()
 		for i in range(3):
@@ -398,7 +398,7 @@ class TestFFDParameters(TestCase):
 		sphere = BRepPrimAPI_MakeSphere(3).Shape()
 		section = BRepAlgoAPI_Cut(box, sphere).Shape()
 		params = ffdp.FFDParameters()
-		xyz_min, xyz_max = params._calculate_bb_dimension(section, triangualte=True)
+		xyz_min, xyz_max = params._calculate_bb_dimension(section, triangulate=True)
 		correct_min = -1 * np.ones(3)
 		correct_max = 3 * np.ones(3)
 		np.testing.assert_almost_equal(xyz_min, correct_min, decimal=1)

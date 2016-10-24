@@ -307,9 +307,6 @@ class FFDParameters(object):
 		self._set_mapping()
 		self._set_transformation_params_to_zero()
 
-	def _set_box_origin(self, xyz):
-		self.origin_box = xyz
-
 	def _set_box_dimensions(self, min_xyz, max_xyz):
 		"""
 		Dimensions of the cage are set as distance from the origin (minimum) of the cage to
@@ -346,28 +343,27 @@ class FFDParameters(object):
 		self.array_mu_y = np.zeros(ctrl_pnts)
 		self.array_mu_z = np.zeros(ctrl_pnts)
 
-	def _calculate_bb_dimension(self, shape, tol=1e-6, triangualte=False, triangulate_tol=1e-1):
+	def _calculate_bb_dimension(self, shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
 		""" return the bounding box of the TopoDS_Shape `shape`
-		Parameters
 		----------
-		shape : TopoDS_Shape or a subclass such as TopoDS_Face
+		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
 			the shape to compute the bounding box from
-		tol: float
-			tolerance of the computed boundingbox
-		triangualte : bool
+		:param float tol: tolerance of the computed boundingbox
+		:param bool triangulate :
 			if True only the dimensions of the bb will take into account every part of the shape (also not 'visible')
 			if False only the 'visible' part is taken into account
 			*** Explanation: every UV-Surface has to be rectangular. When a solid is created surfaces are trimmed.
 			*** the trimmed part, however, is still saved inside a file. It is just 'invisible' when drawn in a program
+		:param float triangulate_tol: tolerance of triangulation (size of created triangles)
 		Returns
 		-------
 			tuple: consisting of two tuples: first one has coords of minimum, the second one coords of maximum
 		"""
 		bbox = Bnd_Box()
 		bbox.SetGap(tol)
-		if triangualte:
+		if triangulate:
 			BRepMesh_IncrementalMesh(shape, triangulate_tol)
-		brepbndlib_Add(shape, bbox, triangualte)
+		brepbndlib_Add(shape, bbox, triangulate)
 		xmin, ymin, zmin, xmax, ymax, zmax = bbox.Get()
 		xyz_min = np.array([xmin, ymin, zmin])
 		xyz_max = np.array([xmax, ymax, zmax])
