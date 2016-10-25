@@ -303,7 +303,6 @@ class FFDParameters(object):
 		"""
 		Builds a bounding box around the given shape. ALl parameters (with the exception of array_mu_x/y/z)
 		are set to match the computed box.
-		----------
 		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
 			the shape to compute the bounding box from
 		:param float tol: tolerance of the computed bounding box
@@ -313,7 +312,6 @@ class FFDParameters(object):
 			*** Explanation: every UV-Surface has to be rectangular. When a solid is created surfaces are trimmed.
 			*** the trimmed part, however, is still saved inside a file. It is just 'invisible' when drawn in a program
 		:param float triangulate_tol: tolerance of triangulation (size of created triangles)
-		:return:
 		"""
 		min_xyz, max_xyz = self._calculate_bb_dimension(shape, tol, triangulate, triangulate_tol)
 		self.origin_box = min_xyz
@@ -328,7 +326,6 @@ class FFDParameters(object):
 		the maximal point in each dimension.
 		:param iterable min_xyz: three values representing the minimal values of the bounding box in XYZ respectively
 		:param iterable max_xyz: three values representing the maximal values of the bounding box in XYZ respectively
-		:return:
 		"""
 		dims = [max_xyz[i] - min_xyz[i] for i in range(3)]
 		self.lenght_box_x = dims[0]
@@ -338,9 +335,8 @@ class FFDParameters(object):
 	def _set_position_of_vertices(self):
 		"""
 		Vertices of the control box around the object are set in this method.
-		Four vertex (non coplanar) are sufficient to uniquely identify a parallelepiped -- the
+		Four vertices (non coplanar) are sufficient to uniquely identify a parallelepiped -- the
 		second half of the box is created as a mirror reflection of the first four vertices.
-		:return:
 		"""
 		origin_array = np.array(self.origin_box)
 		dim = [self.lenght_box_x, self.lenght_box_y, self.lenght_box_z]
@@ -362,7 +358,6 @@ class FFDParameters(object):
 
 	def _calculate_bb_dimension(self, shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
 		""" Calculate dimensions (minima and maxima) of a box bounding the given shape
-		----------
 		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
 			the shape to compute the bounding box from
 		:param float tol: tolerance of the computed bounding box
@@ -371,7 +366,8 @@ class FFDParameters(object):
 			if False only the 'visible' part is taken into account
 			*See: `build_bounding_box`
 		:param float triangulate_tol: tolerance of triangulation (size of created triangles)
-		:return tuple: consisting of two tuples: first one has coords of minimum, the second one coords of maximum
+		:return: coordinates of minima and maxima along XYZ
+		:rtype: tuple
 		"""
 		bbox = Bnd_Box()
 		bbox.SetGap(tol)
