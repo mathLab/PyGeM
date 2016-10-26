@@ -342,9 +342,9 @@ class TestFFDParameters(TestCase):
 		self.assertAlmostEqual(params.lenght_box_y, tops[1], places=5)
 		self.assertAlmostEqual(params.lenght_box_z, tops[2], places=5)
 		np.testing.assert_almost_equal(params.position_vertex_0, origin, decimal=5)
-		np.testing.assert_equal(params.position_vertex_1, [1., 0., 0.])
-		np.testing.assert_equal(params.position_vertex_2, [0., 1., 0.])
-		np.testing.assert_equal(params.position_vertex_3, [0., 0., 1.])
+		np.testing.assert_almost_equal(params.position_vertex_1, [1., 0., 0.], decimal=5)
+		np.testing.assert_almost_equal(params.position_vertex_2, [0., 1., 0.], decimal=5)
+		np.testing.assert_almost_equal(params.position_vertex_3, [0., 0., 1.], decimal=5)
 
 	def test_set_box_dimension(self):
 		origin = np.array([0., 0., 0.])
