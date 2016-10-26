@@ -56,7 +56,7 @@ class FFDParameters(object):
 	:cvar numpy.ndarray position_vertex_2: position of the third vertex of the FFD bounding box.
 	:cvar numpy.ndarray position_vertex_3: position of the fourth vertex of the FFD bounding box.
 
-	:Example:
+	:Example: from file
 
 	>>> import pygem.params as ffdp
 
@@ -64,10 +64,19 @@ class FFDParameters(object):
 	>>> params1 = ffdp.FFDParameters()
 	>>> params1.read_parameters(filename='tests/test_datasets/parameters_test_ffd_identity.prm')
 
-	>>> # Creating a defaul paramters file with the right dimensions (if the file does not exists
+	>>> # Creating a default parameters file with the right dimensions (if the file does not exists
 	>>> # it is created with that name). So it is possible to manually edit it and read it again.
 	>>> params2 = ffdp.FFDParameters(n_control_points=[2, 3, 2])
 	>>> params2.read_parameters(filename='parameters_test.prm')
+
+	>>> # Creating bounding box of the given shape
+	>>> from OCC.IGESControl import IGESControl_Reader
+	>>> params3 = ffdp.FFDParameters()
+	>>> reader = IGESControl_Reader()
+	>>> reader.ReadFile('tests/test_datasets/test_pipe.igs')
+	>>> reader.TransferRoots()
+	>>> shape = reader.Shape()
+	>>> params3.build_bounding_box(shape)
 
 	.. note::
 		Four vertex (non coplanar) are sufficient to uniquely identify a parallelepiped.
@@ -303,14 +312,19 @@ class FFDParameters(object):
 		"""
 		Builds a bounding box around the given shape. ALl parameters (with the exception of array_mu_x/y/z)
 		are set to match the computed box.
+
 		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
 			the shape to compute the bounding box from
 		:param float tol: tolerance of the computed bounding box
-		:param bool triangulate :
-			if True only the dimensions of the bb will take into account every part of the shape (also not 'visible')
-			if False only the 'visible' part is taken into account
-			*** Explanation: every UV-Surface has to be rectangular. When a solid is created surfaces are trimmed.
-			*** the trimmed part, however, is still saved inside a file. It is just 'invisible' when drawn in a program
+		:param bool triangulate: Should shape be triangulated before the boudning box is created.
+
+			If ``True`` only the dimensions of the bb will take into account every part of the shape (also not *visible*)
+
+			If ``False`` only the *visible* part is taken into account
+
+			*Explanation:* every UV-Surface has to be rectangular. When a solid is created surfaces are trimmed.
+			the trimmed part, however, is still saved inside a file. It is just *invisible* when drawn in a program
+
 		:param float triangulate_tol: tolerance of triangulation (size of created triangles)
 		"""
 		min_xyz, max_xyz = self._calculate_bb_dimension(shape, tol, triangulate, triangulate_tol)
@@ -324,6 +338,7 @@ class FFDParameters(object):
 		"""
 		Dimensions of the cage are set as distance from the origin (minimum) of the cage to
 		the maximal point in each dimension.
+
 		:param iterable min_xyz: three values representing the minimal values of the bounding box in XYZ respectively
 		:param iterable max_xyz: three values representing the maximal values of the bounding box in XYZ respectively
 		"""
@@ -357,14 +372,18 @@ class FFDParameters(object):
 		self.array_mu_z = np.zeros(ctrl_pnts)
 
 	def _calculate_bb_dimension(self, shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
-		""" Calculate dimensions (minima and maxima) of a box bounding the given shape
+		""" Calculate dimensions (minima and maxima) of a box bounding the given
+
 		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
 			the shape to compute the bounding box from
 		:param float tol: tolerance of the computed bounding box
-		:param bool triangulate :
-			if True only the dimensions of the bb will take into account every part of the shape (also not 'visible')
-			if False only the 'visible' part is taken into account
-			*See: `build_bounding_box`
+		:param bool triangulate: Should shape be triangulated before the boudning box is created.
+
+			If ``True`` only the dimensions of the bb will take into account every part of the shape (also not *visible*)
+
+			If ``False`` only the *visible* part is taken into account
+
+			\*See :meth:`~params.FFDParameters.build_bounding_box`
 		:param float triangulate_tol: tolerance of triangulation (size of created triangles)
 		:return: coordinates of minima and maxima along XYZ
 		:rtype: tuple
