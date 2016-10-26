@@ -371,7 +371,8 @@ class FFDParameters(object):
 		self.array_mu_y = np.zeros(ctrl_pnts)
 		self.array_mu_z = np.zeros(ctrl_pnts)
 
-	def _calculate_bb_dimension(self, shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
+	@staticmethod
+	def _calculate_bb_dimension(shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
 		""" Calculate dimensions (minima and maxima) of a box bounding the given
 
 		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
