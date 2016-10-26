@@ -361,11 +361,19 @@ class FFDParameters(object):
 		self.position_vertex_3 = origin_array + np.array([.0, .0, dim[2]])
 
 	def _set_mapping(self):
+		"""
+		This method sets mapping from physcial domain to the reference domain (``psi_mapping``)
+		as well as inverse mapping (``inv_psi_mapping``).
+		"""
 		dim = [self.lenght_box_x, self.lenght_box_y, self.lenght_box_z]
 		self.psi_mapping = np.diag([1. / dim[i] for i in range(3)])
 		self.inv_psi_mapping = np.diag(dim)
 
 	def _set_transformation_params_to_zero(self):
+		"""
+		Sets transfomration parameters (``array_mu_x, array_mu_y, array_mu_z``) to arrays of zeros
+		(``numpy.zeros``). The shape of arrays corresponds to the number of control points in each dimension.
+		"""
 		ctrl_pnts = self.n_control_points
 		self.array_mu_x = np.zeros(ctrl_pnts)
 		self.array_mu_y = np.zeros(ctrl_pnts)
@@ -373,7 +381,7 @@ class FFDParameters(object):
 
 	@staticmethod
 	def _calculate_bb_dimension(shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
-		""" Calculate dimensions (minima and maxima) of a box bounding the given
+		""" Calculate dimensions (minima and maxima) of a box bounding the
 
 		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
 			the shape to compute the bounding box from
