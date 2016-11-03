@@ -14,8 +14,10 @@ class VtkHandler(fh.FileHandler):
 
 	:cvar string infile: name of the input file to be processed.
 	:cvar string outfile: name of the output file where to write in.
-	:cvar string extension: extension of the input/output files. It is equal to '.vtk'.
+	:cvar list EXTENSIONS: extensions of the input/output files. It is equal to ['.vtk'].
 	"""
+
+	EXTENSIONS = ['.vtk']
 
 	def __init__(self):
 		super(VtkHandler, self).__init__()
@@ -71,7 +73,7 @@ class VtkHandler(fh.FileHandler):
 		"""
 		self._check_filename_type(filename)
 		self._check_extension(filename)
-		self._check_infile_instantiation(self.infile)
+		self._check_infile_instantiation()
 
 		self.outfile = filename
 

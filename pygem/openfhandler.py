@@ -11,13 +11,14 @@ class OpenFoamHandler(fh.FileHandler):
 
 	:cvar string infile: name of the input file to be processed.
 	:cvar string outfile: name of the output file where to write in.
-	:cvar string extension: extension of the input/output files. It is equal to '' since
+	:cvar list EXTENSIONS: extensions of the input/output files. It is equal to [''] since
 		openFOAM files do not have extension.
 	"""
 
+	EXTENSIONS = ['']
+
 	def __init__(self):
 		super(OpenFoamHandler, self).__init__()
-		self.extension = ''
 
 	def parse(self, filename):
 		"""
@@ -70,7 +71,7 @@ class OpenFoamHandler(fh.FileHandler):
 		"""
 		self._check_filename_type(filename)
 		self._check_extension(filename)
-		self._check_infile_instantiation(self.infile)
+		self._check_infile_instantiation()
 
 		self.outfile = filename
 

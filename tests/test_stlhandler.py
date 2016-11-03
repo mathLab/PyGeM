@@ -12,15 +12,15 @@ class TestStlHandler(TestCase):
 
 	def test_stl_default_infile_member(self):
 		stl_handler = sh.StlHandler()
-		assert stl_handler.infile == None
+		self.assertIsNone(stl_handler.infile)
 
 	def test_stl_default_outfile_member(self):
 		stl_handler = sh.StlHandler()
-		assert stl_handler.outfile == None
+		self.assertIsNone(stl_handler.outfile)
 
 	def test_stl_default_extension_member(self):
 		stl_handler = sh.StlHandler()
-		assert stl_handler.extension == '.stl'
+		self.assertListEqual(stl_handler.EXTENSIONS, ['.stl'])
 
 	def test_stl_parse_failing_filename_type(self):
 		stl_handler = sh.StlHandler()
@@ -37,12 +37,12 @@ class TestStlHandler(TestCase):
 	def test_stl_parse_infile(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
-		assert stl_handler.infile == 'tests/test_datasets/test_sphere.stl'
+		self.assertEqual(stl_handler.infile, 'tests/test_datasets/test_sphere.stl')
 
 	def test_stl_parse_shape(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
-		assert mesh_points.shape == (7200, 3)
+		self.assertTupleEqual(mesh_points.shape, (7200, 3))
 
 	def test_stl_parse_coords_1(self):
 		stl_handler = sh.StlHandler()
@@ -103,8 +103,8 @@ class TestStlHandler(TestCase):
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
 		outfilename = 'tests/test_datasets/test_sphere_out.stl'
 		stl_handler.write(mesh_points, outfilename)
-		assert stl_handler.outfile == outfilename
-		os.remove(outfilename)
+		self.assertEqual(stl_handler.outfile, outfilename)
+		self.addCleanup(os.remove, outfilename)
 
 	def test_stl_write_comparison(self):
 		stl_handler = sh.StlHandler()
@@ -124,7 +124,7 @@ class TestStlHandler(TestCase):
 
 		stl_handler.write(mesh_points, outfilename)
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
-		os.remove(outfilename)
+		self.addCleanup(os.remove, outfilename)
 
 	def test_stl_write_binary_from_binary(self):
 		stl_handler = sh.StlHandler()
@@ -144,7 +144,7 @@ class TestStlHandler(TestCase):
 		outfilename = 'tests/test_datasets/test_sphere_out.stl'
 
 		stl_handler.write(mesh_points, outfilename, write_bin=True)
-		os.remove(outfilename)
+		self.addCleanup(os.remove, outfilename)
 
 	def test_stl_write_binary_from_ascii(self):
 		stl_handler = sh.StlHandler()
@@ -162,7 +162,7 @@ class TestStlHandler(TestCase):
 		outfilename = 'tests/test_datasets/test_sphere_out.stl'
 
 		stl_handler.write(mesh_points, outfilename, write_bin=True)
-		os.remove(outfilename)
+		self.addCleanup(os.remove, outfilename)
 
 	def test_stl_write_ascii_from_binary(self):
 		stl_handler = sh.StlHandler()
@@ -184,14 +184,14 @@ class TestStlHandler(TestCase):
 
 		stl_handler.write(mesh_points, outfilename, write_bin=False)
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
-		os.remove(outfilename)
+		self.addCleanup(os.remove, outfilename)
 
 	def test_stl_plot_save_fig(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
 		stl_handler.plot(save_fig=True)
 		self.assertTrue(os.path.isfile('tests/test_datasets/test_sphere.png'))
-		os.remove('tests/test_datasets/test_sphere.png')
+		self.addCleanup(os.remove, 'tests/test_datasets/test_sphere.png')
 
 	def test_stl_plot_save_fig_bin(self):
 		stl_handler = sh.StlHandler()
@@ -202,7 +202,7 @@ class TestStlHandler(TestCase):
 		self.assertTrue(
 			os.path.isfile('tests/test_datasets/test_sphere_bin.png')
 		)
-		os.remove('tests/test_datasets/test_sphere_bin.png')
+		self.addCleanup(os.remove, 'tests/test_datasets/test_sphere_bin.png')
 
 	def test_stl_plot_save_fig_plot_file(self):
 		stl_handler = sh.StlHandler()
@@ -210,7 +210,7 @@ class TestStlHandler(TestCase):
 			plot_file='tests/test_datasets/test_sphere.stl', save_fig=True
 		)
 		self.assertTrue(os.path.isfile('tests/test_datasets/test_sphere.png'))
-		os.remove('tests/test_datasets/test_sphere.png')
+		self.addCleanup(os.remove, 'tests/test_datasets/test_sphere.png')
 
 	def test_stl_plot_failing_outfile_type(self):
 		stl_handler = sh.StlHandler()

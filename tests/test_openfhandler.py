@@ -12,15 +12,15 @@ class TestOpenFoamHandler(TestCase):
 
 	def test_open_foam_default_infile_member(self):
 		open_foam_handler = ofh.OpenFoamHandler()
-		assert open_foam_handler.infile == None
+		self.assertIsNone(open_foam_handler.infile)
 
 	def test_open_foam_default_outfile_member(self):
 		open_foam_handler = ofh.OpenFoamHandler()
-		assert open_foam_handler.outfile == None
+		self.assertIsNone(open_foam_handler.outfile)
 
 	def test_open_foam_default_extension_member(self):
 		open_foam_handler = ofh.OpenFoamHandler()
-		assert open_foam_handler.extension == ''
+		self.assertListEqual(open_foam_handler.EXTENSIONS, [''])
 
 	def test_open_foam_parse_failing_filename_type(self):
 		open_foam_handler = ofh.OpenFoamHandler()
@@ -39,14 +39,14 @@ class TestOpenFoamHandler(TestCase):
 		mesh_points = open_foam_handler.parse(
 			'tests/test_datasets/test_openFOAM'
 		)
-		assert open_foam_handler.infile == 'tests/test_datasets/test_openFOAM'
+		self.assertEqual(open_foam_handler.infile, 'tests/test_datasets/test_openFOAM')
 
 	def test_open_foam_parse_shape(self):
 		open_foam_handler = ofh.OpenFoamHandler()
 		mesh_points = open_foam_handler.parse(
 			'tests/test_datasets/test_openFOAM'
 		)
-		assert mesh_points.shape == (21812, 3)
+		self.assertTupleEqual(mesh_points.shape, (21812, 3))
 
 	def test_open_foam_parse_coords_1(self):
 		open_foam_handler = ofh.OpenFoamHandler()
@@ -116,8 +116,8 @@ class TestOpenFoamHandler(TestCase):
 		)
 		outfilename = 'tests/test_datasets/test_openFOAM_out'
 		open_foam_handler.write(mesh_points, outfilename)
-		assert open_foam_handler.outfile == outfilename
-		os.remove(outfilename)
+		self.assertEqual(open_foam_handler.outfile, outfilename)
+		self.addCleanup(os.remove, outfilename)
 
 	def test_open_foam_write_comparison(self):
 		open_foam_handler = ofh.OpenFoamHandler()
@@ -139,4 +139,4 @@ class TestOpenFoamHandler(TestCase):
 
 		open_foam_handler.write(mesh_points, outfilename)
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
-		os.remove(outfilename)
+		self.addCleanup(os.remove, outfilename)

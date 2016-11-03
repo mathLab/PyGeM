@@ -12,15 +12,15 @@ class TestUnvHandler(TestCase):
 
 	def test_unv_default_infile_member(self):
 		unv_handler = uh.UnvHandler()
-		assert unv_handler.infile == None
+		self.assertIsNone(unv_handler.infile)
 
 	def test_unv_default_outfile_member(self):
 		unv_handler = uh.UnvHandler()
-		assert unv_handler.outfile == None
+		self.assertIsNone(unv_handler.outfile)
 
 	def test_unv_default_extension_member(self):
 		unv_handler = uh.UnvHandler()
-		assert unv_handler.extension == '.unv'
+		self.assertListEqual(unv_handler.EXTENSIONS, ['.unv'])
 
 	def test_unv_parse_failing_filename_type(self):
 		unv_handler = uh.UnvHandler()
@@ -37,12 +37,12 @@ class TestUnvHandler(TestCase):
 	def test_unv_parse_infile(self):
 		unv_handler = uh.UnvHandler()
 		mesh_points = unv_handler.parse('tests/test_datasets/test_square.unv')
-		assert unv_handler.infile == 'tests/test_datasets/test_square.unv'
+		self.assertEqual(unv_handler.infile, 'tests/test_datasets/test_square.unv')
 
 	def test_unv_parse_shape(self):
 		unv_handler = uh.UnvHandler()
 		mesh_points = unv_handler.parse('tests/test_datasets/test_square.unv')
-		assert mesh_points.shape == (256, 3)
+		self.assertTupleEqual(mesh_points.shape, (256, 3))
 
 	def test_unv_parse_coords_1(self):
 		unv_handler = uh.UnvHandler()
@@ -96,8 +96,8 @@ class TestUnvHandler(TestCase):
 		mesh_points = unv_handler.parse('tests/test_datasets/test_square.unv')
 		outfilename = 'tests/test_datasets/test_square_out.unv'
 		unv_handler.write(mesh_points, outfilename)
-		assert unv_handler.outfile == outfilename
-		os.remove(outfilename)
+		self.assertEqual(unv_handler.outfile, outfilename)
+		self.addCleanup(os.remove, outfilename)
 
 	def test_unv_write_comparison_1(self):
 		unv_handler = uh.UnvHandler()
@@ -108,7 +108,7 @@ class TestUnvHandler(TestCase):
 
 		unv_handler.write(mesh_points, outfilename)
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
-		os.remove(outfilename)
+		self.addCleanup(os.remove, outfilename)
 
 	def test_unv_write_comparison_2(self):
 		unv_handler = uh.UnvHandler()
@@ -126,4 +126,4 @@ class TestUnvHandler(TestCase):
 
 		unv_handler.write(mesh_points, outfilename)
 		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
-		os.remove(outfilename)
+		self.addCleanup(os.remove, outfilename)

@@ -42,6 +42,14 @@ class TestPackage(TestCase):
 		import pygem as pg
 		guih = pg.gui.Gui()
 
+	def test_import_pg_10(self):
+		import pygem as pg
+		nurh = pg.nurbshandler.NurbsHandler()
+
+	def test_import_pg_11(self):
+		import pygem as pg
+		stph = pg.stephandler.StepHandler()
+
 	def test_modules_name(self):
 		# it checks that __all__ includes all the .py files in pygem folder
 		import pygem
@@ -50,6 +58,7 @@ class TestPackage(TestCase):
 		f_aux = []
 		for (__, __, filenames) in walk('pygem'):
 			f_aux.extend(filenames)
+			print filenames
 
 		f = []
 		for i in f_aux:
