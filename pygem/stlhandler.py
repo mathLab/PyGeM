@@ -14,13 +14,13 @@ class StlHandler(fh.FileHandler):
 
 	:cvar string infile: name of the input file to be processed.
 	:cvar string outfile: name of the output file where to write in.
-	:cvar list EXTENSIONS: extensions of the input/output files. It is equal to ['.stl'].
+	:cvar list extensions: extensions of the input/output files. It is equal to ['.stl'].
 	"""
-
-	EXTENSIONS = ['.stl']
 
 	def __init__(self):
 		super(StlHandler, self).__init__()
+		self.extensions = ['.stl']
+
 
 	def parse(self, filename):
 		"""

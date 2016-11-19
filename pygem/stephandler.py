@@ -14,7 +14,7 @@ class StepHandler(NurbsHandler):
 
 	:cvar string infile: name of the input file to be processed.
 	:cvar string outfile: name of the output file where to write in.
-	:cvar list EXTENSIONS: list of extensions of the input/output files.
+	:cvar list extensions: list of extensions of the input/output files.
 		It is equal to ['.step', '.stp'].
 	:cvar list control_point_position: index of the first NURBS control point (or pole)
 		of each face of the iges file.
@@ -29,16 +29,15 @@ class StepHandler(NurbsHandler):
 			  can be hard for the software, especially when the starting CAD has not been
 			  made for analysis but for design purposes.
 	"""
-	EXTENSIONS = ['.step', '.stp']
 
 	def __init__(self):
 		super(StepHandler, self).__init__()
 		self._control_point_position = None
+		self.extensions = ['.step', '.stp']
 
-	@classmethod
-	def load_shape_from_file(cls, filename):
+	def load_shape_from_file(self, filename):
 		"""
-		This class method loads a shape from the file `filename`.
+		This method loads a shape from the file `filename`.
 
 		:param string filename: name of the input file.
 			It should have proper extension (.step or .stp)
@@ -46,26 +45,28 @@ class StepHandler(NurbsHandler):
 		:return: shape: loaded shape
 		:rtype: TopoDS_Shape
 		"""
-		cls._check_filename_type(filename)
-		cls._check_extension(filename)
+		self._check_filename_type(filename)
+		self._check_extension(filename)
 		reader = STEPControl_Reader()
 		reader.ReadFile(filename)
 		reader.TransferRoots()
 		shape = reader.Shape()
 		return shape
 
-	@classmethod
-	def write_shape_to_file(cls, shape, filename):
+	def write_shape_to_file(self, shape, filename):
 		"""
-		This class method saves the `shape` to the file `filename`.
+		This method saves the `shape` to the file `filename`.
 
 		:param: TopoDS_Shape shape: loaded shape
 		:param string filename: name of the input file.
 			It should have proper extension (.step or .stp)
 		"""
-		cls._check_filename_type(filename)
-		cls._check_extension(filename)
+		self._check_filename_type(filename)
+		self._check_extension(filename)
 		step_writer = STEPControl_Writer()
+		# Changes write schema to STEP standard AP203
+		# It is considered the most secure standard for STEP.
+		# *According to PythonOCC documentation (http://www.pythonocc.org/)
 		Interface_Static_SetCVal("write.step.schema", "AP203")
 		step_writer.Transfer(shape, STEPControl_AsIs)
 		step_writer.Write(filename)

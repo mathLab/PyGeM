@@ -14,7 +14,7 @@ class TestStepHandler(TestCase):
 
 	def test_step_default_extension_member(self):
 		step_handler = sh.StepHandler()
-		self.assertListEqual(step_handler.EXTENSIONS, ['.step', '.stp'])
+		self.assertListEqual(step_handler.extensions, ['.step', '.stp'])
 
 	def test_step_parse_failing_filename_type(self):
 		step_handler = sh.StepHandler()
@@ -54,38 +54,32 @@ class TestStepHandler(TestCase):
 	def test_step_parse_coords_1(self):
 		step_handler = sh.StepHandler()
 		mesh_points = step_handler.parse('tests/test_datasets/test_pipe.step')
-		np.testing.assert_almost_equal(mesh_points[6][0], -1000.0)
+		np.testing.assert_almost_equal(mesh_points[6][0], 1500.0)
 
 	def test_step_parse_coords_2(self):
 		step_handler = sh.StepHandler()
 		mesh_points = step_handler.parse('tests/test_datasets/test_pipe.step')
-		np.testing.assert_almost_equal(mesh_points[8][1], 999.99999997448208)
+		np.testing.assert_almost_equal(mesh_points[8][1], -1000.0)
 
 	def test_step_parse_coords_3(self):
 		step_handler = sh.StepHandler()
 		mesh_points = step_handler.parse('tests/test_datasets/test_pipe.step')
-		print np.max(mesh_points[:, 0])
-		print np.max(mesh_points[:, 1])
-		print np.max(mesh_points[:, 2])
-		print np.min(mesh_points[:, 0])
-		print np.min(mesh_points[:, 1])
-		print np.min(mesh_points[:, 2])
-		np.testing.assert_almost_equal(mesh_points[30][2], 10000.0)
+		np.testing.assert_almost_equal(mesh_points[30][2], 0.0)
 
 	def test_step_parse_coords_4(self):
 		step_handler = sh.StepHandler()
 		mesh_points = step_handler.parse('tests/test_datasets/test_pipe.step')
-		np.testing.assert_almost_equal(mesh_points[0][0], 0.0)
+		np.testing.assert_almost_equal(mesh_points[0][0], -1500.0)
 
 	def test_step_parse_coords_5(self):
 		step_handler = sh.StepHandler()
 		mesh_points = step_handler.parse('tests/test_datasets/test_pipe.step')
-		np.testing.assert_almost_equal(mesh_points[-1][2], 10000.0)
+		np.testing.assert_almost_equal(mesh_points[-1][2], 0.0)
 
 	def test_step_parse_coords_5_stp(self):
 		step_handler = sh.StepHandler()
 		mesh_points = step_handler.parse('tests/test_datasets/test_pipe.stp')
-		np.testing.assert_almost_equal(mesh_points[-1][2], 10000.0)
+		np.testing.assert_almost_equal(mesh_points[-1][2], 0.0)
 
 	def test_step_write_failing_filename_type(self):
 		step_handler = sh.StepHandler()
@@ -191,43 +185,51 @@ class TestStepHandler(TestCase):
 			step_handler.show(show_file=1.1)
 
 	def test_step_load_shape_from_file_raises_wrong_type(self):
+		step_handler = sh.StepHandler()
 		with self.assertRaises(TypeError):
-			sh.StepHandler.load_shape_from_file(None)
+			step_handler.load_shape_from_file(None)
 
 	def test_step_load_shape_from_file_raises_wrong_extension(self):
+		step_handler = sh.StepHandler()
 		with self.assertRaises(ValueError):
-			sh.StepHandler.load_shape_from_file('tests/test_datasets/test_pipe.igs')
+			step_handler.load_shape_from_file('tests/test_datasets/test_pipe.igs')
 
 	def test_step_load_shape_correct_step(self):
-		shape = sh.StepHandler.load_shape_from_file(
+		step_handler = sh.StepHandler()
+		shape = step_handler.load_shape_from_file(
 			'tests/test_datasets/test_pipe.step'
 		)
 		self.assertEqual(type(shape), TopoDS_Shape)
 
 	def test_step_load_shape_correct_stp(self):
-		shape = sh.StepHandler.load_shape_from_file(
+		step_handler = sh.StepHandler()
+		shape = step_handler.load_shape_from_file(
 			'tests/test_datasets/test_pipe.stp'
 		)
 		self.assertEqual(type(shape), TopoDS_Shape)
 
 	def test_step_write_shape_to_file_raises_wrong_type(self):
+		step_handler = sh.StepHandler()
 		with self.assertRaises(TypeError):
-			sh.StepHandler.write_shape_to_file(None, None)
+			step_handler.write_shape_to_file(None, None)
 
 	def test_step_write_shape_to_file_raises_wrong_extension(self):
+		step_handler = sh.StepHandler()
 		with self.assertRaises(ValueError):
-			sh.StepHandler.load_shape_from_file('tests/test_datasets/x.igs')
+			step_handler.load_shape_from_file('tests/test_datasets/x.igs')
 
 	def test_step_write_shape_to_file_step(self):
 		shp = BRepPrimAPI_MakeBox(1., 1., 1.).Shape()
 		path = 'tests/test_datasets/x.step'
-		sh.StepHandler.write_shape_to_file(shp, path)
+		step_handler = sh.StepHandler()
+		step_handler.write_shape_to_file(shp, path)
 		self.assertTrue(os.path.exists(path))
 		self.addCleanup(os.remove, path)
 
 	def test_step_write_shape_to_file_stp(self):
 		shp = BRepPrimAPI_MakeBox(1., 1., 1.).Shape()
 		path = 'tests/test_datasets/x.stp'
-		sh.StepHandler.write_shape_to_file(shp, path)
+		step_handler = sh.StepHandler()
+		step_handler.write_shape_to_file(shp, path)
 		self.assertTrue(os.path.exists(path))
 		self.addCleanup(os.remove, path)

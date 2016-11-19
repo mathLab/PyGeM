@@ -20,7 +20,7 @@ class TestOpenFoamHandler(TestCase):
 
 	def test_open_foam_default_extension_member(self):
 		open_foam_handler = ofh.OpenFoamHandler()
-		self.assertListEqual(open_foam_handler.EXTENSIONS, [''])
+		self.assertListEqual(open_foam_handler.extensions, [''])
 
 	def test_open_foam_parse_failing_filename_type(self):
 		open_foam_handler = ofh.OpenFoamHandler()

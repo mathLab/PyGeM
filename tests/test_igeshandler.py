@@ -14,7 +14,7 @@ class TestIgesHandler(TestCase):
 
 	def test_iges_default_extension_member(self):
 		iges_handler = ih.IgesHandler()
-		self.assertListEqual(iges_handler.EXTENSIONS, ['.iges', '.igs'])
+		self.assertListEqual(iges_handler.extensions, ['.iges', '.igs'])
 
 	def test_iges_parse_failing_filename_type(self):
 		iges_handler = ih.IgesHandler()
@@ -64,12 +64,6 @@ class TestIgesHandler(TestCase):
 	def test_iges_parse_coords_3(self):
 		iges_handler = ih.IgesHandler()
 		mesh_points = iges_handler.parse('tests/test_datasets/test_pipe.iges')
-		print np.max(mesh_points[:, 0])
-		print np.max(mesh_points[:, 1])
-		print np.max(mesh_points[:, 2])
-		print np.min(mesh_points[:, 0])
-		print np.min(mesh_points[:, 1])
-		print np.min(mesh_points[:, 2])
 		np.testing.assert_almost_equal(mesh_points[30][2], 10000.0)
 
 	def test_iges_parse_coords_4(self):
@@ -191,45 +185,53 @@ class TestIgesHandler(TestCase):
 			iges_handler.show(ihow_file=1.1)
 
 	def test_iges_load_shape_from_file_raises_wrong_type(self):
+		iges_handler = ih.IgesHandler()
 		with self.assertRaises(TypeError):
-			ih.IgesHandler.load_shape_from_file(None)
+			iges_handler.load_shape_from_file(None)
 
 	def test_iges_load_shape_from_file_raises_wrong_extension(self):
+		iges_handler = ih.IgesHandler()
 		with self.assertRaises(ValueError):
-			ih.IgesHandler.load_shape_from_file(
+			iges_handler.load_shape_from_file(
 				'tests/test_datasets/test_pipe.stp'
 			)
 
 	def test_iges_load_shape_correct_iges(self):
-		shape = ih.IgesHandler.load_shape_from_file(
+		iges_handler = ih.IgesHandler()
+		shape = iges_handler.load_shape_from_file(
 			'tests/test_datasets/test_pipe.iges'
 		)
 		self.assertEqual(type(shape), TopoDS_Shape)
 
 	def test_iges_load_shape_correct_igs(self):
-		shape = ih.IgesHandler.load_shape_from_file(
+		iges_handler = ih.IgesHandler()
+		shape = iges_handler.load_shape_from_file(
 			'tests/test_datasets/test_pipe.igs'
 		)
 		self.assertEqual(type(shape), TopoDS_Shape)
 
 	def test_iges_write_shape_to_file_raises_wrong_type(self):
+		iges_handler = ih.IgesHandler()
 		with self.assertRaises(TypeError):
-			ih.IgesHandler.write_shape_to_file(None, None)
+			iges_handler.write_shape_to_file(None, None)
 
 	def test_iges_write_shape_to_file_raises_wrong_extension(self):
+		iges_handler = ih.IgesHandler()
 		with self.assertRaises(ValueError):
-			ih.IgesHandler.load_shape_from_file('tests/test_datasets/x.stp')
+			iges_handler.load_shape_from_file('tests/test_datasets/x.stp')
 
 	def test_iges_write_shape_to_file_iges(self):
 		ihp = BRepPrimAPI_MakeBox(1., 1., 1.).Shape()
 		path = 'tests/test_datasets/x.iges'
-		ih.IgesHandler.write_shape_to_file(ihp, path)
+		iges_handler = ih.IgesHandler()
+		iges_handler.write_shape_to_file(ihp, path)
 		self.assertTrue(os.path.exists(path))
 		self.addCleanup(os.remove, path)
 
 	def test_iges_write_shape_to_file_igs(self):
 		ihp = BRepPrimAPI_MakeBox(1., 1., 1.).Shape()
 		path = 'tests/test_datasets/x.igs'
-		ih.IgesHandler.write_shape_to_file(ihp, path)
+		iges_handler = ih.IgesHandler()
+		iges_handler.write_shape_to_file(ihp, path)
 		self.assertTrue(os.path.exists(path))
 		self.addCleanup(os.remove, path)

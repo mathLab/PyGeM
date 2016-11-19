@@ -20,7 +20,7 @@ class TestVtkHandler(TestCase):
 
 	def test_vtk_default_extension_member(self):
 		vtk_handler = vh.VtkHandler()
-		assert vtk_handler.extension == '.vtk'
+		self.assertListEqual(vtk_handler.extensions, ['.vtk'])
 
 	def test_vtk_parse_failing_filename_type(self):
 		vtk_handler = vh.VtkHandler()

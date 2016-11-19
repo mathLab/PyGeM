@@ -1,5 +1,7 @@
 """
-Derived module from filehandler.py to handle iges and igs files.
+Derived module from filehandler.py to handle iges/igs and step/stp files.
+Implements all methods for parsing an object and applying FFD.
+File handling operations (reading/writing) must be implemented in derived classes.
 """
 import os
 
@@ -64,8 +66,7 @@ class NurbsHandler(fh.FileHandler):
 				"You can not write a file without having parsed one."
 			)
 
-	@classmethod
-	def load_shape_from_file(cls, filename):
+	def load_shape_from_file(self, filename):
 		"""
 		Abstract method to load a specific file as a shape.
 
@@ -73,7 +74,7 @@ class NurbsHandler(fh.FileHandler):
 		"""
 		raise NotImplementedError(
 			"Subclass must implement abstract method " +\
-			cls.__class__.__name__ + ".load_shape_from_file"
+			self.__class__.__name__ + ".load_shape_from_file"
 		)
 
 	def parse(self, filename):
@@ -236,8 +237,7 @@ class NurbsHandler(fh.FileHandler):
 			faces_explorer.Next()
 		self.write_shape_to_file(compound, self.outfile)
 
-	@classmethod
-	def write_shape_to_file(cls, shape, filename):
+	def write_shape_to_file(self, shape, filename):
 		"""
 		Abstract method to write the 'shape' to the `filename`.
 
@@ -245,7 +245,7 @@ class NurbsHandler(fh.FileHandler):
 		"""
 		raise NotImplementedError(
 			"Subclass must implement abstract method " +\
-			cls.__class__.__name__ + ".write_shape_to_file"
+			self.__class__.__name__ + ".write_shape_to_file"
 		)
 
 	def plot(self, plot_file=None, save_fig=False):

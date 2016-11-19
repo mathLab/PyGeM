@@ -20,7 +20,7 @@ class TestStlHandler(TestCase):
 
 	def test_stl_default_extension_member(self):
 		stl_handler = sh.StlHandler()
-		self.assertListEqual(stl_handler.EXTENSIONS, ['.stl'])
+		self.assertListEqual(stl_handler.extensions, ['.stl'])
 
 	def test_stl_parse_failing_filename_type(self):
 		stl_handler = sh.StlHandler()

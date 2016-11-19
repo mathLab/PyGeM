@@ -13,7 +13,7 @@ class IgesHandler(NurbsHandler):
 
 	:cvar string infile: name of the input file to be processed.
 	:cvar string outfile: name of the output file where to write in.
-	:cvar list EXTENSIONS: list of extensions of the input/output files.
+	:cvar list extensions: list of extensions of the input/output files.
 		It is equal to ['.iges', '.igs'].
 	:cvar list control_point_position: index of the first NURBS control point (or pole)
 		of each face of the iges file.
@@ -28,13 +28,12 @@ class IgesHandler(NurbsHandler):
 			  can be hard for the software, especially when the starting CAD has not been 
 			  made for analysis but for design purposes.
 	"""
-	EXTENSIONS = ['.iges', '.igs']
 
 	def __init__(self):
 		super(IgesHandler, self).__init__()
+		self.extensions = ['.iges', '.igs']
 
-	@classmethod
-	def load_shape_from_file(cls, filename):
+	def load_shape_from_file(self, filename):
 		"""
 		This class method loads a shape from the file `filename`.
 
@@ -44,16 +43,15 @@ class IgesHandler(NurbsHandler):
 		:return: shape: loaded shape
 		:rtype: TopoDS_Shape
 		"""
-		cls._check_filename_type(filename)
-		cls._check_extension(filename)
+		self._check_filename_type(filename)
+		self._check_extension(filename)
 		reader = IGESControl_Reader()
 		reader.ReadFile(filename)
 		reader.TransferRoots()
 		shape = reader.Shape()
 		return shape
 
-	@classmethod
-	def write_shape_to_file(cls, shape, filename):
+	def write_shape_to_file(self, shape, filename):
 		"""
 		This class method saves the `shape` to the file `filename`.
 
@@ -61,8 +59,8 @@ class IgesHandler(NurbsHandler):
 		:param string filename: name of the input file.
 			It should have proper extension (.iges or .igs)
 		"""
-		cls._check_filename_type(filename)
-		cls._check_extension(filename)
+		self._check_filename_type(filename)
+		self._check_extension(filename)
 		writer = IGESControl_Writer()
 		writer.AddShape(shape)
 		writer.Write(filename)

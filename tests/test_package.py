@@ -58,7 +58,6 @@ class TestPackage(TestCase):
 		f_aux = []
 		for (__, __, filenames) in walk('pygem'):
 			f_aux.extend(filenames)
-			print filenames
 
 		f = []
 		for i in f_aux:

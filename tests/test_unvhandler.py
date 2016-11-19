@@ -20,7 +20,7 @@ class TestUnvHandler(TestCase):
 
 	def test_unv_default_extension_member(self):
 		unv_handler = uh.UnvHandler()
-		self.assertListEqual(unv_handler.EXTENSIONS, ['.unv'])
+		self.assertListEqual(unv_handler.extensions, ['.unv'])
 
 	def test_unv_parse_failing_filename_type(self):
 		unv_handler = uh.UnvHandler()

@@ -73,7 +73,7 @@ class Gui(object):
 		"""
 		self.filename_geometry = askopenfilename(filetypes=[("IGES File", ('*.iges', '*.igs')), \
 		 ("OpenFOAM File", '*'), ('STL File', '*.stl'), ('UNV File', '*.unv'), \
-		 ('VTK File', '*.vtk'), ('All', '*')])
+		 ('VTK File', '*.vtk'), ('STEP File', ('*.step, *.stp')) ('All', '*')])
 		self.print_geometry_path.set(self.filename_geometry)
 		self.label_geo.configure(fg='green')
 
@@ -97,12 +97,16 @@ class Gui(object):
 		params.read_parameters(filename=self.filename_parameters)
 
 		file_extension_in = os.path.splitext(self.filename_geometry)[-1]
-		ext_handlers = {'.stl': pg.stlhandler.StlHandler(), \
-		 '.iges': pg.igeshandler.IgesHandler(), \
-		 '.igs': pg.igeshandler.IgesHandler(), \
-		 '.unv': pg.unvhandler.UnvHandler(), \
-		 '': pg.openfhandler.OpenFoamHandler(), \
-		 '.vtk': pg.vtkhandler.VtkHandler()}
+		ext_handlers = {
+			'.stl': pg.stlhandler.StlHandler(),
+			'.iges': pg.igeshandler.IgesHandler(),
+			'.igs': pg.igeshandler.IgesHandler(),
+			'.unv': pg.unvhandler.UnvHandler(),
+			'': pg.openfhandler.OpenFoamHandler(),
+			'.vtk': pg.vtkhandler.VtkHandler(),
+			'.stp': pg.stephandler.StepHandler(),
+			'.step': pg.stephandler.StepHandler(),
+		}
 
 		if file_extension_in in ext_handlers:
 			geo_handler = ext_handlers[file_extension_in]

@@ -29,15 +29,17 @@ class TestNurbsHandler(TestCase):
 
 	def test_nurbs_default_extension_member(self):
 		nurbs_handler = NurbsHandler()
-		self.assertListEqual(nurbs_handler.EXTENSIONS, [])
+		self.assertListEqual(nurbs_handler.extensions, [])
 
 	def test_nurbs_load_shape_from_file_raises(self):
+		nurbs_handler = NurbsHandler()
 		with self.assertRaises(NotImplementedError):
-			NurbsHandler.load_shape_from_file(None)
+			nurbs_handler.load_shape_from_file(None)
 
 	def test_nurbs_write_shape_to_file_raises(self):
+		nurbs_handler = NurbsHandler()
 		with self.assertRaises(NotImplementedError):
-			NurbsHandler.write_shape_to_file(None, None)
+			nurbs_handler.write_shape_to_file(None, None)
 
 	def test_nurbs_check_infile_instantiation_no_shape(self):
 		nurbs_handler = NurbsHandler()

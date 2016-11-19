@@ -11,13 +11,12 @@ class UnvHandler(fh.FileHandler):
 
 	:cvar string infile: name of the input file to be processed.
 	:cvar string outfile: name of the output file where to write in.
-	:cvar list EXTENSIONS: extensions of the input/output files. It is equal to ['.unv'].
+	:cvar list extensions: extensions of the input/output files. It is equal to ['.unv'].
 	"""
-
-	EXTENSIONS = ['.unv']
 
 	def __init__(self):
 		super(UnvHandler, self).__init__()
+		self.extensions = ['.unv']
 
 	def parse(self, filename):
 		"""

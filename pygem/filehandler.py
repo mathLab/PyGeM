@@ -10,14 +10,14 @@ class FileHandler(object):
 
 	:cvar string infile: name of the input file to be processed.
 	:cvar string outfile: name of the output file where to write in.
-	:cvar list EXTENSIONS: extensions of the input/output files. It is specific for each
+	:cvar list extensions: extensions of the input/output files. It is specific for each
 		subclass.
 	"""
-	EXTENSIONS = []
 
 	def __init__(self):
 		self.infile = None
 		self.outfile = None
+		self.extensions = []
 
 	def parse(self, *args):
 		"""
@@ -39,8 +39,7 @@ class FileHandler(object):
 			"Subclass must implement abstract method " \
 		+ self.__class__.__name__ + ".write")
 
-	@classmethod
-	def _check_extension(cls, filename):
+	def _check_extension(self, filename):
 		"""
 		This private class method checks if the given `filename` has the proper `extension` set
 		in the child class. If not it raises a ValueError.
@@ -48,10 +47,10 @@ class FileHandler(object):
 		:param string filename: file to check.
 		"""
 		__, file_ext = os.path.splitext(filename)
-		if file_ext not in cls.EXTENSIONS:
+		if file_ext not in self.extensions:
 			raise ValueError(
 				'The input file does not have the proper extension. \
-				It is {0!s}, instead of {1!s}.'.format(file_ext, cls.EXTENSIONS)
+				It is {0!s}, instead of {1!s}.'.format(file_ext, self.extensions)
 			)
 
 	@staticmethod

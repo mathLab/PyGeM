@@ -8,15 +8,15 @@ import pygem.filehandler as fh
 class TestFilehandler(TestCase):
 	def test_base_class_infile(self):
 		file_handler = fh.FileHandler()
-		assert file_handler.infile == None
+		self.assertIsNone(file_handler.infile)
 
 	def test_base_class_outfile(self):
 		file_handler = fh.FileHandler()
-		assert file_handler.outfile == None
+		self.assertIsNone(file_handler.outfile)
 
 	def test_base_class_extension(self):
 		file_handler = fh.FileHandler()
-		assert not file_handler.EXTENSIONS
+		self.assertListEqual(file_handler.extensions, [])
 
 	def test_base_class_parse(self):
 		file_handler = fh.FileHandler()
