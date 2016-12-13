@@ -14,6 +14,7 @@ Stlhandler
 	StlHandler.write
 
 .. autoclass:: StlHandler
+<<<<<<< HEAD
 	:members:
 	:private-members:
 	:undoc-members:
@@ -21,3 +22,7 @@ Stlhandler
 	:noindex:
 
 
+=======
+    :members:
+    :private-members:
+>>>>>>> Removed spacecial members doc

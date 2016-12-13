@@ -18,8 +18,13 @@ Nurbshandler
 	NurbsHandler.write_shape_to_file
 
 .. autoclass:: NurbsHandler
+<<<<<<< HEAD
 	:members:
 	:private-members:
 	:undoc-members:
 	:show-inheritance:
 	:noindex:
+=======
+    :members:
+    :private-members:
+>>>>>>> Removed spacecial members doc

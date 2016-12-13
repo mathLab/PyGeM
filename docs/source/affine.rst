@@ -15,4 +15,8 @@ Affine
 
 .. automodule:: pygem.affine
     :members:
+<<<<<<< HEAD
     :noindex:
+=======
+    :private-members:
+>>>>>>> Removed spacecial members doc

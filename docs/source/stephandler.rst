@@ -13,8 +13,13 @@ Stephandler
 	StepHandler.write_shape_to_file
 
 .. autoclass:: StepHandler
+<<<<<<< HEAD
 	:members:
 	:private-members:
 	:undoc-members:
 	:show-inheritance:
 	:noindex:
+=======
+    :members:
+    :private-members:
+>>>>>>> Removed spacecial members doc
