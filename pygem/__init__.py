@@ -1,7 +1,7 @@
 __all__ = [
 	'affine', 'filehandler', 'freeform', 'radial', 'openfhandler', 'params',
 	'stlhandler', 'unvhandler', 'vtkhandler', 'nurbshandler', 'stephandler',
-	'igeshandler', 'utils', 'gui'
+	'igeshandler', 'utils', 'gui', 'khandler'
 ]
 
 from . import affine
