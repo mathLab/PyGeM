@@ -9,6 +9,7 @@ from . import filehandler
 from . import freeform
 from . import gui
 from . import igeshandler
+from . import khandler
 from . import nurbshandler
 from . import openfhandler
 from . import params

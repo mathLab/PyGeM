@@ -1,16 +1,11 @@
-# -*- coding: utf-8 -*-
 """
-Author:             Stefano Chiapedi
-Date:               February 28, 2017
-
-Description:
-    Derived module from filehandler.py to handle LS-DYNA keyword (.k) files.
+Derived module from filehandler.py to handle LS-DYNA keyword (.k) files.
 """
 import numpy as np
 import pygem.filehandler as fh
 
 
-class kHandler(fh.FileHandler):
+class KHandler(fh.FileHandler):
         """
         LS-Dyna keyword file handler class
         
