@@ -15,7 +15,7 @@ class KHandler(fh.FileHandler):
             to '.k'.
     """
     def __init__(self):
-        super(kHandler, self).__init__()
+        super(KHandler, self).__init__()
         self.extensions = ['.k']
 
     def parse(self, filename):
