@@ -7,15 +7,24 @@ import os
 import numpy as np
 import OCC.TopoDS
 from OCC.BRep import (BRep_Tool, BRep_Builder)
-from OCC.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeFace, \
-	BRepBuilderAPI_NurbsConvert, BRepBuilderAPI_MakeWire)
+from OCC.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge,
+                                BRepBuilderAPI_MakeFace, \
+                                BRepBuilderAPI_NurbsConvert,
+                                BRepBuilderAPI_MakeWire,
+								BRepBuilderAPI_Sewing)
 from OCC.Display.SimpleGui import init_display
 from OCC.GeomConvert import geomconvert_SurfaceToBSplineSurface
-from OCC.ShapeFix import ShapeFix_ShapeTolerance
+from OCC.GeomConvert import geomconvert_CurveToBSplineCurve
+from OCC.ShapeFix import (ShapeFix_ShapeTolerance, ShapeFix_Shell)
+from OCC.ShapeAnalysis import ShapeAnalysis_WireOrder
 from OCC.StlAPI import StlAPI_Writer
-from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE)
-from OCC.TopExp import TopExp_Explorer
+from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE, TopAbs_WIRE,
+						TopAbs_FORWARD, TopAbs_SHELL)
+from OCC.TopExp import (TopExp_Explorer, topexp)
 from OCC.gp import (gp_Pnt, gp_XYZ)
+from OCC.BRep import *
+from OCC.TColgp import (TColgp_Array1OfPnt, TColgp_Array2OfPnt)
+from OCC.BRepOffsetAPI import *
 from matplotlib import pyplot
 from mpl_toolkits import mplot3d
 from stl import mesh
@@ -56,7 +65,8 @@ class NurbsHandler(fh.FileHandler):
 
 		"""
 		if not self.shape or not self.infile:
-			raise RuntimeError("You can not write a file without having parsed one.")
+			raise RuntimeError(
+				"You can not write a file without having parsed one.")
 
 	def load_shape_from_file(self, filename):
 		"""
@@ -64,8 +74,9 @@ class NurbsHandler(fh.FileHandler):
 
 		Not implemented, it has to be implemented in subclasses.
 		"""
-		raise NotImplementedError("Subclass must implement abstract method " +\
-			self.__class__.__name__ + ".load_shape_from_file")
+		raise NotImplementedError("Subclass must implement abstract method " + \
+								  self.__class__.__name__ + ".load_shape_from_file")
+
 
 	def parse(self, filename):
 		"""
@@ -79,7 +90,6 @@ class NurbsHandler(fh.FileHandler):
 
 		"""
 		self.infile = filename
-
 		self.shape = self.load_shape_from_file(filename)
 
 		# cycle on the faces to get the control points
@@ -104,22 +114,25 @@ class NurbsHandler(fh.FileHandler):
 			# extract the Control Points of each face
 			n_poles_u = occ_face.NbUPoles()
 			n_poles_v = occ_face.NbVPoles()
-			control_polygon_coordinates = np.zeros(\
+			control_polygon_coordinates = np.zeros( \
 				shape=(n_poles_u * n_poles_v, 3))
 
 			# cycle over the poles to get their coordinates
 			i = 0
 			for pole_u_direction in xrange(n_poles_u):
 				for pole_v_direction in xrange(n_poles_v):
-					control_point_coordinates = occ_face.Pole(\
+					control_point_coordinates = occ_face.Pole( \
 						pole_u_direction + 1, pole_v_direction + 1)
-					control_polygon_coordinates[i, :] = [control_point_coordinates.X(),\
-						control_point_coordinates.Y(),\
+					control_polygon_coordinates[i, :] = [
+						control_point_coordinates.X(), \
+						control_point_coordinates.Y(), \
 						control_point_coordinates.Z()]
 					i += 1
 			# pushing the control points coordinates to the mesh_points array (used for FFD)
-			mesh_points = np.append(mesh_points, control_polygon_coordinates, axis=0)
-			control_point_position.append(control_point_position[-1] + n_poles_u * n_poles_v)
+			mesh_points = np.append(mesh_points, control_polygon_coordinates,
+									axis=0)
+			control_point_position.append(
+				control_point_position[-1] + n_poles_u * n_poles_v)
 
 			n_faces += 1
 			faces_explorer.Next()
@@ -174,17 +187,21 @@ class NurbsHandler(fh.FileHandler):
 			i = 0
 			for pole_u_direction in xrange(n_poles_u):
 				for pole_v_direction in xrange(n_poles_v):
-					control_point_coordinates = mesh_points[i + control_point_position[n_faces], :]
+					control_point_coordinates = mesh_points[
+												i + control_point_position[
+													n_faces], :]
 					point_xyz = gp_XYZ(*control_point_coordinates)
 
 					gp_point = gp_Pnt(point_xyz)
-					occ_face.SetPole(pole_u_direction + 1, pole_v_direction + 1, gp_point)
+					occ_face.SetPole(pole_u_direction + 1, pole_v_direction + 1,
+									 gp_point)
 					i += 1
 
 			# construct the deformed wire for the trimmed surfaces
 			wire_maker = BRepBuilderAPI_MakeWire()
 			tol = ShapeFix_ShapeTolerance()
-			brep = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), self.tolerance).Face()
+			brep = BRepBuilderAPI_MakeFace(occ_face.GetHandle(),
+										   self.tolerance).Face()
 			brep_face = BRep_Tool.Surface(brep)
 
 			# cycle on the edges
@@ -194,7 +211,7 @@ class NurbsHandler(fh.FileHandler):
 				# edge in the (u,v) coordinates
 				edge_uv_coordinates = BRep_Tool.CurveOnSurface(edge, face_aux)
 				# evaluating the new edge: same (u,v) coordinates, but different (x,y,x) ones
-				edge_phis_coordinates_aux = BRepBuilderAPI_MakeEdge(\
+				edge_phis_coordinates_aux = BRepBuilderAPI_MakeEdge( \
 					edge_uv_coordinates[0], brep_face)
 				edge_phis_coordinates = edge_phis_coordinates_aux.Edge()
 				tol.SetTolerance(edge_phis_coordinates, self.tolerance)
@@ -205,11 +222,377 @@ class NurbsHandler(fh.FileHandler):
 			wire = wire_maker.Wire()
 
 			# trimming the surfaces
-			brep_surf = BRepBuilderAPI_MakeFace(occ_face.GetHandle(), wire).Shape()
+			brep_surf = BRepBuilderAPI_MakeFace(occ_face.GetHandle(),
+												wire).Shape()
 			compound_builder.Add(compound, brep_surf)
 			n_faces += 1
 			faces_explorer.Next()
 		self.write_shape_to_file(compound, self.outfile)
+
+
+	def parse_face(self, topo_face):
+		"""
+		Method to parse a single Face (a single patch nurbs surface).
+		It returns a matrix with all the coordinates of control points of the
+		Face and a second list with all the control points related to the
+		Edges of the Face.
+
+		:param topo_face: the input Face
+
+		:return: mesh_points_face: it is a `n_points`-by-3 matrix containing the
+		coordinates of the control points of the Face (a nurbs surface)
+
+		:return: mesh_points_edge: it is a list of `n_points`-by-3 matrix
+
+		:rtype: numpy.ndarray and list
+
+		"""
+		# get some Face - Edge - Vertex data map information
+		mesh_points_edge = []
+		face_exp_wire = TopExp_Explorer(topo_face, TopAbs_WIRE)
+		# loop on wires per face
+		while face_exp_wire.More():
+			twire = OCC.TopoDS.topods_Wire(face_exp_wire.Current())
+			wire_exp_edge = TopExp_Explorer(twire, TopAbs_EDGE)
+			# loop on edges per wire
+			while wire_exp_edge.More():
+				edge = OCC.TopoDS.topods_Edge(wire_exp_edge.Current())
+				bspline_converter = BRepBuilderAPI_NurbsConvert(edge)
+				bspline_converter.Perform(edge)
+				bspline_tshape_edge = bspline_converter.Shape()
+				h_geom_edge, a, b = BRep_Tool_Curve(OCC.TopoDS.topods_Edge(
+					bspline_tshape_edge))
+				h_bspline_edge = geomconvert_CurveToBSplineCurve(h_geom_edge)
+				bspline_geom_edge = h_bspline_edge.GetObject()
+
+				nb_poles = bspline_geom_edge.NbPoles()
+
+				# Edge geometric properties
+				edge_ctrlpts = TColgp_Array1OfPnt(1, nb_poles)
+				bspline_geom_edge.Poles(edge_ctrlpts)
+
+				points_single_edge = np.zeros((0, 3))
+				for i in range(1, nb_poles + 1):
+					ctrlpt = edge_ctrlpts.Value(i)
+					ctrlpt_position = np.array([[ctrlpt.Coord(1),
+														ctrlpt.Coord(2),
+														ctrlpt.Coord(3)]])
+					points_single_edge = np.append(points_single_edge,
+												   ctrlpt_position,
+												   axis=0)
+
+				mesh_points_edge.append(points_single_edge)
+
+				wire_exp_edge.Next()
+
+			face_exp_wire.Next()
+		# extract mesh points (control points) on Face
+		mesh_points_face = np.zeros((0, 3))
+		# convert Face to Geom B-spline Face
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_face)
+		nurbs_converter.Perform(topo_face)
+		nurbs_face = nurbs_converter.Shape()
+		h_geomsurface = BRep_Tool.Surface(OCC.TopoDS.topods.Face(nurbs_face))
+		h_bsurface = geomconvert_SurfaceToBSplineSurface(h_geomsurface)
+		bsurface = h_bsurface.GetObject()
+
+		# get access to control points (poles)
+		nb_u = bsurface.NbUPoles()
+		nb_v = bsurface.NbVPoles()
+		ctrlpts = TColgp_Array2OfPnt(1, nb_u, 1, nb_v)
+		bsurface.Poles(ctrlpts)
+
+		for indice_u_direction in range(1, nb_u + 1):
+			for indice_v_direction in range(1, nb_v + 1):
+				ctrlpt = ctrlpts.Value(indice_u_direction, indice_v_direction)
+				ctrlpt_position = np.array([[ctrlpt.Coord(1),
+											 ctrlpt.Coord(2),
+											 ctrlpt.Coord(3)]])
+				mesh_points_face = np.append(mesh_points_face,
+											 ctrlpt_position, axis=0)
+
+		return {'F': mesh_points_face, 'E': mesh_points_edge}
+
+	def parse_shape(self, filename):
+		"""
+		Method to parse a Shape with multiple Faces.
+		It returns a list of matrix with all the coordinates of control points
+		of each Face and a second list with all the control points related to
+		Edges of each Face.
+
+		:param filename: the input filename.
+
+		:return: mesh_points: it is a list of `n_points`-by-3 matrix containing
+		the coordinates of the control points of the Shape (surface)
+				 edge_points: it is a list
+		:rtype: numpy.ndarray, list
+
+		"""
+		self.infile = filename
+		self.shape = self.load_shape_from_file(filename)
+
+		# parse and get control points
+		shape_parse_face = TopExp_Explorer(self.shape, TopAbs_FACE)
+		mesh_points = []  # a Python list
+		edge_points = []
+
+		while shape_parse_face.More():
+			topo_face = OCC.TopoDS.topods.Face(shape_parse_face.Current())
+			get_parse_face = self.parse_face(topo_face)
+			mesh_point_face = get_parse_face.get('F')
+			edge_point = get_parse_face.get('E')
+			mesh_points.append(mesh_point_face)
+			edge_points.append(edge_point)
+
+			shape_parse_face.Next()
+
+		return {'F': mesh_points, 'E': edge_points}
+
+	def write_edge(self, points_edge, topo_edge):
+		"""
+		Method to recreate an Edge associated to a geometric curve
+		after the modification of its points.
+		:param ct_points_edge: the deformed points array.
+		:param topo_edge: the Edge to be modified
+		:return: Edge (Shape)
+
+		:rtype: TopoDS_Edge
+
+		"""
+		# convert Edge to Geom B-spline Curve
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_edge)
+		nurbs_converter.Perform(topo_edge)
+		nurbs_curve = nurbs_converter.Shape()
+		topo_curve = OCC.TopoDS.topods_Edge(nurbs_curve)
+		h_geomcurve, param_min, param_max = BRep_Tool.Curve(topo_curve)
+		h_bcurve = geomconvert_CurveToBSplineCurve(h_geomcurve)
+		bspline_edge_curve = h_bcurve.GetObject()
+
+		# Edge geometric properties
+		nb_cpt = bspline_edge_curve.NbPoles()
+		indice_cpt = 0
+		if points_edge.shape[0] != nb_cpt:
+			print "Number of edge points not equal! "
+			return 0
+		else:
+			for i in range(1, nb_cpt + 1):
+				cpt = points_edge[indice_cpt]
+				bspline_edge_curve.SetPole(i, gp_Pnt(cpt[0], cpt[1], cpt[2]))
+				indice_cpt += 1
+
+		new_bspline_edge = BRepBuilderAPI_MakeEdge(bspline_edge_curve.GetHandle())
+		return new_bspline_edge.Edge()
+
+	def write_face(self, points_face, list_points_edge, topo_face, toledge):
+		"""
+		Method to recreate a Face associated to a geometric surface
+		after the modification of Face points. It returns a TopoDS_Face.
+
+		:param points_face: the new face points array.
+		:param topo_face: the face to be modified
+		:param toledge: tolerance on the surface creation after modification
+		:return: TopoDS_Face (Shape)
+
+		:rtype: TopoDS_Shape
+
+		"""
+
+		# convert Face to Geom B-spline Surface
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_face)
+		nurbs_converter.Perform(topo_face)
+		nurbs_face = nurbs_converter.Shape()
+		topo_nurbsface = OCC.TopoDS.topods.Face(nurbs_face)
+		h_geomsurface = BRep_Tool.Surface(topo_nurbsface)
+		h_bsurface = geomconvert_SurfaceToBSplineSurface(h_geomsurface)
+		bsurface = h_bsurface.GetObject()
+
+		nb_u = bsurface.NbUPoles()
+		nb_v = bsurface.NbVPoles()
+		# check consistency
+		if points_face.shape[0] != nb_u * nb_v:
+			print "Number of face points not equal! "
+			return 0
+
+		# cycle on the face points
+		indice_cpt = 0
+		for iu in range(1, nb_u + 1):
+			for iv in range(1, nb_v + 1):
+				cpt = points_face[indice_cpt]
+				bsurface.SetPole(iu, iv, gp_Pnt(cpt[0], cpt[1], cpt[2]))
+				indice_cpt += 1
+
+		# create modified new face
+		new_bspline_tface = BRepBuilderAPI_MakeFace()
+		toler = OCC.Precision.precision_Confusion()
+		new_bspline_tface.Init(bsurface.GetHandle(), False, toler)
+
+		# cycle on the wires
+		face_explorer_wire = TopExp_Explorer(topo_nurbsface.Oriented(TopAbs_FORWARD),
+			TopAbs_WIRE)
+		ind_edge_total = 0
+
+		while face_explorer_wire.More():
+			# get old wire
+			twire = OCC.TopoDS.topods_Wire(face_explorer_wire.Current())
+
+			# cycle on the edges
+			ind_edge = 0
+			wire_explorer_edge = TopExp_Explorer(twire.Oriented(TopAbs_FORWARD),
+												 TopAbs_EDGE)
+			# check edges order on the wire
+			mode3d = True
+			tolerance_edges = toledge
+
+			wire_order = ShapeAnalysis_WireOrder(mode3d, tolerance_edges)
+			# an edge list
+			deformed_edges = []
+			# cycle on the edges
+			while wire_explorer_edge.More():
+				tedge = OCC.TopoDS.topods_Edge(wire_explorer_edge.Current())
+				new_bspline_tedge = self.write_edge(list_points_edge[ind_edge_total],
+											   tedge)
+
+				deformed_edges.append(new_bspline_tedge)
+				analyzer = topexp()
+				vfirst = analyzer.FirstVertex(new_bspline_tedge)
+				vlast = analyzer.LastVertex(new_bspline_tedge)
+				pt1 = BRep_Tool.Pnt(vfirst)
+				pt2 = BRep_Tool.Pnt(vlast)
+
+				wire_order.Add(pt1.XYZ(), pt2.XYZ())
+
+				ind_edge += 1
+				ind_edge_total += 1
+				wire_explorer_edge.Next()
+
+			# grouping the edges in a wire, then in the face
+			# check edges order and connectivity within the wire
+			wire_order.Perform()
+			# new wire to be created
+			stol = ShapeFix_ShapeTolerance()
+			new_bspline_twire = BRepBuilderAPI_MakeWire()
+			for order_i in range(1, wire_order.NbEdges() + 1):
+				deformed_edge_i = wire_order.Ordered(order_i)
+				if deformed_edge_i > 0:
+					# insert the deformed edge to the new wire
+					new_edge_toadd = deformed_edges[deformed_edge_i - 1]
+					stol.SetTolerance(new_edge_toadd, toledge)
+					new_bspline_twire.Add(new_edge_toadd)
+					if new_bspline_twire.Error() != 0:
+						print "Wire Add Error: " + str(new_bspline_twire.Error())
+						stol.SetTolerance(new_edge_toadd, toledge * 10.0)
+						new_bspline_twire.Add(new_edge_toadd)
+				else:
+					deformed_edge_revers = deformed_edges[np.abs(deformed_edge_i) - 1]
+					stol.SetTolerance(deformed_edge_revers, toledge)
+					new_bspline_twire.Add(deformed_edge_revers)
+					if new_bspline_twire.Error() != 0:
+						print "Rever Add Error: " + str(new_bspline_twire.Error())
+						stol.SetTolerance(deformed_edge_revers, toledge * 10.0)
+						new_bspline_twire.Add(deformed_edge_revers)
+			# add new wire to the Face
+			new_bspline_tface.Add(new_bspline_twire.Wire())
+			face_explorer_wire.Next()
+
+		return OCC.TopoDS.topods.Face(new_bspline_tface.Face())
+
+	def combine_faces(self, compshape, sew_tolerance):
+		"""
+		Method to combine faces in a shell by adding connectivity and continuity
+		:param compshape: TopoDS_Shape
+		:param sew_tolerance: tolerance for sewing
+		:return: Topo_Shell
+		"""
+
+		offsew = BRepOffsetAPI_FindContigousEdges(sew_tolerance)
+		sew = BRepBuilderAPI_Sewing(sew_tolerance)
+
+		shape_exp_face = TopExp_Explorer(compshape, TopAbs_FACE)
+		nb_faces = 0
+		# cycle on Faces
+		while shape_exp_face.More():
+			tface = OCC.TopoDS.topods.Face(shape_exp_face.Current())
+			sew.Add(tface)
+			offsew.Add(tface)
+			nb_faces += 1
+			shape_exp_face.Next()
+
+		offsew.Perform()
+		offsew.Dump()
+		sew.Perform()
+		shell = sew.SewedShape()
+		sew.Dump()
+
+		shell = OCC.TopoDS.topods.Shell(shell)
+		shell_fixer = ShapeFix_Shell()
+		shell_fixer.FixFaceOrientation(shell)
+
+		if shell_fixer.Perform():
+			print str(shell_fixer.NbShells()) + " shells fixed! "
+		else:
+			print str(shell_fixer.NbShells()) + " shells failed! "
+
+		new_shell = shell_fixer.Shell()
+
+		if OCC.BRepAlgo.brepalgo_IsValid(new_shell):
+			print "Shell valid! "
+		else:
+			print "Shell failed! "
+		return new_shell
+
+	def write_shape(self, face_points, list_edge_points, filename, tol):
+		"""
+		Method to recreate a TopoDS_Shape associated to a geometric shape
+		after the modification of points of each Face. It
+		returns a TopoDS_Shape (Shape).
+
+		:param face_points: the new face points array
+		:param list_edge_points: the new edge points list
+		:param filename: the output filename
+		:param tol: tolerance on the surface creation after modification
+		:return: TopoDS_Compound
+
+		:rtype: TopoDS_Compound
+
+		"""
+		self.outfile = filename
+
+		global_compound_builder = BRep_Builder()
+		global_comp = OCC.TopoDS.TopoDS_Compound()
+		global_compound_builder.MakeCompound(global_comp)
+		# cycle on shells (multiple objects)
+		shape_exp_shell = TopExp_Explorer(self.shape.Oriented(TopAbs_FORWARD),
+										  TopAbs_SHELL)
+		ishell = 0
+		iface = 0
+		while shape_exp_shell.More():
+			per_shell = OCC.TopoDS.topods_Shell(shape_exp_shell.Current())
+			compound_builder = BRep_Builder()
+			comp = OCC.TopoDS.TopoDS_Compound()
+			compound_builder.MakeCompound(comp)
+			# cycle on faces
+			shape_exp_face = TopExp_Explorer(per_shell.Oriented(TopAbs_FORWARD),
+											 TopAbs_FACE)
+
+			while shape_exp_face.More():
+				cpts = face_points[iface]
+				edge_cpts = list_edge_points[iface]
+				tpface = OCC.TopoDS.topods.Face(shape_exp_face.Current())
+				tdface = self.write_face(cpts, edge_cpts, tpface, tol)
+
+				# add face to compound
+				compound_builder.Add(comp, tdface)
+				iface += 1
+				shape_exp_face.Next()
+
+			new_shell = self.combine_faces(comp, 0.01)
+			global_compound_builder.Add(global_comp, new_shell)
+
+
+			ishell += 1
+			shape_exp_shell.Next()
+
+		self.write_shape_to_file(global_comp, self.outfile)
 
 	def write_shape_to_file(self, shape, filename):
 		"""
@@ -218,7 +601,7 @@ class NurbsHandler(fh.FileHandler):
 		Not implemented, it has to be implemented in subclasses.
 		"""
 		raise NotImplementedError(\
-			"Subclass must implement abstract method " +\
+			"Subclass must implement abstract method " + \
 			self.__class__.__name__ + ".write_shape_to_file")
 
 	def plot(self, plot_file=None, save_fig=False):
@@ -250,27 +633,28 @@ class NurbsHandler(fh.FileHandler):
 		# Load the STL files and add the vectors to the plot
 		stl_mesh = mesh.Mesh.from_file('aux_figure.stl')
 		os.remove('aux_figure.stl')
-		axes.add_collection3d(mplot3d.art3d.Poly3DCollection(stl_mesh.vectors / 1000))
+		axes.add_collection3d(
+			mplot3d.art3d.Poly3DCollection(stl_mesh.vectors / 1000))
 
 		# Get the limits of the axis and center the geometry
-		max_dim = np.array([\
-			np.max(stl_mesh.vectors[:, :, 0]) / 1000,\
-			np.max(stl_mesh.vectors[:, :, 1]) / 1000,\
+		max_dim = np.array([ \
+			np.max(stl_mesh.vectors[:, :, 0]) / 1000, \
+			np.max(stl_mesh.vectors[:, :, 1]) / 1000, \
 			np.max(stl_mesh.vectors[:, :, 2]) / 1000])
-		min_dim = np.array([\
-			np.min(stl_mesh.vectors[:, :, 0]) / 1000,\
-			np.min(stl_mesh.vectors[:, :, 1]) / 1000,\
+		min_dim = np.array([ \
+			np.min(stl_mesh.vectors[:, :, 0]) / 1000, \
+			np.min(stl_mesh.vectors[:, :, 1]) / 1000, \
 			np.min(stl_mesh.vectors[:, :, 2]) / 1000])
 
 		max_lenght = np.max(max_dim - min_dim)
-		axes.set_xlim(\
-			-.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2,\
+		axes.set_xlim( \
+			-.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2, \
 			.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2)
-		axes.set_ylim(\
-			-.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2,\
+		axes.set_ylim( \
+			-.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2, \
 			.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2)
-		axes.set_zlim(\
-			-.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2,\
+		axes.set_zlim( \
+			-.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2, \
 			.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2)
 
 		# Show the plot to the screen
