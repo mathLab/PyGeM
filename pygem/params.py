@@ -1,7 +1,10 @@
 """
 Utilities for reading and writing parameters files to perform the desired geometrical morphing.
 """
-import ConfigParser
+try:
+    import configparser as configparser
+except ImportError:
+    import ConfigParser as configparser
 import os
 
 import numpy as np
@@ -123,7 +126,7 @@ class FFDParameters(object):
 
 		:param string filename: parameters file to be read in.
 		"""
-		if not isinstance(filename, basestring):
+		if not isinstance(filename, str):
 			raise TypeError("filename must be a string")
 
 		# Checks if the parameters file exists. If not it writes the default class into filename.
@@ -131,7 +134,7 @@ class FFDParameters(object):
 			self.write_parameters(filename)
 			return
 
-		config = ConfigParser.RawConfigParser()
+		config = configparser.RawConfigParser()
 		config.read(filename)
 
 		self.n_control_points[0] = config.getint('Box info', 'n control points x')
@@ -197,7 +200,7 @@ class FFDParameters(object):
 
 		:param string filename: parameters file to be written out.
 		"""
-		if not isinstance(filename, basestring):
+		if not isinstance(filename, str):
 			raise TypeError("filename must be a string")
 
 		with open(filename, 'w') as output_file:
@@ -280,33 +283,33 @@ class FFDParameters(object):
 		"""
 		This method prints all the FFD parameters on the screen. Its purpose is for debugging.
 		"""
-		print 'conversion_unit = ' + str(self.conversion_unit) + '\n'
-		print '(lenght_box_x, lenght_box_y, lenght_box_z) = (' + str(self.lenght_box_x) + \
-			', ' + str(self.lenght_box_y) + ', ' + str(self.lenght_box_z) + ')'
-		print 'origin_box = ' + str(self.origin_box)
-		print 'n_control_points = ' + str(self.n_control_points)
-		print '(rot_angle_x, rot_angle_y, rot_angle_z) = (' + str(self.rot_angle_x) + \
-			', ' + str(self.rot_angle_y) + ', ' + str(self.rot_angle_z) + ')'
-		print '\narray_mu_x ='
-		print self.array_mu_x
-		print '\narray_mu_y ='
-		print self.array_mu_y
-		print '\narray_mu_z ='
-		print self.array_mu_z
-		print '\npsi_mapping ='
-		print self.psi_mapping
-		print '\ninv_psi_mapping ='
-		print self.inv_psi_mapping
-		print '\nrotation_matrix ='
-		print self.rotation_matrix
-		print '\nposition_vertex_0 ='
-		print self.position_vertex_0
-		print '\nposition_vertex_1 ='
-		print self.position_vertex_1
-		print '\nposition_vertex_2 ='
-		print self.position_vertex_2
-		print '\nposition_vertex_3 ='
-		print self.position_vertex_3
+		print('conversion_unit = ' + str(self.conversion_unit) + '\n')
+		print('(lenght_box_x, lenght_box_y, lenght_box_z) = (' + str(self.lenght_box_x) + \
+			', ' + str(self.lenght_box_y) + ', ' + str(self.lenght_box_z) + ')')
+		print('origin_box = ' + str(self.origin_box))
+		print('n_control_points = ' + str(self.n_control_points))
+		print('(rot_angle_x, rot_angle_y, rot_angle_z) = (' + str(self.rot_angle_x) + \
+			', ' + str(self.rot_angle_y) + ', ' + str(self.rot_angle_z) + ')')
+		print('\narray_mu_x =')
+		print(self.array_mu_x)
+		print('\narray_mu_y =')
+		print(self.array_mu_y)
+		print('\narray_mu_z =')
+		print(self.array_mu_z)
+		print('\npsi_mapping =')
+		print(self.psi_mapping)
+		print('\ninv_psi_mapping =')
+		print(self.inv_psi_mapping)
+		print('\nrotation_matrix =')
+		print(self.rotation_matrix)
+		print('\nposition_vertex_0 =')
+		print(self.position_vertex_0)
+		print('\nposition_vertex_1 =')
+		print(self.position_vertex_1)
+		print('\nposition_vertex_2 =')
+		print(self.position_vertex_2)
+		print('\nposition_vertex_3 =')
+		print(self.position_vertex_3)
 
 	def build_bounding_box(self, shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
 		"""
@@ -442,7 +445,7 @@ class RBFParameters(object):
 
 		:param string filename: parameters file to be read in. Default value is parameters_rbf.prm.
 		"""
-		if not isinstance(filename, basestring):
+		if not isinstance(filename, str):
 			raise TypeError('filename must be a string')
 
 		# Checks if the parameters file exists. If not it writes the default class into filename.
@@ -459,7 +462,7 @@ class RBFParameters(object):
 			self.write_parameters(filename)
 			return
 
-		config = ConfigParser.RawConfigParser()
+		config = configparser.RawConfigParser()
 		config.read(filename)
 
 		self.basis = config.get('Radial Basis Functions', 'basis function')
@@ -469,7 +472,7 @@ class RBFParameters(object):
 		lines = ctrl_points.split('\n')
 		self.n_control_points = len(lines)
 		self.original_control_points = np.zeros((self.n_control_points, 3))
-		for line, i in zip(lines, range(0, self.n_control_points)):
+		for line, i in zip(lines, list(range(0, self.n_control_points))):
 			values = line.split()
 			self.original_control_points[i] = np.array([float(values[0]), float(values[1]), float(values[2])])
 
@@ -481,7 +484,7 @@ class RBFParameters(object):
 				" and in the 'deformed control points' section of the parameters file ({0!s})".format(filename))
 
 		self.deformed_control_points = np.zeros((self.n_control_points, 3))
-		for line, i in zip(lines, range(0, self.n_control_points)):
+		for line, i in zip(lines, list(range(0, self.n_control_points))):
 			values = line.split()
 			self.deformed_control_points[i] = np.array([float(values[0]), float(values[1]), float(values[2])])
 
@@ -493,7 +496,7 @@ class RBFParameters(object):
 
 		:param string filename: parameters file to be written out.
 		"""
-		if not isinstance(filename, basestring):
+		if not isinstance(filename, str):
 			raise TypeError("filename must be a string")
 
 		with open(filename, 'w') as output_file:
@@ -540,10 +543,10 @@ class RBFParameters(object):
 		"""
 		This method prints all the RBF parameters on the screen. Its purpose is for debugging.
 		"""
-		print 'basis function = ' + str(self.basis)
-		print 'radius = ' + str(self.radius)
-		print 'n_control_points = ' + str(self.n_control_points)
-		print '\noriginal_control_points ='
-		print self.original_control_points
-		print '\ndeformed_control_points ='
-		print self.deformed_control_points
+		print('basis function = ' + str(self.basis))
+		print('radius = ' + str(self.radius))
+		print('n_control_points = ' + str(self.n_control_points))
+		print('\noriginal_control_points =')
+		print(self.original_control_points)
+		print('\ndeformed_control_points =')
+		print(self.deformed_control_points)

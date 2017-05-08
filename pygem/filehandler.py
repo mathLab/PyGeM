@@ -60,7 +60,7 @@ class FileHandler(object):
 
 		:param string filename: file to check.
 		"""
-		if not isinstance(filename, basestring):
+		if not isinstance(filename, str):
 			raise TypeError(
 				'The given filename ({0!s}) must be a string'.format(filename)
 			)

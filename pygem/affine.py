@@ -4,6 +4,7 @@ Utilities for the affine transformations of the bounding box of the Free Form De
 import math
 import sys
 import numpy as np
+from functools import reduce
 
 
 def angles2matrix(rot_z=0, rot_y=0, rot_x=0):

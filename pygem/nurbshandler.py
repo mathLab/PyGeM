@@ -109,8 +109,8 @@ class NurbsHandler(fh.FileHandler):
 
 			# cycle over the poles to get their coordinates
 			i = 0
-			for pole_u_direction in xrange(n_poles_u):
-				for pole_v_direction in xrange(n_poles_v):
+			for pole_u_direction in range(n_poles_u):
+				for pole_v_direction in range(n_poles_v):
 					control_point_coordinates = occ_face.Pole(\
 						pole_u_direction + 1, pole_v_direction + 1)
 					control_polygon_coordinates[i, :] = [control_point_coordinates.X(),\
@@ -172,8 +172,8 @@ class NurbsHandler(fh.FileHandler):
 			n_poles_v = occ_face.NbVPoles()
 
 			i = 0
-			for pole_u_direction in xrange(n_poles_u):
-				for pole_v_direction in xrange(n_poles_v):
+			for pole_u_direction in range(n_poles_u):
+				for pole_v_direction in range(n_poles_v):
 					control_point_coordinates = mesh_points[i + control_point_position[n_faces], :]
 					point_xyz = gp_XYZ(*control_point_coordinates)
 

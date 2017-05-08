@@ -68,7 +68,7 @@ class StlHandler(fh.FileHandler):
 
 		n_vertices = mesh_points.shape[0]
 		# number of triplets of vertices
-		n_triplets = n_vertices / 3
+		n_triplets = n_vertices // 3
 		data = np.zeros(n_triplets, dtype=mesh.Mesh.dtype)
 		stl_mesh = mesh.Mesh(data, remove_empty_areas=False)
 
