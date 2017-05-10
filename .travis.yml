@@ -13,6 +13,12 @@ matrix:
         - os: osx
           language: generic
           env: TOXENV=py27
+        - os: linux
+          python: 3.5
+          env: TOXENV=py35
+        - os: osx
+          language: generic
+          env: TOXENV=py35
           
 before_script:
     - "export DISPLAY=:99.0"
@@ -39,6 +45,7 @@ before_install:
     - conda update -q conda
     # Useful for debugging any issues with conda
     - conda info -a
+    - conda config --add channels conda-forge
 
 install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -47,7 +54,7 @@ install:
         conda create --yes -n test python="2.7";
       fi
     - source activate test
-    - conda install --yes numpy scipy matplotlib pip nose vtk sip=4.18
+    - conda install --yes numpy scipy matplotlib vtk pip nose sip=4.18
     - conda install --yes -c https://conda.anaconda.org/dlr-sc pythonocc-core==0.17
     - pip install setuptools
     - pip install enum34
