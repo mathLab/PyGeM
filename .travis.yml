@@ -48,11 +48,7 @@ before_install:
     - conda config --add channels conda-forge
 
 install:
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        conda create --yes -n test python=$TRAVIS_PYTHON_VERSION;
-      else
-        conda create --yes -n test python="2.7";
-      fi
+    - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION;
     - source activate test
     - conda install --yes numpy scipy matplotlib vtk pip nose sip=4.18
     - conda install --yes -c https://conda.anaconda.org/dlr-sc pythonocc-core==0.17
