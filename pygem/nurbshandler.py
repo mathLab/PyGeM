@@ -228,8 +228,8 @@ class NurbsHandler(fh.FileHandler):
 			faces_explorer.Next()
 		self.write_shape_to_file(compound, self.outfile)
 
-
-	def parse_face(self, topo_face):
+	@staticmethod
+	def parse_face(topo_face):
 		"""
 		Method to parse a single Face (a single patch nurbs surface).
 		It returns a matrix with all the coordinates of control points of the
@@ -243,7 +243,7 @@ class NurbsHandler(fh.FileHandler):
 
 		:return: mesh_points_edge: it is a list of `n_points`-by-3 matrix
 
-		:rtype: numpy.ndarray and list
+		:rtype: (numpy.ndarray, list)
 
 		"""
 		# get some Face - Edge - Vertex data map information
@@ -310,7 +310,7 @@ class NurbsHandler(fh.FileHandler):
 				mesh_points_face = np.append(mesh_points_face,
 											 ctrlpt_position, axis=0)
 
-		return {'F': mesh_points_face, 'E': mesh_points_edge}
+		return mesh_points_face, mesh_points_edge
 
 	def parse_shape(self, filename):
 		"""
@@ -324,7 +324,7 @@ class NurbsHandler(fh.FileHandler):
 		:return: mesh_points: it is a list of `n_points`-by-3 matrix containing
 		the coordinates of the control points of the Shape (surface)
 				 edge_points: it is a list
-		:rtype: numpy.ndarray, list
+		:rtype: (list, list)
 
 		"""
 		self.infile = filename
@@ -337,21 +337,20 @@ class NurbsHandler(fh.FileHandler):
 
 		while shape_parse_face.More():
 			topo_face = OCC.TopoDS.topods.Face(shape_parse_face.Current())
-			get_parse_face = self.parse_face(topo_face)
-			mesh_point_face = get_parse_face.get('F')
-			edge_point = get_parse_face.get('E')
+			mesh_point_face, edge_point = self.parse_face(topo_face)
 			mesh_points.append(mesh_point_face)
 			edge_points.append(edge_point)
 
 			shape_parse_face.Next()
 
-		return {'F': mesh_points, 'E': edge_points}
+		return mesh_points, edge_points
 
-	def write_edge(self, points_edge, topo_edge):
+	@staticmethod
+	def write_edge(points_edge, topo_edge):
 		"""
 		Method to recreate an Edge associated to a geometric curve
 		after the modification of its points.
-		:param ct_points_edge: the deformed points array.
+		:param points_edge: the deformed points array.
 		:param topo_edge: the Edge to be modified
 		:return: Edge (Shape)
 
@@ -388,6 +387,7 @@ class NurbsHandler(fh.FileHandler):
 		after the modification of Face points. It returns a TopoDS_Face.
 
 		:param points_face: the new face points array.
+		:param list_points_edge: new edge points
 		:param topo_face: the face to be modified
 		:param toledge: tolerance on the surface creation after modification
 		:return: TopoDS_Face (Shape)
@@ -495,7 +495,8 @@ class NurbsHandler(fh.FileHandler):
 
 		return OCC.TopoDS.topods.Face(new_bspline_tface.Face())
 
-	def combine_faces(self, compshape, sew_tolerance):
+	@staticmethod
+	def combine_faces(compshape, sew_tolerance):
 		"""
 		Method to combine faces in a shell by adding connectivity and continuity
 		:param compshape: TopoDS_Shape
