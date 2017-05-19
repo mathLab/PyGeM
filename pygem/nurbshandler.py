@@ -6,7 +6,7 @@ File handling operations (reading/writing) must be implemented in derived classe
 import os
 import numpy as np
 import OCC.TopoDS
-from OCC.BRep import (BRep_Tool, BRep_Builder)
+from OCC.BRep import (BRep_Tool, BRep_Builder, BRep_Tool_Curve)
 from OCC.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge,
                                 BRepBuilderAPI_MakeFace, \
                                 BRepBuilderAPI_NurbsConvert,
@@ -22,9 +22,8 @@ from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE, TopAbs_WIRE,
 						TopAbs_FORWARD, TopAbs_SHELL)
 from OCC.TopExp import (TopExp_Explorer, topexp)
 from OCC.gp import (gp_Pnt, gp_XYZ)
-from OCC.BRep import *
 from OCC.TColgp import (TColgp_Array1OfPnt, TColgp_Array2OfPnt)
-from OCC.BRepOffsetAPI import *
+from OCC.BRepOffsetAPI import BRepOffsetAPI_FindContigousEdges
 from matplotlib import pyplot
 from mpl_toolkits import mplot3d
 from stl import mesh
