@@ -20,4 +20,5 @@ Code Documentation
    stephandler
    utils
    gui
-
+   idw
+   params_idw

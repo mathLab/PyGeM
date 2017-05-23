@@ -131,4 +131,4 @@ class TestRBFParameters(TestCase):
 
 	def test_print_info(self):
 		params = rbfp.RBFParameters()
-		params.print_info()
+		print(params)

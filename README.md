@@ -5,11 +5,12 @@ Python Geometrical Morphing.
 
 
 ## Description
-**PyGeM** is a python library using **Free Form Deformation** and **Radial Basis Functions** to parametrize and morph complex geometries.  It is ideally suited for actual industrial problems, since it allows to handle:
+**PyGeM** is a python library using **Free Form Deformation**, **Radial Basis Functions** and **Inverse Distance Weighting** to parametrize and morph complex geometries.  It is ideally suited for actual industrial problems, since it allows to handle:
 
 - Computer Aided Design files (in .iges and .stl formats)
 - Mesh files (in .unv and OpenFOAM formats)
 - Output files (in .vtk format)
+- LS-Dyna Keyword files (.k format)
 
 By now, it has been used with meshes with up to 14 milions of cells. Try with more and more complicated input files! 
 See the **Examples** section below to have an idea of the potential of this package.
@@ -30,7 +31,7 @@ Pick the geometry, the parameters file, set the name of the output and decide wh
 
 ## Dependencies and installation
 **PyGeM** requires `numpy`, `numpy-stl`, `scipy` and `matplotlib`. They can be easily installed via `pip`. 
-Moreover **PyGeM** depends on `OCC` >= 0.16 and `vtk`. These requirements cannot be satisfied through `pip`.
+Moreover **PyGeM** depends on `OCC` and `vtk`. These requirements cannot be satisfied through `pip`.
 Please see the table below for instructions on how to satisfy the requirements.
 
 | Package | Version  | Comment                                                                    |
@@ -87,7 +88,7 @@ To allow the X11 forwarding in the container, on Linux system just run:
 For Windows system, you need to install Cygwin/X version and running the command in Cygwin terminal. While for mac system, you need to install xquartz. 
 
 ## Documentation
-**PyGeM** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. To build the html versions of the docs simply:
+**PyGeM** uses [Sphinx](http://www.sphinx-doc.org/en/stable/) for code documentation. You can view the documentation online [here](http://mathlab.github.io/PyGeM/). To build the html versions of the docs locally simply:
 
 ```bash
 > cd docs
@@ -109,12 +110,12 @@ To run tests locally:
 
 ## Authors and contributors
 **PyGeM** is currently developed and mantained at [SISSA mathLab](http://mathlab.sissa.it/) by
-* [Filippo Salmoiraghi](mailto:filippo.salmoiraghi@gmail.com)
 * [Marco Tezzele](mailto:marcotez@gmail.com)
+* [Nicola Demo](mailto:demo.nicola@gmail.com)
 
-under the supervision of [Prof. Gianluigi Rozza](mailto:gianluigi.rozza@sissa.it).
+under the supervision of [Prof. Gianluigi Rozza](mailto:gianluigi.rozza@sissa.it). We thank [Filippo Salmoiraghi](mailto:filippo.salmoiraghi@gmail.com) for the original idea behind this package and the major contributions.
 
-Contact us by email for further information or questions about **PyGeM**, or suggest pull requests. **PyGeM** is at an early development stage, so contributions improving either the code or the documentation are welcome!
+Contact us by email for further information or questions about **PyGeM**, or suggest pull requests. Contributions improving either the code or the documentation are welcome!
 
 
 ## Examples

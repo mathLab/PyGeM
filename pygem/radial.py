@@ -47,6 +47,8 @@ The module is analogous to the freeform one.
 """
 import numpy as np
 
+from scipy.spatial.distance import cdist
+
 
 class RBF(object):
 	"""
@@ -223,11 +225,9 @@ class RBF(object):
 		:return: matrix: the matrix D.
 		:rtype: numpy.ndarray
 		"""
-		m, n = X1.shape[0], X2.shape[0]
-		matrix = np.zeros(shape=(m, n))
-		for i in range(0, m):
-			for j in range(0, n):
-				matrix[i][j] = self.basis(X1[i] - X2[j], self.parameters.radius)
+		matrix = cdist(
+				X1, X2, lambda x, y: self.basis(x-y, self.parameters.radius)
+		)
 		return matrix
 
 	def _get_weights(self, X, Y):
@@ -246,13 +246,12 @@ class RBF(object):
 		"""
 		n_points = X.shape[0]
 		dim = X.shape[1]
-		identity = np.ones(n_points).reshape(n_points, 1)
+		identity = np.ones((n_points, 1))
 		dist = self._distance_matrix(X, X)
 		H = np.bmat([[dist, identity, X], [identity.T, np.zeros((1, 1)), np.zeros((1, dim))], \
 		 [X.T, np.zeros((dim, 1)), np.zeros((dim, dim))]])
 		rhs = np.bmat([[Y], [np.zeros((1, dim))], [np.zeros((dim, dim))]])
-		inv_matrix_h = np.linalg.inv(H)
-		weights = np.dot(inv_matrix_h, rhs)
+		weights = np.linalg.solve(H, rhs)
 		return weights
 
 	def perform(self):
@@ -264,6 +263,6 @@ class RBF(object):
 		dist = self._distance_matrix(
 			self.original_mesh_points, self.parameters.original_control_points
 		)
-		identity = np.ones(n_points).reshape(n_points, 1)
+		identity = np.ones((n_points, 1))
 		H = np.bmat([[dist, identity, self.original_mesh_points]])
 		self.modified_mesh_points = np.asarray(np.dot(H, self.weights))
