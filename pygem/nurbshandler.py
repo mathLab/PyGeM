@@ -17,6 +17,7 @@ from OCC.GeomConvert import geomconvert_SurfaceToBSplineSurface
 from OCC.GeomConvert import geomconvert_CurveToBSplineCurve
 from OCC.ShapeFix import (ShapeFix_ShapeTolerance, ShapeFix_Shell)
 from OCC.ShapeAnalysis import ShapeAnalysis_WireOrder
+import OCC.Precision
 from OCC.StlAPI import StlAPI_Writer
 from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE, TopAbs_WIRE,
                         TopAbs_FORWARD, TopAbs_SHELL)
