@@ -316,6 +316,38 @@ class NurbsHandler(fh.FileHandler):
 
         return mesh_points_face, mesh_points_edge
 
+    def check_topology(self):
+        """
+        Method to check the topology of imported geometry.
+        :return: 0: 1 solid = 1 shell = n faces
+        1: 1 solid = 0 shell = n free faces
+        2: 1 solid = n shell = n faces (1 shell = 1 face)
+        """
+        # read shells and faces
+        shells_explorer = TopExp_Explorer(self.shape, TopAbs_SHELL)
+        n_shells = 0
+        while shells_explorer.More():
+            n_shells += 1
+            shells_explorer.Next()
+
+        faces_explorer = TopExp_Explorer(self.shape, TopAbs_FACE)
+        n_faces = 0
+        while faces_explorer.More():
+            n_faces += 1
+            faces_explorer.Next()
+
+        print("##############################################\n"
+              "Model statistics -- Nb Shells: {0} Faces: {1} \n"
+              "----------------------------------------------\n"
+              .format(n_shells, n_faces))
+
+        if n_shells == 0:
+            self.check_topo = 1
+        elif n_shells == n_faces:
+            self.check_topo = 2
+        else:
+            self.check_topo = 0
+
     def parse_shape(self, filename):
         """
         Method to parse a Shape with multiple objects (1 compound = multi-shells
@@ -335,18 +367,39 @@ class NurbsHandler(fh.FileHandler):
         self.infile = filename
         self.shape = self.load_shape_from_file(filename)
 
+        self.check_topology()
+
         # parse and get control points
         l_shells = [] # an empty list of shells
         n_shells = 0
-        shells_explorer = TopExp_Explorer(self.shape, TopAbs_SHELL)
 
-        # cycle on shells
-        while shells_explorer.More():
-            topo_shell = OCC.TopoDS.topods.Shell(shells_explorer.Current())
-            shell_faces_explorer = TopExp_Explorer(topo_shell, TopAbs_FACE)
-            l_faces = [] # an empty list of faces per shell
+        if self.check_topo == 0:
 
-            # cycle on faces
+            shells_explorer = TopExp_Explorer(self.shape, TopAbs_SHELL)
+
+            # cycle on shells
+            while shells_explorer.More():
+                topo_shell = OCC.TopoDS.topods.Shell(shells_explorer.Current())
+                shell_faces_explorer = TopExp_Explorer(topo_shell, TopAbs_FACE)
+                l_faces = [] # an empty list of faces per shell
+
+                # cycle on faces
+                while shell_faces_explorer.More():
+                    topo_face = OCC.TopoDS.topods.Face(shell_faces_explorer
+                                                       .Current())
+                    mesh_point, edge_point = self.parse_face(topo_face)
+                    l_faces.append((mesh_point, edge_point))
+                    shell_faces_explorer.Next()
+
+                l_shells.append(l_faces)
+                n_shells += 1
+                shells_explorer.Next()
+
+        else:
+            # cycle only on faces
+            shell_faces_explorer = TopExp_Explorer(self.shape, TopAbs_FACE)
+            l_faces = []  # an empty list of faces per shell
+
             while shell_faces_explorer.More():
                 topo_face = OCC.TopoDS.topods.Face(shell_faces_explorer
                                                    .Current())
@@ -356,7 +409,6 @@ class NurbsHandler(fh.FileHandler):
 
             l_shells.append(l_faces)
             n_shells += 1
-            shells_explorer.Next()
 
         return l_shells
 
@@ -575,27 +627,63 @@ class NurbsHandler(fh.FileHandler):
         global_comp = OCC.TopoDS.TopoDS_Compound()
         global_compound_builder.MakeCompound(global_comp)
 
-        # cycle on shells (multiple objects)
-        shape_shells_explorer = TopExp_Explorer(self.shape
-                                                .Oriented(TopAbs_FORWARD),
-                                                TopAbs_SHELL)
-        ishell = 0
+        if self.check_topo == 0:
+            # cycle on shells (multiple objects)
+            shape_shells_explorer = TopExp_Explorer(self.shape
+                                                    .Oriented(TopAbs_FORWARD),
+                                                    TopAbs_SHELL)
+            ishell = 0
 
-        while shape_shells_explorer.More():
-            per_shell = OCC.TopoDS.topods_Shell(shape_shells_explorer.Current())
+            while shape_shells_explorer.More():
+                per_shell = OCC.TopoDS.topods_Shell(shape_shells_explorer
+                                                    .Current())
+                # a local compound containing a shell
+                compound_builder = BRep_Builder()
+                comp = OCC.TopoDS.TopoDS_Compound()
+                compound_builder.MakeCompound(comp)
+
+                # cycle on faces
+                faces_explorer = TopExp_Explorer(per_shell
+                                                 .Oriented(TopAbs_FORWARD),
+                                                 TopAbs_FACE)
+                iface = 0
+                while faces_explorer.More():
+                    topoface = OCC.TopoDS.topods.Face(faces_explorer.Current())
+                    newface = self.write_face(l_shells[ishell][iface][0],
+                                              l_shells[ishell][iface][1],
+                                              topoface, tol)
+
+                    # add face to compound
+                    compound_builder.Add(comp, newface)
+                    iface += 1
+                    faces_explorer.Next()
+
+                new_shell = self.combine_faces(comp, 0.01)
+                itype = OCC.TopoDS.TopoDS_Shape.ShapeType(new_shell)
+                # add the new shell to the global compound
+                global_compound_builder.Add(global_comp, new_shell)
+
+                print("Shell {0} of type {1} Processed ".format(ishell, itype))
+                print "=============================================="
+
+                ishell += 1
+                shape_shells_explorer.Next()
+
+        else:
+            # cycle on faces
             # a local compound containing a shell
             compound_builder = BRep_Builder()
             comp = OCC.TopoDS.TopoDS_Compound()
             compound_builder.MakeCompound(comp)
 
             # cycle on faces
-            faces_explorer = TopExp_Explorer(per_shell.Oriented(TopAbs_FORWARD),
+            faces_explorer = TopExp_Explorer(self.shape.Oriented(TopAbs_FORWARD),
                                              TopAbs_FACE)
             iface = 0
             while faces_explorer.More():
                 topoface = OCC.TopoDS.topods.Face(faces_explorer.Current())
-                newface = self.write_face(l_shells[ishell][iface][0],
-                                          l_shells[ishell][iface][1],
+                newface = self.write_face(l_shells[0][iface][0],
+                                          l_shells[0][iface][1],
                                           topoface, tol)
 
                 # add face to compound
@@ -608,11 +696,10 @@ class NurbsHandler(fh.FileHandler):
             # add the new shell to the global compound
             global_compound_builder.Add(global_comp, new_shell)
 
-            print("Shell {0} of type {1} Processed ".format(ishell, itype))
+            print("Shell {0} of type {1} Processed ".format(0, itype))
             print "=============================================="
 
-            ishell += 1
-            shape_shells_explorer.Next()
+
 
         self.write_shape_to_file(global_comp, self.outfile)
 
