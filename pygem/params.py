@@ -343,11 +343,13 @@ class FFDParameters(object):
 
 	def _set_box_dimensions(self, min_xyz, max_xyz):
 		"""
-		Dimensions of the cage are set as distance from the origin (minimum) of the cage to
-		the maximal point in each dimension.
+		Dimensions of the cage are set as distance from the origin (minimum) of
+		the cage to the maximal point in each dimension.
 
-		:param iterable min_xyz: three values representing the minimal values of the bounding box in XYZ respectively
-		:param iterable max_xyz: three values representing the maximal values of the bounding box in XYZ respectively
+		:param iterable min_xyz: three values representing the minimal values of
+			the bounding box in XYZ respectively
+		:param iterable max_xyz: three values representing the maximal values of
+			the bounding box in XYZ respectively
 		"""
 		dims = [max_xyz[i] - min_xyz[i] for i in range(3)]
 		self.lenght_box_x = dims[0]
@@ -357,8 +359,9 @@ class FFDParameters(object):
 	def _set_position_of_vertices(self):
 		"""
 		Vertices of the control box around the object are set in this method.
-		Four vertices (non coplanar) are sufficient to uniquely identify a parallelepiped -- the
-		second half of the box is created as a mirror reflection of the first four vertices.
+		Four vertices (non coplanar) are sufficient to uniquely identify a
+		parallelepiped -- the second half of the box is created as a mirror
+		reflection of the first four vertices.
 		"""
 		origin_array = np.array(self.origin_box)
 		dim = [self.lenght_box_x, self.lenght_box_y, self.lenght_box_z]
@@ -369,8 +372,8 @@ class FFDParameters(object):
 
 	def _set_mapping(self):
 		"""
-		This method sets mapping from physcial domain to the reference domain (``psi_mapping``)
-		as well as inverse mapping (``inv_psi_mapping``).
+		This method sets mapping from physcial domain to the reference domain
+		(``psi_mapping``) as well as inverse mapping (``inv_psi_mapping``).
 		"""
 		dim = [self.lenght_box_x, self.lenght_box_y, self.lenght_box_z]
 		self.psi_mapping = np.diag([1. / dim[i] for i in range(3)])
@@ -378,8 +381,9 @@ class FFDParameters(object):
 
 	def _set_transformation_params_to_zero(self):
 		"""
-		Sets transfomration parameters (``array_mu_x, array_mu_y, array_mu_z``) to arrays of zeros
-		(``numpy.zeros``). The shape of arrays corresponds to the number of control points in each dimension.
+		Sets transfomration parameters (``array_mu_x, array_mu_y, array_mu_z``)
+		to arrays of zeros (``numpy.zeros``). The shape of arrays corresponds to
+		the number of control points in each dimension.
 		"""
 		ctrl_pnts = self.n_control_points
 		self.array_mu_x = np.zeros(ctrl_pnts)
@@ -390,17 +394,20 @@ class FFDParameters(object):
 	def _calculate_bb_dimension(shape, tol=1e-6, triangulate=False, triangulate_tol=1e-1):
 		""" Calculate dimensions (minima and maxima) of a box bounding the
 
-		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face
-			the shape to compute the bounding box from
+		:param TopoDS_Shape shape: or a subclass such as TopoDS_Face the shape
+			to compute the bounding box from
 		:param float tol: tolerance of the computed bounding box
-		:param bool triangulate: Should shape be triangulated before the boudning box is created.
+		:param bool triangulate: Should shape be triangulated before the
+			boudning box is created.
 
-			If ``True`` only the dimensions of the bb will take into account every part of the shape (also not *visible*)
+			If ``True`` only the dimensions of the bb will take into account
+			every part of the shape (also not *visible*)
 
 			If ``False`` only the *visible* part is taken into account
 
 			\*See :meth:`~params.FFDParameters.build_bounding_box`
-		:param float triangulate_tol: tolerance of triangulation (size of created triangles)
+		:param float triangulate_tol: tolerance of triangulation (size of
+				created triangles)
 		:return: coordinates of minima and maxima along XYZ
 		:rtype: tuple
 		"""
@@ -417,27 +424,32 @@ class FFDParameters(object):
 
 class RBFParameters(object):
 	"""
-	Class that handles the Radial Basis Functions parameters in terms of RBF control points and
-	basis functions.
+	Class that handles the Radial Basis Functions parameters in terms of RBF
+	control points and basis functions.
 
-	:cvar string basis: name of the basis functions to use in the transformation. The functions
-		implemented so far are: gaussian spline, multi quadratic biharmonic spline,
-		inv multi quadratic biharmonic spline, thin plate spline, beckert wendland c2 basis.
-		For a comprehensive list with details see the class :class:`~pygem.radialbasis.RBF`.
-		The default value is None.
-	:cvar float radius: is the scaling parameter r that affects the shape of the basis functions.
-		For details see the class :class:`~pygem.radialbasis.RBF`. The default value is None.
+	:cvar string basis: name of the basis functions to use in the
+		transformation. The functions implemented so far are: gaussian spline,
+		multi quadratic biharmonic spline, inv multi quadratic biharmonic
+		spline, thin plate spline, beckert wendland c2 basis, polyharmonic
+		splines. For a comprehensive list with details see the class
+	:class:`~pygem.radialbasis.RBF`.  The default value is None.
+	:cvar float radius: is the scaling parameter r that affects the shape of the
+		basis functions.  For details see the class
+		:class:`~pygem.radialbasis.RBF`. The default value is None.
 	:cvar int n_control_points: total number of control points.
-	:cvar numpy.ndarray original_control_points: it is an `n_control_points`-by-3 array with the
-		coordinates of the original interpolation control points before the deformation. The
-		default value is None.
-	:cvar numpy.ndarray deformed_control_points: it is an `n_control_points`-by-3 array with the
-		coordinates of the interpolation control points after the deformation. The default value
+	:cvar numpy.ndarray original_control_points: it is an
+		`n_control_points`-by-3 array with the coordinates of the original
+		interpolation control points before the deformation. The default value
 		is None.
+	:cvar numpy.ndarray deformed_control_points: it is an
+		`n_control_points`-by-3 array with the coordinates of the
+		interpolation control points after the deformation. The default value is
+		None.
 	"""
 	def __init__(self):
 		self.basis = None
 		self.radius = None
+		self.power = 2
 		self.n_control_points = None
 		self.original_control_points = None
 		self.deformed_control_points = None
@@ -447,14 +459,15 @@ class RBFParameters(object):
 		"""
 		Reads in the parameters file and fill the self structure.
 
-		:param string filename: parameters file to be read in. Default value is parameters_rbf.prm.
+		:param string filename: parameters file to be read in. Default value is
+			parameters_rbf.prm.
 		"""
 		if not isinstance(filename, str):
 			raise TypeError('filename must be a string')
 
-		# Checks if the parameters file exists. If not it writes the default class into filename.
-		# It consists in the vetices of a cube of side one with a vertex in (0, 0, 0) and opposite one
-		# in (1, 1, 1).
+		# Checks if the parameters file exists. If not it writes the default
+		# class into filename.  It consists in the vetices of a cube of side one
+		# with a vertex in (0, 0, 0) and opposite one in (1, 1, 1).
 		if not os.path.isfile(filename):
 			self.basis = 'gaussian_spline'
 			self.radius = 0.5
@@ -471,6 +484,7 @@ class RBFParameters(object):
 
 		self.basis = config.get('Radial Basis Functions', 'basis function')
 		self.radius = config.getfloat('Radial Basis Functions', 'radius')
+		self.power = config.getint('Radial Basis Functions', 'power')
 
 		ctrl_points = config.get('Control points', 'original control points')
 		lines = ctrl_points.split('\n')
@@ -511,7 +525,7 @@ class RBFParameters(object):
 			output_file.write('\n# basis funtion is the name of the basis functions to use in the transformation. ' + \
 				'The functions\n')
 			output_file.write('# implemented so far are: gaussian_spline, multi_quadratic_biharmonic_spline,\n')
-			output_file.write('# inv_multi_quadratic_biharmonic_spline, thin_plate_spline, beckert_wendland_c2_basis.\n')
+			output_file.write('# inv_multi_quadratic_biharmonic_spline,	thin_plate_spline, beckert_wendland_c2_basis, polyharmonic_spline.\n')
 			output_file.write('# For a comprehensive list with details see the class RBF.\n')
 			output_file.write('basis function: ' + str(self.basis) + '\n')
 
@@ -519,6 +533,9 @@ class RBFParameters(object):
 				'See the documentation\n')
 			output_file.write('# of the class RBF for details.\n')
 			output_file.write('radius: ' + str(self.radius) + '\n')
+			output_file.write('\n# The power parameter k for polyharmonic spline')
+			output_file.write('\n# See the documentation for details\n')
+			output_file.write('power: ' + str(self.power) + '\n')
 
 			output_file.write('\n\n[Control points]\n')
 			output_file.write('# This section describes the RBF control points.\n')
@@ -552,6 +569,7 @@ class RBFParameters(object):
 		string = ''
 		string += 'basis function = {}\n'.format(self.basis)
 		string += 'radius = {}\n'.format(self.radius)
+		string += 'power = {}\n'.format(self.power)
 		string += '\noriginal control points =\n'
 		string += '{}\n'.format(self.original_control_points)
 		string += '\ndeformed control points =\n'

@@ -52,8 +52,6 @@ install:
     - conda install --yes numpy scipy matplotlib vtk pip nose sip=4.18
     - conda install --yes -c https://conda.anaconda.org/dlr-sc pythonocc-core==0.17
     - pip install setuptools
-    - pip install enum34
-    - pip install numpy-stl
     - pip install coveralls
     - pip install coverage
     - python setup.py install

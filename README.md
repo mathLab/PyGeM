@@ -30,7 +30,7 @@ Pick the geometry, the parameters file, set the name of the output and decide wh
 
 
 ## Dependencies and installation
-**PyGeM** requires `numpy`, `numpy-stl`, `scipy` and `matplotlib`. They can be easily installed via `pip`. 
+**PyGeM** requires `numpy`, `scipy` and `matplotlib`. They can be easily installed via `pip`. 
 Moreover **PyGeM** depends on `OCC` and `vtk`. These requirements cannot be satisfied through `pip`.
 Please see the table below for instructions on how to satisfy the requirements.
 

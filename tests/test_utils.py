@@ -9,6 +9,14 @@ import vtk
 
 
 class TestUtils(TestCase):
+	def cmp(self, f1, f2):
+		"""
+		Check if the two files have the same content, skipping comment lines
+		"""
+		content1 = [line for line in open(f1) if not line.startswith('#')]
+		content2 = [line for line in open(f1) if not line.startswith('#')]
+		return content1 == content2
+
 	def test_utils_write_original_box(self):
 		params = pars.FFDParameters()
 		params.read_parameters(
@@ -45,7 +53,7 @@ class TestUtils(TestCase):
 
 		ut.write_bounding_box(params, outfilename, write_deformed=False)
 
-		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
+		self.assertTrue(self.cmp(outfilename, outfilename_expected))
 		os.remove(outfilename)
 
 	def test_utils_check_vtk_modified_box(self):
@@ -62,7 +70,7 @@ class TestUtils(TestCase):
 
 		ut.write_bounding_box(params, outfilename)
 
-		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
+		self.assertTrue(self.cmp(outfilename, outfilename_expected))
 		os.remove(outfilename)
 
 	def test_utils_plot_rbf_control_points(self):

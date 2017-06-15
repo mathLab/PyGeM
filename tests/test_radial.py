@@ -153,3 +153,39 @@ class TestRadial(TestCase):
 			np.array([0.1, 0.15, -0.2]).reshape(3, 1), 0.9
 		)
 		np.testing.assert_almost_equal(value, 0.529916819595)
+
+	def test_polyharmonic_spline_k_even(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(
+			filename='tests/test_datasets/parameters_rbf_default.prm'
+		)
+		params.power = 3
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.polyharmonic_spline(
+			np.array([0.1, 0.15, -0.2]).reshape(3, 1), 0.9
+		)
+		np.testing.assert_almost_equal(value, 0.02677808)
+
+	def test_polyharmonic_spline_k_odd1(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(
+			filename='tests/test_datasets/parameters_rbf_default.prm'
+		)
+		params.power = 2
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.polyharmonic_spline(
+			np.array([0.1, 0.15, -0.2]).reshape(3, 1), 0.9
+		)
+		np.testing.assert_almost_equal(value, -0.1080092)
+
+	def test_polyharmonic_spline_k_odd2(self):
+		params = rbfp.RBFParameters()
+		params.read_parameters(
+			filename='tests/test_datasets/parameters_rbf_default.prm'
+		)
+		params.power = 2
+		rbf = rad.RBF(params, self.get_cube_mesh_points())
+		value = rbf.polyharmonic_spline(
+			np.array([0.1, 0.15, -0.2]).reshape(3, 1), 0.2
+		)
+		np.testing.assert_almost_equal(value, 0.53895331)
