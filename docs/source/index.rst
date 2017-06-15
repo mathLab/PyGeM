@@ -12,11 +12,12 @@ Python utilities for geometrical morphing.
 Description
 ^^^^^^^^^^^^
 
-PyGeM is a python library using Free Form Deformation and Radial Basis Functions to parametrize and morph complex geometries. It is ideally suited for actual industrial problems, since it allows to handle:
+PyGeM is a python library using Free Form Deformation, Radial Basis Functions and Inverse Distance Weighting to parametrize and morph complex geometries.  It is ideally suited for actual industrial problems, since it allows to handle:
 
 - Computer Aided Design files (in .iges and .stl formats)
 - Mesh files (in .unv and OpenFOAM formats)
 - Output files (in .vtk format)
+- LS-Dyna Keyword files (.k format)
 
 By now, it has been used with meshes with up to 14 milions of cells. Try with more and more complicated input files!
 

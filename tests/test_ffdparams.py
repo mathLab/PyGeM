@@ -13,39 +13,23 @@ import pygem.params as ffdp
 class TestFFDParameters(TestCase):
 	def test_class_members_default_n_control_points(self):
 		params = ffdp.FFDParameters()
-		assert params.n_control_points == [2, 2, 2]
+		assert np.array_equal(params.n_control_points, [2, 2, 2])
 
 	def test_class_members_default_conversion_unit(self):
 		params = ffdp.FFDParameters()
 		assert params.conversion_unit == 1.
 
-	def test_class_members_default_lenght_box_x(self):
+	def test_class_members_default_lenght_box(self):
 		params = ffdp.FFDParameters()
-		assert params.lenght_box_x == 1.
-
-	def test_class_members_default_lenght_box_y(self):
-		params = ffdp.FFDParameters()
-		assert params.lenght_box_y == 1.
-
-	def test_class_members_default_lenght_box_z(self):
-		params = ffdp.FFDParameters()
-		assert params.lenght_box_z == 1.
+		assert np.array_equal(params.lenght_box, np.ones(3))
 
 	def test_class_members_default_origin_box(self):
 		params = ffdp.FFDParameters()
-		np.testing.assert_array_almost_equal(params.origin_box, np.zeros(3))
+		assert np.array_equal(params.origin_box, np.zeros(3))
 
-	def test_class_members_default_rot_angle_x(self):
+	def test_class_members_default_rot_angle(self):
 		params = ffdp.FFDParameters()
-		assert params.rot_angle_x == 0
-
-	def test_class_members_default_rot_angle_y(self):
-		params = ffdp.FFDParameters()
-		assert params.rot_angle_y == 0
-
-	def test_class_members_default_rot_angle_z(self):
-		params = ffdp.FFDParameters()
-		assert params.rot_angle_z == 0
+		assert np.array_equal(params.rot_angle, np.zeros(3))
 
 	def test_class_members_default_array_mu_x(self):
 		params = ffdp.FFDParameters()
@@ -107,7 +91,7 @@ class TestFFDParameters(TestCase):
 
 	def test_class_members_generic_n_control_points(self):
 		params = ffdp.FFDParameters([2, 3, 5])
-		assert params.n_control_points == [2, 3, 5]
+		assert np.array_equal(params.n_control_points, [2, 3, 5])
 
 	def test_class_members_generic_array_mu_x(self):
 		params = ffdp.FFDParameters([2, 3, 5])
@@ -135,22 +119,12 @@ class TestFFDParameters(TestCase):
 	def test_read_parameters_n_control_points(self):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
 		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
-		assert params.n_control_points == [3, 2, 2]
+		assert np.array_equal(params.n_control_points, [3, 2, 2])
 
 	def test_read_parameters_lenght_box_x(self):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
 		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
-		assert params.lenght_box_x == 45.0
-
-	def test_read_parameters_lenght_box_y(self):
-		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
-		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
-		assert params.lenght_box_y == 90.0
-
-	def test_read_parameters_lenght_box_z(self):
-		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
-		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
-		assert params.lenght_box_z == 90.0
+		assert np.array_equal(params.lenght_box, [45.0, 90.0, 90.0])
 
 	def test_read_parameters_origin_box(self):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
@@ -163,17 +137,7 @@ class TestFFDParameters(TestCase):
 	def test_read_parameters_rot_angle_x(self):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
 		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
-		assert params.rot_angle_x == 20.3
-
-	def test_read_parameters_rot_angle_y(self):
-		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
-		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
-		assert params.rot_angle_y == 11.0
-
-	def test_read_parameters_rot_angle_z(self):
-		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
-		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
-		assert params.rot_angle_z == 0.
+		assert np.array_equal(params.rot_angle, [20.3, 11.0, 0.])
 
 	def test_read_parameters_array_mu_x(self):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
@@ -181,6 +145,7 @@ class TestFFDParameters(TestCase):
 		array_mu_x_exact = np.array(
 			[0.2, 0., 0., 0., 0.5, 0., 0., 0., 1., 0., 0., 0.]
 		).reshape((3, 2, 2))
+		print(params.array_mu_x)
 		np.testing.assert_array_almost_equal(
 			params.array_mu_x, array_mu_x_exact
 		)
@@ -225,8 +190,10 @@ class TestFFDParameters(TestCase):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
 		params.read_parameters('tests/test_datasets/parameters_sphere.prm')
 		rotation_matrix_exact = np.array([
-			0.98162718, 0., 0.190809, 0.06619844, 0.93788893, -0.34056147, -0.17895765, 0.34693565, 0.92065727
-		]).reshape((3, 3))
+			[ 0.98162718, 0.        ,  0.190809  ],
+			[ 0.06619844, 0.93788893, -0.34056147],
+			[-0.17895765, 0.34693565,  0.92065727]
+		])
 		np.testing.assert_array_almost_equal(
 			params.rotation_matrix, rotation_matrix_exact
 		)
@@ -329,7 +296,7 @@ class TestFFDParameters(TestCase):
 
 	def test_print_info(self):
 		params = ffdp.FFDParameters(n_control_points=[3, 2, 2])
-		params.print_info()
+		print(params)
 
 	def test_build_bounding_box(self):
 		origin = np.array([0., 0., 0.])

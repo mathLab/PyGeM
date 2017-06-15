@@ -8,15 +8,16 @@ import matplotlib.pyplot as plt
 
 def write_bounding_box(parameters, outfile, write_deformed=True):
 	"""
-	Method that writes a vtk file containing the FFD lattice. This method
-	allows to visualize where the FFD control points are located before the geometrical morphing.
-	If the `write_deformed` flag is set to True the method writes out the deformed lattice, otherwise
-	it writes one the original undeformed lattice.
+	Method that writes a vtk file containing the FFD lattice. This method allows
+	to visualize where the FFD control points are located before the geometrical
+	morphing. If the `write_deformed` flag is set to True the method writes out
+	the deformed lattice, otherwise it writes one the original undeformed
+	lattice.
 
 	:param FFDParameters parameters: parameters of the Free Form Deformation.
 	:param string outfile: name of the output file.
-	:param bool write_deformed: flag to write the original or modified FFD control lattice.
-		The default is set to True.
+	:param bool write_deformed: flag to write the original or modified FFD
+		control lattice.  The default is set to True.
 
 	:Example:
 
@@ -29,13 +30,13 @@ def write_bounding_box(parameters, outfile, write_deformed=True):
 	>>> ut.write_bounding_box(params, 'tests/test_datasets/box_test_sphere.vtk')
 	"""
 	aux_x = np.linspace(
-		0, parameters.lenght_box_x, parameters.n_control_points[0]
+		0, parameters.lenght_box[0], parameters.n_control_points[0]
 	)
 	aux_y = np.linspace(
-		0, parameters.lenght_box_y, parameters.n_control_points[1]
+		0, parameters.lenght_box[1], parameters.n_control_points[1]
 	)
 	aux_z = np.linspace(
-		0, parameters.lenght_box_z, parameters.n_control_points[2]
+		0, parameters.lenght_box[2], parameters.n_control_points[2]
 	)
 	lattice_y_coords, lattice_x_coords, lattice_z_coords = np.meshgrid(
 		aux_y, aux_x, aux_z
@@ -43,9 +44,9 @@ def write_bounding_box(parameters, outfile, write_deformed=True):
 
 	if write_deformed:
 		box_points = np.array([ \
-		 lattice_x_coords.ravel() + parameters.array_mu_x.ravel() * parameters.lenght_box_x, \
-		 lattice_y_coords.ravel() + parameters.array_mu_y.ravel() * parameters.lenght_box_y, \
-		 lattice_z_coords.ravel() + parameters.array_mu_z.ravel() * parameters.lenght_box_z])
+		 lattice_x_coords.ravel() + parameters.array_mu_x.ravel() * parameters.lenght_box[0], \
+		 lattice_y_coords.ravel() + parameters.array_mu_y.ravel() * parameters.lenght_box[1], \
+		 lattice_z_coords.ravel() + parameters.array_mu_z.ravel() * parameters.lenght_box[2]])
 	else:
 		box_points = np.array([lattice_x_coords.ravel(), lattice_y_coords.ravel(), \
 		 lattice_z_coords.ravel()])

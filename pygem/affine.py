@@ -1,29 +1,32 @@
 """
-Utilities for the affine transformations of the bounding box of the Free Form Deformation.
+Utilities for the affine transformations of the bounding box of the Free Form
+Deformation.
 """
 import math
 import sys
 import numpy as np
+from functools import reduce
 
 
 def angles2matrix(rot_z=0, rot_y=0, rot_x=0):
 	"""
-	This method returns the rotation matrix for given rotations around z, y and x axes.
-	The output rotation matrix is equal to the composition of the individual rotations.
-	Rotations are counter-clockwise. The default value of the three rotations is zero.
+	This method returns the rotation matrix for given rotations around z, y and
+	x axes.  The output rotation matrix is equal to the composition of the
+	individual rotations.  Rotations are counter-clockwise. The default value of
+	the three rotations is zero.
 
 	:param float rot_z: rotation angle (in radians) around z-axis.
 	:param float rot_y: rotation angle (in radians) around y-axis.
 	:param float rot_x: rotation angle (in radians) around x-axis.
 
-	:return: rot_matrix: rotation matrix for the given angles. The matrix shape is always (3, 3).
+	:return: rot_matrix: rotation matrix for the given angles. The matrix shape
+		is always (3, 3).
 	:rtype: numpy.ndarray
 
 	:Example:
 
 	>>> import pygem.affine as at
 	>>> import numpy as np
-
 	>>> # Example of a rotation around x, y, z axis
 	>>> rotz = 10*np.pi/180
 	>>> roty = 20*np.pi/180
@@ -33,8 +36,8 @@ def angles2matrix(rot_z=0, rot_y=0, rot_x=0):
 	.. note::
 
 		- The direction of rotation is given by the right-hand rule.
-		- When applying the rotation to a vector, the vector should be column vector
-		  to the right of the rotation matrix.
+		- When applying the rotation to a vector, the vector should be column
+			vector to the right of the rotation matrix.
 	"""
 	rot_matrix = []
 	if rot_z:
@@ -62,9 +65,10 @@ def angles2matrix(rot_z=0, rot_y=0, rot_x=0):
 
 def to_reduced_row_echelon_form(matrix):
 	"""
-	This method computes the reduced row echelon form (a.k.a. row canonical form) of a matrix.
-	The code is taken from https://rosettacode.org/wiki/Reduced_row_echelon_form#Python and
-	edited with minor changes.
+	This method computes the reduced row echelon form (a.k.a. row canonical
+			form) of a matrix.  The code is taken from
+	https://rosettacode.org/wiki/Reduced_row_echelon_form#Python and edited with
+	minor changes.
 
 	:param matrix matrix: matrix to be reduced.
 
@@ -74,7 +78,6 @@ def to_reduced_row_echelon_form(matrix):
 	:Example:
 
 	>>> import pygem.affine as at
-
 	>>> matrix = [[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]]
 	>>> rref_matrix = at.to_reduced_row_echelon_form(matrix)
 
@@ -117,9 +120,9 @@ def affine_points_fit(points_start, points_end):
 	:param numpy.ndarray points_start: set of starting points.
 	:param numpy.ndarray points_end: set of ending points.
 
-	:return: transform_vector: function that transforms a vector according to the
-			 affine map. It takes a source vector and return a vector transformed
-			 by the reduced row echelon form of the map.
+	:return: transform_vector: function that transforms a vector according to
+		the affine map. It takes a source vector and return a vector transformed
+		by the reduced row echelon form of the map.
 	:rtype: function
 
 	:Example:
@@ -163,7 +166,7 @@ def affine_points_fit(points_start, points_end):
 
 	if np.linalg.cond(affine_matrix) < 1 / sys.float_info.epsilon:
 		rref_aff_matrix = to_reduced_row_echelon_form(affine_matrix)
-		rref_aff_matrix = np.array(rref_aff_matrix)
+		rref_aff_matrix = np.array(rref_aff_matrix)[:, 4:]
 	else:
 		raise RuntimeError(
 			"Error: singular matrix. Points are probably coplanar."
@@ -178,12 +181,7 @@ def affine_points_fit(points_start, points_end):
 		:return destination: numpy.ndarray representing the transformed vector.
 		:rtype: numpy.ndarray
 		"""
-		destination = np.zeros(dim)
-		for i in range(dim):
-			for j in range(dim):
-				destination[j] += source[i] * rref_aff_matrix[i][j + dim + 1]
-			# Add the last line of the rref
-			destination[i] += rref_aff_matrix[dim][i + dim + 1]
+		destination = source.dot(rref_aff_matrix[:-1]) + rref_aff_matrix[-1]
 		return destination
 
 	return transform_vector

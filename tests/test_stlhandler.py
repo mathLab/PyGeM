@@ -42,22 +42,22 @@ class TestStlHandler(TestCase):
 	def test_stl_parse_shape(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
-		self.assertTupleEqual(mesh_points.shape, (7200, 3))
+		self.assertTupleEqual(mesh_points.shape, (1202, 3))
 
 	def test_stl_parse_coords_1(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
-		np.testing.assert_almost_equal(mesh_points[33][0], -21.31975937)
+		np.testing.assert_almost_equal(mesh_points[33][0], -17.51774978)
 
 	def test_stl_parse_coords_2(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
-		np.testing.assert_almost_equal(mesh_points[1708][1], 2.58431911)
+		np.testing.assert_almost_equal(mesh_points[998][1], 11.18433952)
 
 	def test_stl_parse_coords_3(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
-		np.testing.assert_almost_equal(mesh_points[3527][2], -2.47207999)
+		np.testing.assert_almost_equal(mesh_points[557][2], 2.47205805)
 
 	def test_stl_parse_coords_4(self):
 		stl_handler = sh.StlHandler()
@@ -67,14 +67,14 @@ class TestStlHandler(TestCase):
 	def test_stl_parse_coords_5(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse('tests/test_datasets/test_sphere.stl')
-		np.testing.assert_almost_equal(mesh_points[-1][2], -39.05963898)
+		np.testing.assert_almost_equal(mesh_points[-2][2], -39.05963898)
 
 	def test_stl_parse_coords_5_bin(self):
 		stl_handler = sh.StlHandler()
 		mesh_points = stl_handler.parse(
 			'tests/test_datasets/test_sphere_bin.stl'
 		)
-		np.testing.assert_almost_equal(mesh_points[-1][2], -39.05963898)
+		np.testing.assert_almost_equal(mesh_points[-2][2], -39.05963898)
 
 	def test_stl_write_failing_filename_type(self):
 		stl_handler = sh.StlHandler()
@@ -112,12 +112,12 @@ class TestStlHandler(TestCase):
 		mesh_points[0] = [-40.2, -20.5, 60.9]
 		mesh_points[1] = [-40.2, -10.5, 60.9]
 		mesh_points[2] = [-40.2, -10.5, 60.9]
-		mesh_points[2000] = [-40.2, -20.5, 60.9]
-		mesh_points[2001] = [-40.2, -10.5, 60.9]
-		mesh_points[2002] = [-40.2, -10.5, 60.9]
-		mesh_points[6100] = [-40.2, -20.5, 60.9]
-		mesh_points[6101] = [-40.2, -10.5, 60.9]
-		mesh_points[6102] = [-40.2, -10.5, 60.9]
+		mesh_points[500] = [-40.2, -20.5, 60.9]
+		mesh_points[501] = [-40.2, -10.5, 60.9]
+		mesh_points[502] = [-40.2, -10.5, 60.9]
+		mesh_points[1000] = [-40.2, -20.5, 60.9]
+		mesh_points[1001] = [-40.2, -10.5, 60.9]
+		mesh_points[1002] = [-40.2, -10.5, 60.9]
 
 		outfilename = 'tests/test_datasets/test_sphere_out.stl'
 		outfilename_expected = 'tests/test_datasets/test_sphere_out_true.stl'
@@ -134,12 +134,12 @@ class TestStlHandler(TestCase):
 		mesh_points[0] = [-40.2, -20.5, 60.9]
 		mesh_points[1] = [-40.2, -10.5, 60.9]
 		mesh_points[2] = [-40.2, -10.5, 60.9]
-		mesh_points[2000] = [-40.2, -20.5, 60.9]
-		mesh_points[2001] = [-40.2, -10.5, 60.9]
-		mesh_points[2002] = [-40.2, -10.5, 60.9]
-		mesh_points[6100] = [-40.2, -20.5, 60.9]
-		mesh_points[6101] = [-40.2, -10.5, 60.9]
-		mesh_points[6102] = [-40.2, -10.5, 60.9]
+		mesh_points[500] = [-40.2, -20.5, 60.9]
+		mesh_points[501] = [-40.2, -10.5, 60.9]
+		mesh_points[502] = [-40.2, -10.5, 60.9]
+		mesh_points[1000] = [-40.2, -20.5, 60.9]
+		mesh_points[1001] = [-40.2, -10.5, 60.9]
+		mesh_points[1002] = [-40.2, -10.5, 60.9]
 
 		outfilename = 'tests/test_datasets/test_sphere_out.stl'
 
@@ -152,12 +152,12 @@ class TestStlHandler(TestCase):
 		mesh_points[0] = [-40.2, -20.5, 60.9]
 		mesh_points[1] = [-40.2, -10.5, 60.9]
 		mesh_points[2] = [-40.2, -10.5, 60.9]
-		mesh_points[2000] = [-40.2, -20.5, 60.9]
-		mesh_points[2001] = [-40.2, -10.5, 60.9]
-		mesh_points[2002] = [-40.2, -10.5, 60.9]
-		mesh_points[6100] = [-40.2, -20.5, 60.9]
-		mesh_points[6101] = [-40.2, -10.5, 60.9]
-		mesh_points[6102] = [-40.2, -10.5, 60.9]
+		mesh_points[500] = [-40.2, -20.5, 60.9]
+		mesh_points[501] = [-40.2, -10.5, 60.9]
+		mesh_points[502] = [-40.2, -10.5, 60.9]
+		mesh_points[1000] = [-40.2, -20.5, 60.9]
+		mesh_points[1001] = [-40.2, -10.5, 60.9]
+		mesh_points[1002] = [-40.2, -10.5, 60.9]
 
 		outfilename = 'tests/test_datasets/test_sphere_out.stl'
 
@@ -172,12 +172,12 @@ class TestStlHandler(TestCase):
 		mesh_points[0] = [-40.2, -20.5, 60.9]
 		mesh_points[1] = [-40.2, -10.5, 60.9]
 		mesh_points[2] = [-40.2, -10.5, 60.9]
-		mesh_points[2000] = [-40.2, -20.5, 60.9]
-		mesh_points[2001] = [-40.2, -10.5, 60.9]
-		mesh_points[2002] = [-40.2, -10.5, 60.9]
-		mesh_points[6100] = [-40.2, -20.5, 60.9]
-		mesh_points[6101] = [-40.2, -10.5, 60.9]
-		mesh_points[6102] = [-40.2, -10.5, 60.9]
+		mesh_points[500] = [-40.2, -20.5, 60.9]
+		mesh_points[501] = [-40.2, -10.5, 60.9]
+		mesh_points[502] = [-40.2, -10.5, 60.9]
+		mesh_points[1000] = [-40.2, -20.5, 60.9]
+		mesh_points[1001] = [-40.2, -10.5, 60.9]
+		mesh_points[1002] = [-40.2, -10.5, 60.9]
 
 		outfilename = 'tests/test_datasets/test_sphere_out.stl'
 		outfilename_expected = 'tests/test_datasets/test_sphere_out_true.stl'
@@ -216,3 +216,8 @@ class TestStlHandler(TestCase):
 		stl_handler = sh.StlHandler()
 		with self.assertRaises(TypeError):
 			stl_handler.plot(plot_file=3)
+
+	def test_stl_show_fail(self):
+		stl_handler = sh.StlHandler()
+		with self.assertRaises(TypeError):
+			stl_handler.show(show_file=3)

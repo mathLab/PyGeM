@@ -17,6 +17,7 @@ Radial
 	RBF.multi_quadratic_biharmonic_spline
 	RBF.perform
 	RBF.thin_plate_spline
+	RBF.polyharmonic_spline
 
 .. autoclass:: RBF
 	:members:

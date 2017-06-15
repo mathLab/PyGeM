@@ -12,6 +12,7 @@ basis function: gaussian_splines
 # of the class RBF for details.
 radius: 0.5
 
+power = 2
 
 [Control points]
 # This section describes the RBF control points.

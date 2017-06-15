@@ -7,6 +7,14 @@ import os
 
 
 class TestVtkHandler(TestCase):
+	def cmp(self, f1, f2):
+		"""
+		Check if the two files have the same content, skipping comment lines
+		"""
+		content1 = [line for line in open(f1) if not line.startswith('#')]
+		content2 = [line for line in open(f1) if not line.startswith('#')]
+		return content1 == content2
+
 	def test_vtk_instantiation(self):
 		vtk_handler = vh.VtkHandler()
 
@@ -139,7 +147,7 @@ class TestVtkHandler(TestCase):
 			outfilename_expected = 'tests/test_datasets/test_red_blood_cell_out_true_version6.vtk'
 
 		vtk_handler.write(mesh_points, outfilename)
-		self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
+		self.assertTrue(self.cmp(outfilename, outfilename_expected))
 		os.remove(outfilename)
 
 	def test_vtk_plot_failing_outfile_type(self):
