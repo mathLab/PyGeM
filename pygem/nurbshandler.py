@@ -398,6 +398,43 @@ class NurbsHandler(fh.FileHandler):
 
 		return l_shells
 
+	@staticmethod
+	def write_edge(points_edge, topo_edge):
+		"""
+        Method to recreate an Edge associated to a geometric curve
+        after the modification of its points.
+        :param points_edge: the deformed points array.
+        :param topo_edge: the Edge to be modified
+        :return: Edge (Shape)
+
+        :rtype: TopoDS_Edge
+
+        """
+		# convert Edge to Geom B-spline Curve
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_edge)
+		nurbs_converter.Perform(topo_edge)
+		nurbs_curve = nurbs_converter.Shape()
+		topo_curve = OCC.TopoDS.topods_Edge(nurbs_curve)
+		h_geomcurve, param_min, param_max = BRep_Tool.Curve(topo_curve)
+		h_bcurve = geomconvert_CurveToBSplineCurve(h_geomcurve)
+		bspline_edge_curve = h_bcurve.GetObject()
+
+		# Edge geometric properties
+		nb_cpt = bspline_edge_curve.NbPoles()
+		# check consistency
+		if points_edge.shape[0] != nb_cpt:
+			raise ValueError("Input control points do not have not have the "
+							 "same number as the geometric edge!")
+
+		else:
+			for i in range(1, nb_cpt + 1):
+				cpt = points_edge[i - 1]
+				bspline_edge_curve.SetPole(i, gp_Pnt(cpt[0], cpt[1], cpt[2]))
+
+		new_edge = BRepBuilderAPI_MakeEdge(bspline_edge_curve.GetHandle())
+
+		return new_edge.Edge()
+
 	def write_shape_to_file(self, shape, filename):
 		"""
 		Abstract method to write the 'shape' to the `filename`.
