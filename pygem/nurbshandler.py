@@ -435,6 +435,120 @@ class NurbsHandler(fh.FileHandler):
 
 		return new_edge.Edge()
 
+	def write_face(self, points_face, list_points_edge, topo_face, toledge):
+		"""
+        Method to recreate a Face associated to a geometric surface
+        after the modification of Face points. It returns a TopoDS_Face.
+
+        :param points_face: the new face points array.
+        :param list_points_edge: new edge points
+        :param topo_face: the face to be modified
+        :param toledge: tolerance on the surface creation after modification
+        :return: TopoDS_Face (Shape)
+
+        :rtype: TopoDS_Shape
+
+        """
+
+		# convert Face to Geom B-spline Surface
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_face)
+		nurbs_converter.Perform(topo_face)
+		nurbs_face = nurbs_converter.Shape()
+		topo_nurbsface = OCC.TopoDS.topods.Face(nurbs_face)
+		h_geomsurface = BRep_Tool.Surface(topo_nurbsface)
+		h_bsurface = geomconvert_SurfaceToBSplineSurface(h_geomsurface)
+		bsurface = h_bsurface.GetObject()
+
+		nb_u = bsurface.NbUPoles()
+		nb_v = bsurface.NbVPoles()
+		# check consistency
+		if points_face.shape[0] != nb_u * nb_v:
+			raise ValueError("Input control points do not have not have the "
+							 "same number as the geometric face!")
+
+		# cycle on the face points
+		indice_cpt = 0
+		for iu in range(1, nb_u + 1):
+			for iv in range(1, nb_v + 1):
+				cpt = points_face[indice_cpt]
+				bsurface.SetPole(iu, iv, gp_Pnt(cpt[0], cpt[1], cpt[2]))
+				indice_cpt += 1
+
+		# create modified new face
+		new_bspline_tface = BRepBuilderAPI_MakeFace()
+		toler = OCC.Precision.precision_Confusion()
+		new_bspline_tface.Init(bsurface.GetHandle(), False, toler)
+
+		# cycle on the wires
+		face_wires_explorer = TopExp_Explorer(topo_nurbsface
+											  .Oriented(TopAbs_FORWARD),
+											  TopAbs_WIRE)
+		ind_edge_total = 0
+
+		while face_wires_explorer.More():
+			# get old wire
+			twire = OCC.TopoDS.topods_Wire(face_wires_explorer.Current())
+
+			# cycle on the edges
+			ind_edge = 0
+			wire_explorer_edge = TopExp_Explorer(twire.Oriented(TopAbs_FORWARD),
+												 TopAbs_EDGE)
+			# check edges order on the wire
+			mode3d = True
+			tolerance_edges = toledge
+
+			wire_order = ShapeAnalysis_WireOrder(mode3d, tolerance_edges)
+			# an edge list
+			deformed_edges = []
+			# cycle on the edges
+			while wire_explorer_edge.More():
+				tedge = OCC.TopoDS.topods_Edge(wire_explorer_edge.Current())
+				new_bspline_tedge = self.write_edge(
+					list_points_edge[ind_edge_total], tedge)
+
+				deformed_edges.append(new_bspline_tedge)
+				analyzer = topexp()
+				vfirst = analyzer.FirstVertex(new_bspline_tedge)
+				vlast = analyzer.LastVertex(new_bspline_tedge)
+				pt1 = BRep_Tool.Pnt(vfirst)
+				pt2 = BRep_Tool.Pnt(vlast)
+
+				wire_order.Add(pt1.XYZ(), pt2.XYZ())
+
+				ind_edge += 1
+				ind_edge_total += 1
+				wire_explorer_edge.Next()
+
+			# grouping the edges in a wire, then in the face
+			# check edges order and connectivity within the wire
+			wire_order.Perform()
+			# new wire to be created
+			stol = ShapeFix_ShapeTolerance()
+			new_bspline_twire = BRepBuilderAPI_MakeWire()
+			for order_i in range(1, wire_order.NbEdges() + 1):
+				deformed_edge_i = wire_order.Ordered(order_i)
+				if deformed_edge_i > 0:
+					# insert the deformed edge to the new wire
+					new_edge_toadd = deformed_edges[deformed_edge_i - 1]
+					stol.SetTolerance(new_edge_toadd, toledge)
+					new_bspline_twire.Add(new_edge_toadd)
+					if new_bspline_twire.Error() != 0:
+						stol.SetTolerance(new_edge_toadd, toledge * 10.0)
+						new_bspline_twire.Add(new_edge_toadd)
+				else:
+					deformed_edge_revers = deformed_edges[
+						np.abs(deformed_edge_i) - 1]
+					stol.SetTolerance(deformed_edge_revers, toledge)
+					new_bspline_twire.Add(deformed_edge_revers)
+					if new_bspline_twire.Error() != 0:
+						stol.SetTolerance(deformed_edge_revers, toledge * 10.0)
+						new_bspline_twire.Add(deformed_edge_revers)
+			# add new wire to the Face
+			new_bspline_tface.Add(new_bspline_twire.Wire())
+			face_wires_explorer.Next()
+
+		return OCC.TopoDS.topods.Face(new_bspline_tface.Face())
+
 	def write_shape_to_file(self, shape, filename):
 		"""
 		Abstract method to write the 'shape' to the `filename`.
