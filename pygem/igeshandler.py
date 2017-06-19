@@ -2,7 +2,9 @@
 Derived module from filehandler.py to handle iges and igs files.
 """
 
-from OCC.IGESControl import (IGESControl_Reader, IGESControl_Writer, IGESControl_Controller_Init)
+from OCC.IGESControl import (IGESControl_Reader, IGESControl_Writer,
+							 IGESControl_Controller_Init)
+from OCC.IFSelect import IFSelect_RetDone
 from pygem.nurbshandler import NurbsHandler
 
 
@@ -45,9 +47,14 @@ class IgesHandler(NurbsHandler):
 		self._check_filename_type(filename)
 		self._check_extension(filename)
 		reader = IGESControl_Reader()
-		reader.ReadFile(filename)
-		reader.TransferRoots()
-		shape = reader.Shape()
+		return_reader = reader.ReadFile(filename)
+		# check status
+		if return_reader == IFSelect_RetDone:
+			return_transfer = reader.TransferRoots()
+			if return_transfer:
+				# load all shapes in one
+				shape = reader.OneShape()
+
 		return shape
 
 	def write_shape_to_file(self, shape, filename):

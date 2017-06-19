@@ -6,16 +6,22 @@ File handling operations (reading/writing) must be implemented in derived classe
 import os
 import numpy as np
 import OCC.TopoDS
-from OCC.BRep import (BRep_Tool, BRep_Builder)
+from OCC.BRep import (BRep_Tool, BRep_Builder, BRep_Tool_Curve)
 from OCC.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeFace, \
-	BRepBuilderAPI_NurbsConvert, BRepBuilderAPI_MakeWire)
+	BRepBuilderAPI_NurbsConvert, BRepBuilderAPI_MakeWire, BRepBuilderAPI_Sewing)
 from OCC.Display.SimpleGui import init_display
-from OCC.GeomConvert import geomconvert_SurfaceToBSplineSurface
-from OCC.ShapeFix import ShapeFix_ShapeTolerance
+from OCC.GeomConvert import (geomconvert_SurfaceToBSplineSurface,
+							 geomconvert_CurveToBSplineCurve)
+from OCC.ShapeFix import (ShapeFix_ShapeTolerance, ShapeFix_Shell)
+from OCC.ShapeAnalysis import ShapeAnalysis_WireOrder
+import OCC.Precision
 from OCC.StlAPI import StlAPI_Writer
-from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE)
-from OCC.TopExp import TopExp_Explorer
+from OCC.TopAbs import (TopAbs_FACE, TopAbs_EDGE, TopAbs_WIRE, TopAbs_FORWARD,
+						TopAbs_SHELL)
+from OCC.TopExp import (TopExp_Explorer, topexp)
 from OCC.gp import (gp_Pnt, gp_XYZ)
+from OCC.TColgp import (TColgp_Array1OfPnt, TColgp_Array2OfPnt)
+from OCC.BRepOffsetAPI import BRepOffsetAPI_FindContigousEdges
 from matplotlib import pyplot
 from mpl_toolkits import mplot3d
 from stl import mesh
@@ -47,6 +53,7 @@ class NurbsHandler(fh.FileHandler):
 		self._control_point_position = None
 		self.tolerance = 1e-6
 		self.shape = None
+		self.check_topo = 0
 
 	def _check_infile_instantiation(self):
 		"""
@@ -210,6 +217,476 @@ class NurbsHandler(fh.FileHandler):
 			n_faces += 1
 			faces_explorer.Next()
 		self.write_shape_to_file(compound, self.outfile)
+
+	def check_topology(self):
+		"""
+        Method to check the topology of imported geometry.
+        :return: 0: 1 solid = 1 shell = n faces
+        1: 1 solid = 0 shell = n free faces
+        2: 1 solid = n shell = n faces (1 shell = 1 face)
+        """
+		# read shells and faces
+		shells_explorer = TopExp_Explorer(self.shape, TopAbs_SHELL)
+		n_shells = 0
+		while shells_explorer.More():
+			n_shells += 1
+			shells_explorer.Next()
+
+		faces_explorer = TopExp_Explorer(self.shape, TopAbs_FACE)
+		n_faces = 0
+		while faces_explorer.More():
+			n_faces += 1
+			faces_explorer.Next()
+
+		print("##############################################\n"
+			  "Model statistics -- Nb Shells: {0} Faces: {1} \n"
+			  "----------------------------------------------\n"
+			  .format(n_shells, n_faces))
+
+		if n_shells == 0:
+			self.check_topo = 1
+		elif n_shells == n_faces:
+			self.check_topo = 2
+		else:
+			self.check_topo = 0
+
+	@staticmethod
+	def parse_face(topo_face):
+		"""
+        Method to parse a single Face (a single patch nurbs surface).
+        It returns a matrix with all the coordinates of control points of the
+        Face and a second list with all the control points related to the
+        Edges of the Face.
+
+        :param topo_face: the input Face
+
+        :return: mesh_points_face: it is a `n_points`-by-3 matrix containing the
+        coordinates of the control points of the Face (a nurbs surface)
+
+        :return: mesh_points_edge: it is a list of `n_points`-by-3 matrix
+
+        :rtype: tuple(numpy.ndarray, list)
+
+        """
+		# get some Face - Edge - Vertex data map information
+		mesh_points_edge = []
+		face_exp_wire = TopExp_Explorer(topo_face, TopAbs_WIRE)
+		# loop on wires per face
+		while face_exp_wire.More():
+			twire = OCC.TopoDS.topods_Wire(face_exp_wire.Current())
+			wire_exp_edge = TopExp_Explorer(twire, TopAbs_EDGE)
+			# loop on edges per wire
+			while wire_exp_edge.More():
+				edge = OCC.TopoDS.topods_Edge(wire_exp_edge.Current())
+				bspline_converter = BRepBuilderAPI_NurbsConvert(edge)
+				bspline_converter.Perform(edge)
+				bspline_tshape_edge = bspline_converter.Shape()
+				h_geom_edge, a, b = BRep_Tool_Curve(OCC.TopoDS.topods_Edge(
+					bspline_tshape_edge))
+				h_bspline_edge = geomconvert_CurveToBSplineCurve(h_geom_edge)
+				bspline_geom_edge = h_bspline_edge.GetObject()
+
+				nb_poles = bspline_geom_edge.NbPoles()
+
+				# Edge geometric properties
+				edge_ctrlpts = TColgp_Array1OfPnt(1, nb_poles)
+				bspline_geom_edge.Poles(edge_ctrlpts)
+
+				points_single_edge = np.zeros((0, 3))
+				for i in range(1, nb_poles + 1):
+					ctrlpt = edge_ctrlpts.Value(i)
+					ctrlpt_position = np.array([[ctrlpt.Coord(1),
+												 ctrlpt.Coord(2),
+												 ctrlpt.Coord(3)]])
+					points_single_edge = np.append(points_single_edge,
+												   ctrlpt_position,
+												   axis=0)
+
+				mesh_points_edge.append(points_single_edge)
+
+				wire_exp_edge.Next()
+
+			face_exp_wire.Next()
+		# extract mesh points (control points) on Face
+		mesh_points_face = np.zeros((0, 3))
+		# convert Face to Geom B-spline Face
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_face)
+		nurbs_converter.Perform(topo_face)
+		nurbs_face = nurbs_converter.Shape()
+		h_geomsurface = BRep_Tool.Surface(OCC.TopoDS.topods.Face(nurbs_face))
+		h_bsurface = geomconvert_SurfaceToBSplineSurface(h_geomsurface)
+		bsurface = h_bsurface.GetObject()
+
+		# get access to control points (poles)
+		nb_u = bsurface.NbUPoles()
+		nb_v = bsurface.NbVPoles()
+		ctrlpts = TColgp_Array2OfPnt(1, nb_u, 1, nb_v)
+		bsurface.Poles(ctrlpts)
+
+		for indice_u_direction in range(1, nb_u + 1):
+			for indice_v_direction in range(1, nb_v + 1):
+				ctrlpt = ctrlpts.Value(indice_u_direction, indice_v_direction)
+				ctrlpt_position = np.array([[ctrlpt.Coord(1),
+											 ctrlpt.Coord(2),
+											 ctrlpt.Coord(3)]])
+				mesh_points_face = np.append(mesh_points_face,
+											 ctrlpt_position, axis=0)
+
+		return mesh_points_face, mesh_points_edge
+
+	def parse_shape(self, filename):
+		"""
+        Method to parse a Shape with multiple objects (1 compound = multi-shells
+        and 1 shell = multi-faces)
+        It returns a list of matrix with all the coordinates of control points
+        of each Face and a second list with all the control points related to
+        Edges of each Face.
+
+        :param filename: the input filename.
+
+        :return: list of (mesh_points: `n_points`-by-3 matrix containing
+        the coordinates of the control points of the Face (surface),
+                 edge_points: it is a list of numpy.narray)
+        :rtype: a list of shells
+
+        """
+		self.infile = filename
+		self.shape = self.load_shape_from_file(filename)
+
+		self.check_topology()
+
+		# parse and get control points
+		l_shells = []  # an empty list of shells
+		n_shells = 0
+
+		if self.check_topo == 0:
+
+			shells_explorer = TopExp_Explorer(self.shape, TopAbs_SHELL)
+
+			# cycle on shells
+			while shells_explorer.More():
+				topo_shell = OCC.TopoDS.topods.Shell(shells_explorer.Current())
+				shell_faces_explorer = TopExp_Explorer(topo_shell, TopAbs_FACE)
+				l_faces = []  # an empty list of faces per shell
+
+				# cycle on faces
+				while shell_faces_explorer.More():
+					topo_face = OCC.TopoDS.topods.Face(shell_faces_explorer
+													   .Current())
+					mesh_point, edge_point = self.parse_face(topo_face)
+					l_faces.append((mesh_point, edge_point))
+					shell_faces_explorer.Next()
+
+				l_shells.append(l_faces)
+				n_shells += 1
+				shells_explorer.Next()
+
+		else:
+			# cycle only on faces
+			shell_faces_explorer = TopExp_Explorer(self.shape, TopAbs_FACE)
+			l_faces = []  # an empty list of faces per shell
+
+			while shell_faces_explorer.More():
+				topo_face = OCC.TopoDS.topods.Face(shell_faces_explorer
+												   .Current())
+				mesh_point, edge_point = self.parse_face(topo_face)
+				l_faces.append((mesh_point, edge_point))
+				shell_faces_explorer.Next()
+
+			l_shells.append(l_faces)
+			n_shells += 1
+
+		return l_shells
+
+	@staticmethod
+	def write_edge(points_edge, topo_edge):
+		"""
+        Method to recreate an Edge associated to a geometric curve
+        after the modification of its points.
+        :param points_edge: the deformed points array.
+        :param topo_edge: the Edge to be modified
+        :return: Edge (Shape)
+
+        :rtype: TopoDS_Edge
+
+        """
+		# convert Edge to Geom B-spline Curve
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_edge)
+		nurbs_converter.Perform(topo_edge)
+		nurbs_curve = nurbs_converter.Shape()
+		topo_curve = OCC.TopoDS.topods_Edge(nurbs_curve)
+		h_geomcurve, param_min, param_max = BRep_Tool.Curve(topo_curve)
+		h_bcurve = geomconvert_CurveToBSplineCurve(h_geomcurve)
+		bspline_edge_curve = h_bcurve.GetObject()
+
+		# Edge geometric properties
+		nb_cpt = bspline_edge_curve.NbPoles()
+		# check consistency
+		if points_edge.shape[0] != nb_cpt:
+			raise ValueError("Input control points do not have not have the "
+							 "same number as the geometric edge!")
+
+		else:
+			for i in range(1, nb_cpt + 1):
+				cpt = points_edge[i - 1]
+				bspline_edge_curve.SetPole(i, gp_Pnt(cpt[0], cpt[1], cpt[2]))
+
+		new_edge = BRepBuilderAPI_MakeEdge(bspline_edge_curve.GetHandle())
+
+		return new_edge.Edge()
+
+	def write_face(self, points_face, list_points_edge, topo_face, toledge):
+		"""
+        Method to recreate a Face associated to a geometric surface
+        after the modification of Face points. It returns a TopoDS_Face.
+
+        :param points_face: the new face points array.
+        :param list_points_edge: new edge points
+        :param topo_face: the face to be modified
+        :param toledge: tolerance on the surface creation after modification
+        :return: TopoDS_Face (Shape)
+
+        :rtype: TopoDS_Shape
+
+        """
+
+		# convert Face to Geom B-spline Surface
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_face)
+		nurbs_converter.Perform(topo_face)
+		nurbs_face = nurbs_converter.Shape()
+		topo_nurbsface = OCC.TopoDS.topods.Face(nurbs_face)
+		h_geomsurface = BRep_Tool.Surface(topo_nurbsface)
+		h_bsurface = geomconvert_SurfaceToBSplineSurface(h_geomsurface)
+		bsurface = h_bsurface.GetObject()
+
+		nb_u = bsurface.NbUPoles()
+		nb_v = bsurface.NbVPoles()
+		# check consistency
+		if points_face.shape[0] != nb_u * nb_v:
+			raise ValueError("Input control points do not have not have the "
+							 "same number as the geometric face!")
+
+		# cycle on the face points
+		indice_cpt = 0
+		for iu in range(1, nb_u + 1):
+			for iv in range(1, nb_v + 1):
+				cpt = points_face[indice_cpt]
+				bsurface.SetPole(iu, iv, gp_Pnt(cpt[0], cpt[1], cpt[2]))
+				indice_cpt += 1
+
+		# create modified new face
+		new_bspline_tface = BRepBuilderAPI_MakeFace()
+		toler = OCC.Precision.precision_Confusion()
+		new_bspline_tface.Init(bsurface.GetHandle(), False, toler)
+
+		# cycle on the wires
+		face_wires_explorer = TopExp_Explorer(topo_nurbsface
+											  .Oriented(TopAbs_FORWARD),
+											  TopAbs_WIRE)
+		ind_edge_total = 0
+
+		while face_wires_explorer.More():
+			# get old wire
+			twire = OCC.TopoDS.topods_Wire(face_wires_explorer.Current())
+
+			# cycle on the edges
+			ind_edge = 0
+			wire_explorer_edge = TopExp_Explorer(twire.Oriented(TopAbs_FORWARD),
+												 TopAbs_EDGE)
+			# check edges order on the wire
+			mode3d = True
+			tolerance_edges = toledge
+
+			wire_order = ShapeAnalysis_WireOrder(mode3d, tolerance_edges)
+			# an edge list
+			deformed_edges = []
+			# cycle on the edges
+			while wire_explorer_edge.More():
+				tedge = OCC.TopoDS.topods_Edge(wire_explorer_edge.Current())
+				new_bspline_tedge = self.write_edge(
+					list_points_edge[ind_edge_total], tedge)
+
+				deformed_edges.append(new_bspline_tedge)
+				analyzer = topexp()
+				vfirst = analyzer.FirstVertex(new_bspline_tedge)
+				vlast = analyzer.LastVertex(new_bspline_tedge)
+				pt1 = BRep_Tool.Pnt(vfirst)
+				pt2 = BRep_Tool.Pnt(vlast)
+
+				wire_order.Add(pt1.XYZ(), pt2.XYZ())
+
+				ind_edge += 1
+				ind_edge_total += 1
+				wire_explorer_edge.Next()
+
+			# grouping the edges in a wire, then in the face
+			# check edges order and connectivity within the wire
+			wire_order.Perform()
+			# new wire to be created
+			stol = ShapeFix_ShapeTolerance()
+			new_bspline_twire = BRepBuilderAPI_MakeWire()
+			for order_i in range(1, wire_order.NbEdges() + 1):
+				deformed_edge_i = wire_order.Ordered(order_i)
+				if deformed_edge_i > 0:
+					# insert the deformed edge to the new wire
+					new_edge_toadd = deformed_edges[deformed_edge_i - 1]
+					stol.SetTolerance(new_edge_toadd, toledge)
+					new_bspline_twire.Add(new_edge_toadd)
+					if new_bspline_twire.Error() != 0:
+						stol.SetTolerance(new_edge_toadd, toledge * 10.0)
+						new_bspline_twire.Add(new_edge_toadd)
+				else:
+					deformed_edge_revers = deformed_edges[
+						np.abs(deformed_edge_i) - 1]
+					stol.SetTolerance(deformed_edge_revers, toledge)
+					new_bspline_twire.Add(deformed_edge_revers)
+					if new_bspline_twire.Error() != 0:
+						stol.SetTolerance(deformed_edge_revers, toledge * 10.0)
+						new_bspline_twire.Add(deformed_edge_revers)
+			# add new wire to the Face
+			new_bspline_tface.Add(new_bspline_twire.Wire())
+			face_wires_explorer.Next()
+
+		return OCC.TopoDS.topods.Face(new_bspline_tface.Face())
+
+	@staticmethod
+	def combine_faces(compshape, sew_tolerance):
+		"""
+        Method to combine faces in a shell by adding connectivity and continuity
+        :param compshape: TopoDS_Shape
+        :param sew_tolerance: tolerance for sewing
+        :return: Topo_Shell
+        """
+
+		offsew = BRepOffsetAPI_FindContigousEdges(sew_tolerance)
+		sew = BRepBuilderAPI_Sewing(sew_tolerance)
+
+		face_explorers = TopExp_Explorer(compshape, TopAbs_FACE)
+		n_faces = 0
+		# cycle on Faces
+		while face_explorers.More():
+			tface = OCC.TopoDS.topods.Face(face_explorers.Current())
+			sew.Add(tface)
+			offsew.Add(tface)
+			n_faces += 1
+			face_explorers.Next()
+
+		offsew.Perform()
+		offsew.Dump()
+		sew.Perform()
+		shell = sew.SewedShape()
+		sew.Dump()
+
+		shell = OCC.TopoDS.topods.Shell(shell)
+		shell_fixer = ShapeFix_Shell()
+		shell_fixer.FixFaceOrientation(shell)
+
+		if shell_fixer.Perform():
+			print("{} shells fixed! ".format(shell_fixer.NbShells()))
+		else:
+			print "Shells not fixed! "
+
+		new_shell = shell_fixer.Shell()
+
+		if OCC.BRepAlgo.brepalgo_IsValid(new_shell):
+			print "Shell valid! "
+		else:
+			print "Shell failed! "
+
+		return new_shell
+
+	def write_shape(self, l_shells, filename, tol):
+		"""
+        Method to recreate a TopoDS_Shape associated to a geometric shape
+        after the modification of points of each Face. It
+        returns a TopoDS_Shape (Shape).
+
+        :param l_shells: the list of shells after initial parsing
+        :param filename: the output filename
+        :param tol: tolerance on the surface creation after modification
+        :return: None
+
+        """
+		self.outfile = filename
+		# global compound containing multiple shells
+		global_compound_builder = BRep_Builder()
+		global_comp = OCC.TopoDS.TopoDS_Compound()
+		global_compound_builder.MakeCompound(global_comp)
+
+		if self.check_topo == 0:
+			# cycle on shells (multiple objects)
+			shape_shells_explorer = TopExp_Explorer(self.shape
+													.Oriented(TopAbs_FORWARD),
+													TopAbs_SHELL)
+			ishell = 0
+
+			while shape_shells_explorer.More():
+				per_shell = OCC.TopoDS.topods_Shell(shape_shells_explorer
+													.Current())
+				# a local compound containing a shell
+				compound_builder = BRep_Builder()
+				comp = OCC.TopoDS.TopoDS_Compound()
+				compound_builder.MakeCompound(comp)
+
+				# cycle on faces
+				faces_explorer = TopExp_Explorer(per_shell
+												 .Oriented(TopAbs_FORWARD),
+												 TopAbs_FACE)
+				iface = 0
+				while faces_explorer.More():
+					topoface = OCC.TopoDS.topods.Face(faces_explorer.Current())
+					newface = self.write_face(l_shells[ishell][iface][0],
+											  l_shells[ishell][iface][1],
+											  topoface, tol)
+
+					# add face to compound
+					compound_builder.Add(comp, newface)
+					iface += 1
+					faces_explorer.Next()
+
+				new_shell = self.combine_faces(comp, 0.01)
+				itype = OCC.TopoDS.TopoDS_Shape.ShapeType(new_shell)
+				# add the new shell to the global compound
+				global_compound_builder.Add(global_comp, new_shell)
+
+				print("Shell {0} of type {1} Processed ".format(ishell, itype))
+				print "=============================================="
+
+				ishell += 1
+				shape_shells_explorer.Next()
+
+		else:
+			# cycle on faces
+			# a local compound containing a shell
+			compound_builder = BRep_Builder()
+			comp = OCC.TopoDS.TopoDS_Compound()
+			compound_builder.MakeCompound(comp)
+
+			# cycle on faces
+			faces_explorer = TopExp_Explorer(
+				self.shape.Oriented(TopAbs_FORWARD),
+				TopAbs_FACE)
+			iface = 0
+			while faces_explorer.More():
+				topoface = OCC.TopoDS.topods.Face(faces_explorer.Current())
+				newface = self.write_face(l_shells[0][iface][0],
+										  l_shells[0][iface][1],
+										  topoface, tol)
+
+				# add face to compound
+				compound_builder.Add(comp, newface)
+				iface += 1
+				faces_explorer.Next()
+
+			new_shell = self.combine_faces(comp, 0.01)
+			itype = OCC.TopoDS.TopoDS_Shape.ShapeType(new_shell)
+			# add the new shell to the global compound
+			global_compound_builder.Add(global_comp, new_shell)
+
+			print("Shell {0} of type {1} Processed ".format(0, itype))
+			print "=============================================="
+
+		self.write_shape_to_file(global_comp, self.outfile)
 
 	def write_shape_to_file(self, shape, filename):
 		"""

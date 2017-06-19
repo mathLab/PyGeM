@@ -4,6 +4,7 @@ Derived module from nurbshandler.py to handle step and stp files.
 
 from OCC.Interface import Interface_Static_SetCVal
 from OCC.STEPControl import STEPControl_Writer, STEPControl_Reader, STEPControl_AsIs
+from OCC.IFSelect import IFSelect_RetDone
 
 from pygem.nurbshandler import NurbsHandler
 
@@ -48,9 +49,14 @@ class StepHandler(NurbsHandler):
 		self._check_filename_type(filename)
 		self._check_extension(filename)
 		reader = STEPControl_Reader()
-		reader.ReadFile(filename)
-		reader.TransferRoots()
-		shape = reader.Shape()
+		return_reader = reader.ReadFile(filename)
+		# check status
+		if return_reader == IFSelect_RetDone:
+			return_transfer = reader.TransferRoots()
+			if return_transfer:
+				# load all shapes in one
+				shape = reader.OneShape()
+
 		return shape
 
 	def write_shape_to_file(self, shape, filename):
