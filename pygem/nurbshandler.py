@@ -53,6 +53,7 @@ class NurbsHandler(fh.FileHandler):
 		self._control_point_position = None
 		self.tolerance = 1e-6
 		self.shape = None
+		self.check_topo = 0
 
 	def _check_infile_instantiation(self):
 		"""
@@ -248,6 +249,90 @@ class NurbsHandler(fh.FileHandler):
 			self.check_topo = 2
 		else:
 			self.check_topo = 0
+
+	@staticmethod
+	def parse_face(topo_face):
+		"""
+        Method to parse a single Face (a single patch nurbs surface).
+        It returns a matrix with all the coordinates of control points of the
+        Face and a second list with all the control points related to the
+        Edges of the Face.
+
+        :param topo_face: the input Face
+
+        :return: mesh_points_face: it is a `n_points`-by-3 matrix containing the
+        coordinates of the control points of the Face (a nurbs surface)
+
+        :return: mesh_points_edge: it is a list of `n_points`-by-3 matrix
+
+        :rtype: tuple(numpy.ndarray, list)
+
+        """
+		# get some Face - Edge - Vertex data map information
+		mesh_points_edge = []
+		face_exp_wire = TopExp_Explorer(topo_face, TopAbs_WIRE)
+		# loop on wires per face
+		while face_exp_wire.More():
+			twire = OCC.TopoDS.topods_Wire(face_exp_wire.Current())
+			wire_exp_edge = TopExp_Explorer(twire, TopAbs_EDGE)
+			# loop on edges per wire
+			while wire_exp_edge.More():
+				edge = OCC.TopoDS.topods_Edge(wire_exp_edge.Current())
+				bspline_converter = BRepBuilderAPI_NurbsConvert(edge)
+				bspline_converter.Perform(edge)
+				bspline_tshape_edge = bspline_converter.Shape()
+				h_geom_edge, a, b = BRep_Tool_Curve(OCC.TopoDS.topods_Edge(
+					bspline_tshape_edge))
+				h_bspline_edge = geomconvert_CurveToBSplineCurve(h_geom_edge)
+				bspline_geom_edge = h_bspline_edge.GetObject()
+
+				nb_poles = bspline_geom_edge.NbPoles()
+
+				# Edge geometric properties
+				edge_ctrlpts = TColgp_Array1OfPnt(1, nb_poles)
+				bspline_geom_edge.Poles(edge_ctrlpts)
+
+				points_single_edge = np.zeros((0, 3))
+				for i in range(1, nb_poles + 1):
+					ctrlpt = edge_ctrlpts.Value(i)
+					ctrlpt_position = np.array([[ctrlpt.Coord(1),
+												 ctrlpt.Coord(2),
+												 ctrlpt.Coord(3)]])
+					points_single_edge = np.append(points_single_edge,
+												   ctrlpt_position,
+												   axis=0)
+
+				mesh_points_edge.append(points_single_edge)
+
+				wire_exp_edge.Next()
+
+			face_exp_wire.Next()
+		# extract mesh points (control points) on Face
+		mesh_points_face = np.zeros((0, 3))
+		# convert Face to Geom B-spline Face
+		nurbs_converter = BRepBuilderAPI_NurbsConvert(topo_face)
+		nurbs_converter.Perform(topo_face)
+		nurbs_face = nurbs_converter.Shape()
+		h_geomsurface = BRep_Tool.Surface(OCC.TopoDS.topods.Face(nurbs_face))
+		h_bsurface = geomconvert_SurfaceToBSplineSurface(h_geomsurface)
+		bsurface = h_bsurface.GetObject()
+
+		# get access to control points (poles)
+		nb_u = bsurface.NbUPoles()
+		nb_v = bsurface.NbVPoles()
+		ctrlpts = TColgp_Array2OfPnt(1, nb_u, 1, nb_v)
+		bsurface.Poles(ctrlpts)
+
+		for indice_u_direction in range(1, nb_u + 1):
+			for indice_v_direction in range(1, nb_v + 1):
+				ctrlpt = ctrlpts.Value(indice_u_direction, indice_v_direction)
+				ctrlpt_position = np.array([[ctrlpt.Coord(1),
+											 ctrlpt.Coord(2),
+											 ctrlpt.Coord(3)]])
+				mesh_points_face = np.append(mesh_points_face,
+											 ctrlpt_position, axis=0)
+
+		return mesh_points_face, mesh_points_edge
 
 	def write_shape_to_file(self, shape, filename):
 		"""
