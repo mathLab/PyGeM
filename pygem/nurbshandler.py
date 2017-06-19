@@ -217,6 +217,38 @@ class NurbsHandler(fh.FileHandler):
 			faces_explorer.Next()
 		self.write_shape_to_file(compound, self.outfile)
 
+	def check_topology(self):
+		"""
+        Method to check the topology of imported geometry.
+        :return: 0: 1 solid = 1 shell = n faces
+        1: 1 solid = 0 shell = n free faces
+        2: 1 solid = n shell = n faces (1 shell = 1 face)
+        """
+		# read shells and faces
+		shells_explorer = TopExp_Explorer(self.shape, TopAbs_SHELL)
+		n_shells = 0
+		while shells_explorer.More():
+			n_shells += 1
+			shells_explorer.Next()
+
+		faces_explorer = TopExp_Explorer(self.shape, TopAbs_FACE)
+		n_faces = 0
+		while faces_explorer.More():
+			n_faces += 1
+			faces_explorer.Next()
+
+		print("##############################################\n"
+			  "Model statistics -- Nb Shells: {0} Faces: {1} \n"
+			  "----------------------------------------------\n"
+			  .format(n_shells, n_faces))
+
+		if n_shells == 0:
+			self.check_topo = 1
+		elif n_shells == n_faces:
+			self.check_topo = 2
+		else:
+			self.check_topo = 0
+
 	def write_shape_to_file(self, shape, filename):
 		"""
 		Abstract method to write the 'shape' to the `filename`.
