@@ -549,6 +549,52 @@ class NurbsHandler(fh.FileHandler):
 
 		return OCC.TopoDS.topods.Face(new_bspline_tface.Face())
 
+	@staticmethod
+	def combine_faces(compshape, sew_tolerance):
+		"""
+        Method to combine faces in a shell by adding connectivity and continuity
+        :param compshape: TopoDS_Shape
+        :param sew_tolerance: tolerance for sewing
+        :return: Topo_Shell
+        """
+
+		offsew = BRepOffsetAPI_FindContigousEdges(sew_tolerance)
+		sew = BRepBuilderAPI_Sewing(sew_tolerance)
+
+		face_explorers = TopExp_Explorer(compshape, TopAbs_FACE)
+		n_faces = 0
+		# cycle on Faces
+		while face_explorers.More():
+			tface = OCC.TopoDS.topods.Face(face_explorers.Current())
+			sew.Add(tface)
+			offsew.Add(tface)
+			n_faces += 1
+			face_explorers.Next()
+
+		offsew.Perform()
+		offsew.Dump()
+		sew.Perform()
+		shell = sew.SewedShape()
+		sew.Dump()
+
+		shell = OCC.TopoDS.topods.Shell(shell)
+		shell_fixer = ShapeFix_Shell()
+		shell_fixer.FixFaceOrientation(shell)
+
+		if shell_fixer.Perform():
+			print("{} shells fixed! ".format(shell_fixer.NbShells()))
+		else:
+			print "Shells not fixed! "
+
+		new_shell = shell_fixer.Shell()
+
+		if OCC.BRepAlgo.brepalgo_IsValid(new_shell):
+			print "Shell valid! "
+		else:
+			print "Shell failed! "
+
+		return new_shell
+
 	def write_shape_to_file(self, shape, filename):
 		"""
 		Abstract method to write the 'shape' to the `filename`.
