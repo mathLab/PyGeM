@@ -334,6 +334,70 @@ class NurbsHandler(fh.FileHandler):
 
 		return mesh_points_face, mesh_points_edge
 
+	def parse_shape(self, filename):
+		"""
+        Method to parse a Shape with multiple objects (1 compound = multi-shells
+        and 1 shell = multi-faces)
+        It returns a list of matrix with all the coordinates of control points
+        of each Face and a second list with all the control points related to
+        Edges of each Face.
+
+        :param filename: the input filename.
+
+        :return: list of (mesh_points: `n_points`-by-3 matrix containing
+        the coordinates of the control points of the Face (surface),
+                 edge_points: it is a list of numpy.narray)
+        :rtype: a list of shells
+
+        """
+		self.infile = filename
+		self.shape = self.load_shape_from_file(filename)
+
+		self.check_topology()
+
+		# parse and get control points
+		l_shells = []  # an empty list of shells
+		n_shells = 0
+
+		if self.check_topo == 0:
+
+			shells_explorer = TopExp_Explorer(self.shape, TopAbs_SHELL)
+
+			# cycle on shells
+			while shells_explorer.More():
+				topo_shell = OCC.TopoDS.topods.Shell(shells_explorer.Current())
+				shell_faces_explorer = TopExp_Explorer(topo_shell, TopAbs_FACE)
+				l_faces = []  # an empty list of faces per shell
+
+				# cycle on faces
+				while shell_faces_explorer.More():
+					topo_face = OCC.TopoDS.topods.Face(shell_faces_explorer
+													   .Current())
+					mesh_point, edge_point = self.parse_face(topo_face)
+					l_faces.append((mesh_point, edge_point))
+					shell_faces_explorer.Next()
+
+				l_shells.append(l_faces)
+				n_shells += 1
+				shells_explorer.Next()
+
+		else:
+			# cycle only on faces
+			shell_faces_explorer = TopExp_Explorer(self.shape, TopAbs_FACE)
+			l_faces = []  # an empty list of faces per shell
+
+			while shell_faces_explorer.More():
+				topo_face = OCC.TopoDS.topods.Face(shell_faces_explorer
+												   .Current())
+				mesh_point, edge_point = self.parse_face(topo_face)
+				l_faces.append((mesh_point, edge_point))
+				shell_faces_explorer.Next()
+
+			l_shells.append(l_faces)
+			n_shells += 1
+
+		return l_shells
+
 	def write_shape_to_file(self, shape, filename):
 		"""
 		Abstract method to write the 'shape' to the `filename`.
