@@ -211,7 +211,7 @@ Here there is a list of the scientific works involving **PyGeM** you can consult
 [[bibitem](readme/bergmann2018zonal.bib)].
 
 * Salmoiraghi, Ballarin, Corsi, Mola, Tezzele, Rozza. *Advances in geometrical parametrization and reduced order models and methods for computational fluid dynamics problems in applied sciences and engineering: overview and perspectives*. ECCOMAS 2016 proceedings. [[DOI](https://doi.org/10.7712/100016.1867.8680)],
-[[bibitem](readme/salmoiraghi2016advances         .bib)].
+[[bibitem](readme/salmoiraghi2016advances.bib)].
 
 
 ## Authors and contributors
