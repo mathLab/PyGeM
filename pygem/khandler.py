@@ -3,6 +3,7 @@ Derived module from filehandler.py to handle LS-DYNA keyword (.k) files.
 """
 import numpy as np
 import pygem.filehandler as fh
+import re
 
 
 class KHandler(fh.FileHandler):
@@ -30,7 +31,6 @@ class KHandler(fh.FileHandler):
                 coordinates of the points of the mesh.
         :rtype: numpy.ndarray
         """
-        import re
         self._check_filename_type(filename)
         self._check_extension(filename)
         self.infile = filename
@@ -77,7 +77,6 @@ class KHandler(fh.FileHandler):
         self._check_extension(filename)
         self._check_infile_instantiation()
         self.outfile = filename
-        import re
 
         i = 0
         node_indicator = False
