@@ -30,27 +30,36 @@ class KHandler(fh.FileHandler):
                 coordinates of the points of the mesh.
         :rtype: numpy.ndarray
         """
+        import re
         self._check_filename_type(filename)
         self._check_extension(filename)
         self.infile = filename
-        index = -9
+
         mesh_points = []
+        node_indicator = False
+
         with open(self.infile, 'r') as input_file:
             for num, line in enumerate(input_file):
+                expression = re.compile(r'(.+?)(?:,|$)')
+                expression = expression.findall(line)
+
                 if line.startswith('*NODE'):
-                    index = num
-                if num == index + 1:
-                    if line.startswith('$'):
-                        index = num
-                    elif line.startswith('*'):
-                        index = -9
-                    else:
-                        l = []
-                        l.append(float(line[8:24]))
-                        l.append(float(line[24:40]))
-                        l.append(float(line[40:56]))
-                        mesh_points.append(l)
-                        index = num
+                    node_indicator = True
+                    continue
+                if line.startswith('*ELEMENT'):
+                    break
+
+                if node_indicator == False:
+                    pass
+                else:
+                    if len(expression) == 1:
+                        expression = re.findall(r'\S+', expression[0])
+                    l = []
+                    l.append(float(expression[1]))
+                    l.append(float(expression[2]))
+                    l.append(float(expression[3]))
+                    mesh_points.append(l)
+
             mesh_points = np.array(mesh_points)
         return mesh_points
 
@@ -68,22 +77,31 @@ class KHandler(fh.FileHandler):
         self._check_extension(filename)
         self._check_infile_instantiation()
         self.outfile = filename
-        index = -9
+        import re
+
         i = 0
+        node_indicator = False
+
         with open(self.outfile, 'w') as output_file:
             with open(self.infile, 'r') as input_file:
                 for num, line in enumerate(input_file):
+                    get_num = re.findall(r'[-+]?[0-9]*\.?[0-9]+', line)
+
+                    if line.startswith('*ELEMENT'):
+                        node_indicator = False
+
+                    if node_indicator == False:
+                        output_file.write(line)
+                    else:
+                        line = get_num[0] + ", " + str(mesh_points[i][0]) + ", " + str(mesh_points[i][1]) + ", " + str(
+                            mesh_points[i][2]) + "\n"
+                        output_file.write(line)
+                        i += 1
+
                     if line.startswith('*NODE'):
-                        index = num
-                    if num == index + 1:
-                        if line.startswith('$'):
-                            index = num
-                        elif line.startswith('*'):
-                            index = -9
-                        else:
-                            for j in range(0, 3):
-                                line = line[:8 + 16 * (j)] + '{:16.10f}'.format(
-                                    mesh_points[i][j]) + line[8 + 16 * (j + 1):]
-                            i += 1
-                            index = num
-                    output_file.write(line)
+                        node_indicator = True
+
+
+
+
+
