@@ -12,7 +12,7 @@ class ElmerHandler(fh.FileHandler):
     :cvar string infile: name of the input file to be processed.
     :cvar string outfile: name of the output file where to write in.
     :cvar list extensions: extensions of the input/output files. It
-        is equal to ['.node'] since openFOAM files do not have extension.
+        is equal to ['.node'] since elmer files do not have extension.
     """
 
     def __init__(self):
@@ -39,7 +39,6 @@ class ElmerHandler(fh.FileHandler):
 
         self.infile = filename
 
-        nrow = 0
         i = 0
         n_points = 0
         with open(self.infile, 'r') as input_file:
@@ -86,12 +85,12 @@ class ElmerHandler(fh.FileHandler):
         with open(self.infile, 'r') as input_file, open(self.outfile,
                                                         'w') as output_file:
             for line in input_file:
-                    numbers = line.split() #[n1 p x y z]
+                numbers = line.split() #[n1 p x y z]
                     
-                    output_file.write(numbers[0] + ' ' +numbers[1] + ' ' + str(mesh_points[i][0]) + ' ' + str(
+                output_file.write(numbers[0] + ' ' +numbers[1] + ' ' + str(mesh_points[i][0]) + ' ' + str(
                         mesh_points[i][1]) + ' ' + str(mesh_points[i][2]) )
-                    i += 1
+                i += 1
     
-                    if i !=n_points:
-                        output_file.write('\n')
+                if i !=n_points:
+                    output_file.write('\n')
 
