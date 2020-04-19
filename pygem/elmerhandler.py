@@ -87,10 +87,10 @@ class ElmerHandler(fh.FileHandler):
             for line in input_file:
                 numbers = line.split() #[n1 p x y z]
                     
-                output_file.write(numbers[0] + ' ' +numbers[1] + ' ' + str(mesh_points[i][0]) + ' ' + str(
-                        mesh_points[i][1]) + ' ' + str(mesh_points[i][2]) )
+                output_file.write(numbers[0] + ' ' +numbers[1] + ' ' + str(
+                        mesh_points[i][0]) + ' ' + str(mesh_points[i][1]) + 
+                        ' ' + str(mesh_points[i][2]))
                 i += 1
-    
-                if i !=n_points:
-                    output_file.write('\n')
 
+                if i != n_points:
+                    output_file.write('\n')
