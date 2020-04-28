@@ -1,7 +1,7 @@
 """
 Derived module from filehandler.py to handle LS-DYNA keyword (.k) files.
 """
-import re
+import re 
 import numpy as np
 import pygem.filehandler as fh
 
