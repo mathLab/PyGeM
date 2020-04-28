@@ -117,3 +117,27 @@ class TestKHandler(TestCase):
         k_handler.write(mesh_points, outfilename)
         self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
         self.addCleanup(os.remove, outfilename)
+
+    def test_comma_seperated_parse(self):
+        k_handler = uh.KHandler()
+        mesh_points = k_handler.parse('tests/test_datasets/test_square_comma.k')
+        np.testing.assert_almost_equal([mesh_points[0][0], mesh_points[0][1], mesh_points[0][2]],
+                                       [-0.0500000007, -0.0250000004, -0.0250000004])
+
+    def test_comma_seperated_write(self):
+        k_handler = uh.KHandler()
+        mesh_points = k_handler.parse('tests/test_datasets/test_square_comma.k')
+        mesh_points[0][0] = 2.2
+        mesh_points[5][1] = 4.3
+        mesh_points[9][2] = 0.5
+        mesh_points[45][0] = 7.2
+        mesh_points[132][1] = -1.2
+        mesh_points[255][2] = -3.6
+        outfilename = 'tests/test_datasets/test_square_comma_out.k'
+        outfilename_expected = 'tests/test_datasets/test_square_comma_out_true.k'
+        k_handler.write(mesh_points, outfilename)
+        self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
+        self.addCleanup(os.remove, outfilename)
+
+
+
