@@ -1,9 +1,9 @@
 """
 Derived module from filehandler.py to handle LS-DYNA keyword (.k) files.
 """
+import re
 import numpy as np
 import pygem.filehandler as fh
-import re
 
 
 class KHandler(fh.FileHandler):
@@ -42,30 +42,26 @@ class KHandler(fh.FileHandler):
         with open(self.infile, 'r') as input_file:
             for num, line in enumerate(input_file):
 
-                # Regex to find all Node elements
                 expression = re.compile(r'(.+?)(?:,|$)')
                 expression = expression.findall(line)
 
-                # Discount any header lines
                 if line.startswith("$"):
                     continue
 
-                # Find the the start of the nodes section and continue if true
                 if line.startswith('*NODE'):
                     node_indicator = True
                     continue
 
-                # Find the start of the elements and break if found.
                 if line.startswith('*ELEMENT'):
                     break
 
-                # If the node is found then iterate through and append the nodes list points to mesh_points
                 if not node_indicator:
                     pass
                 else:
                     if len(expression) == 1:
                         expression = re.findall(r'\S+', expression[0])
-                    l = [float(expression[1]), float(expression[2]), float(expression[3])]
+                    l = [float(expression[1]), float(expression[2]),
+                         float(expression[3])]
                     mesh_points.append(l)
 
             mesh_points = np.array(mesh_points)
@@ -91,7 +87,7 @@ class KHandler(fh.FileHandler):
 
         with open(self.outfile, 'w') as output_file:
             with open(self.infile, 'r') as input_file:
-                for num, line in enumerate(input_file):
+                for _, line in enumerate(input_file):
                     get_num = re.findall(r'[-+]?[0-9]*\.?[0-9]+', line)
 
                     # Write header files
@@ -118,37 +114,33 @@ class KHandler(fh.FileHandler):
                         split_line = line.split(" ")
 
                         # Format the data into correct format
-                        data = [int(get_num[0]), '{:.10f}'.format(float(mesh_points[i][0])),
+                        data = [int(get_num[0]),
+                                '{:.10f}'.format(float(mesh_points[i][0])),
                                 '{:.10f}'.format(float(mesh_points[i][1])),
                                 '{:.10f}'.format(float(mesh_points[i][2]))]
 
                         comma_seperator = False
                         pointer = 0
 
-                        # Enumerate through the line and change the relevent information retaining the delimetered value
                         for index, value in enumerate(split_line):
 
-                            # Only read the none space values
                             if value:
 
-                                # Format if delimited by commas
                                 if value[len(value) - 1] == ",":
                                     comma_seperator = True
                                     new_str = value.replace(value[:-1], str(data[pointer]))
                                     split_line[index] = new_str
 
-                                # Else format the data delimited by spaces
                                 else:
                                     new_str = value.replace(value, str(data[pointer]))
                                     split_line[index] = new_str
-                                    if float(data[pointer]) < 0 and comma_seperator == False:
+                                    if float(data[pointer]) < 0 and not comma_seperator:
                                         del split_line[index - 1]
 
                                 pointer += 1
                             else:
                                 pass
 
-                        # Format the split string back into normal string and write
                         original_str = ""
                         for j in split_line:
                             original_str += j + " "
