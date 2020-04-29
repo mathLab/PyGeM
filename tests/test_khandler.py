@@ -121,9 +121,8 @@ class TestKHandler(TestCase):
     def test_comma_seperated_parse(self):
         k_handler = uh.KHandler()
         mesh_points = k_handler.parse('tests/test_datasets/test_square_comma.k')
-        np.testing.assert_almost_equal(mesh_points[0][0], -0.0500000007)
-        np.testing.assert_almost_equal(mesh_points[0][1], -0.0250000004)
-        np.testing.assert_almost_equal(mesh_points[0][2], -0.0250000004)
+        np.testing.assert_almost_equal([mesh_points[0][0], mesh_points[0][1], mesh_points[0][2]],
+                                       [-0.0500000007, -0.0250000004, -0.0250000004])
 
     def test_comma_seperated_write(self):
         k_handler = uh.KHandler()
