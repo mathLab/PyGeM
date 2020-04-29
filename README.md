@@ -41,7 +41,7 @@
 **PyGeM** is a python package using **Free Form Deformation**, **Radial Basis Functions** and **Inverse Distance Weighting** to parametrize and morph complex geometries.  It is ideally suited for actual industrial problems, since it allows to handle:
 
 - Computer Aided Design files (in .iges, .step, and .stl formats)
-- Mesh files (in .unv and OpenFOAM formats)
+- Mesh files (in .unv, ElmerFEM formats and OpenFOAM formats)
 - Output files (in .vtk format)
 - LS-Dyna Keyword files (.k format)
 
