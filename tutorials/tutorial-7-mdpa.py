@@ -6,8 +6,6 @@ import meshio
 ffd = pg.FFD()
 ffd.read_parameters('../tests/test_datasets/parameters_test_ffd_pipe_unv_C0.prm')
 
-%cat ../tests/test_datasets/parameters_test_ffd_pipe_unv_C0.prm
-
 mdpa_handler = MdpaHandler()
 mesh_points = mdpa_handler.parse('../tests/test_datasets/test_pipe.mdpa')
 
@@ -24,8 +22,6 @@ meshio.write('test_pipe_deformed_mdpa.vtk', DeformedMDPA)
 DeformedVTK = vedo.load('test_pipe_deformed_mdpa.vtk')
 vedo.settings.embedWindow(backend='k3d', verbose=True)
 vedo.show(DeformedVTK, viewup="z", resetcam=True)
-
-%cat ../tests/test_datasets/parameters_test_ffd_pipe_unv_C1.prm
 
 ffd = pg.FFD()
 ffd.read_parameters('../tests/test_datasets/parameters_test_ffd_pipe_unv_C1.prm')
