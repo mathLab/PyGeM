@@ -1,7 +1,5 @@
 import pygem as pg
 from pygem.khandler import KHandler
-import vedo
-import meshio
 
 ffd = pg.FFD()
 ffd.read_parameters('../tests/test_datasets/parameters_test_ffd_pipe_unv_C0.prm')
