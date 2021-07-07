@@ -3,21 +3,26 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>RBF Factory &mdash; PyGeM 2.0.2 documentation</title>
+  <title>RBF Factory &mdash; PyGeM 2.0.3 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,10 +32,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +57,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PyGeM
+            <a href="index.html" class="icon icon-home"> PyGeM
           
 
           
@@ -62,7 +67,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -147,6 +152,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -160,7 +167,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/rbf_factory.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -186,8 +193,8 @@
 </tbody>
 </table>
 <dl class="py class">
-<dt>
-<em class="property">class </em><code class="sig-name descname">RBFFactory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">RBFFactory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Factory class that spawns the radial basis functions.</p>
 <dl class="field-list">
@@ -202,15 +209,15 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt>
-<code class="sig-name descname">gaussian_spline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.gaussian_spline"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">gaussian_spline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.gaussian_spline"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>It implements the following formula:</p>
 <div class="math">
 <p><span class="math">\varphi(\boldsymbol{x}) = e^{-\frac{\boldsymbol{x}^2}{r^2}}</span></p>
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
+<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
 <li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the parameter r in the formula above.</p></li>
 </ul>
 </dd>
@@ -224,15 +231,15 @@
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">multi_quadratic_biharmonic_spline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.multi_quadratic_biharmonic_spline"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">multi_quadratic_biharmonic_spline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.multi_quadratic_biharmonic_spline"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>It implements the following formula:</p>
 <div class="math">
 <p><span class="math">\varphi(\boldsymbol{x}) = \sqrt{\boldsymbol{x}^2 + r^2}</span></p>
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
+<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
 <li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the parameter r in the formula above.</p></li>
 </ul>
 </dd>
@@ -246,8 +253,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">inv_multi_quadratic_biharmonic_spline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.inv_multi_quadratic_biharmonic_spline"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">inv_multi_quadratic_biharmonic_spline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.inv_multi_quadratic_biharmonic_spline"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>It implements the following formula:</p>
 <div class="math">
 <p><span class="math">\varphi(\boldsymbol{x}) =
@@ -255,7 +262,7 @@
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
+<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
 <li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the parameter r in the formula above.</p></li>
 </ul>
 </dd>
@@ -269,18 +276,21 @@
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">thin_plate_spline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.thin_plate_spline"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">thin_plate_spline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.thin_plate_spline"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>It implements the following formula:</p>
 <div class="math">
 <p><span class="math">\varphi(\boldsymbol{x}) =
-\left(\frac{\boldsymbol{x}}{r}\right)^2
-\ln\frac{\boldsymbol{x}}{r}</span></p>
+   \left(\frac{\boldsymbol{x}}{r}\right)^k
+   \ln\frac{\boldsymbol{x}}{r}
+
+With k=2 the function is &quot;radius free&quot;, that means independent of radius value.</span></p>
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
+<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
 <li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the parameter r in the formula above.</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the parameter k in the formula above.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -293,8 +303,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">beckert_wendland_c2_basis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.beckert_wendland_c2_basis"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">beckert_wendland_c2_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.beckert_wendland_c2_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>It implements the following formula:</p>
 <div class="math">
 <p><span class="math">\varphi(\boldsymbol{x}) = 
@@ -303,7 +313,7 @@
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
+<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
 <li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the parameter r in the formula above.</p></li>
 </ul>
 </dd>
@@ -317,8 +327,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">polyharmonic_spline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.polyharmonic_spline"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">polyharmonic_spline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf_factory.html#RBFFactory.polyharmonic_spline"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>It implements the following formula:</p>
 <div class="math">
 <p><span class="math">\varphi(\boldsymbol{x}) =
@@ -338,7 +348,7 @@
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
+<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the norm x in the formula above.</p></li>
 <li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the parameter r in the formula above.</p></li>
 </ul>
 </dd>
@@ -360,25 +370,18 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="idw.html" class="btn btn-neutral float-right" title="Inverse Distance Weighting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="rbf.html" class="btn btn-neutral float-left" title="Radial Basis Function" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="idw.html" class="btn btn-neutral float-right" title="Inverse Distance Weighting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="rbf.html" class="btn btn-neutral float-left" title="Radial Basis Function" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2017-2020, PyGeM contributors
+        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
       <span class="lastupdated">
-        Last updated on Nov 03, 2020.
+        Last updated on Jul 07, 2021.
       </span>
 
     </p>
@@ -386,14 +389,13 @@
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

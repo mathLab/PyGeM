@@ -3,21 +3,26 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pygem.ffd &mdash; PyGeM 2.0.2 documentation</title>
+  <title>pygem.ffd &mdash; PyGeM 2.0.3 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,10 +32,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -50,7 +55,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PyGeM
+            <a href="../../index.html" class="icon icon-home"> PyGeM
           
 
           
@@ -60,7 +65,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -116,6 +121,8 @@
         <div class="rst-content">
         
           
+
+
 
 
 
@@ -202,6 +209,7 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">ConfigParser</span> <span class="k">as</span> <span class="nn">configparser</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">special</span>
 
@@ -634,7 +642,7 @@
 
         <span class="k">return</span> <span class="n">box_points</span><span class="o">.</span><span class="n">T</span></div>
 
-<div class="viewcode-block" id="FFD.reflect"><a class="viewcode-back" href="../../ffd.html#pygem.ffd.FFD.reflect">[docs]</a>    <span class="k">def</span> <span class="nf">reflect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="FFD.reflect"><a class="viewcode-back" href="../../ffd.html#pygem.ffd.FFD.reflect">[docs]</a>    <span class="k">def</span> <span class="nf">reflect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reflect the lattice of control points along the direction defined</span>
 <span class="sd">        by `axis`. In particular the origin point of the lattice is preserved.</span>
@@ -649,6 +657,17 @@
 <span class="sd">        :param int axis: axis along which the reflection is performed.</span>
 <span class="sd">            Default is 0. Possible values are 0, 1, or 2, corresponding</span>
 <span class="sd">            to x, y, and z respectively.</span>
+<span class="sd">        :param bool in_place: if True, the object attributes are modified in</span>
+<span class="sd">            place; if False, a new object is return with the reflected lattice.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        :return: a new object with the same parameters and the reflected</span>
+<span class="sd">            lattice if `in_place` is False, otherwise NoneType.</span>
+<span class="sd"> </span>
+<span class="sd">        :Example:</span>
+
+<span class="sd">            &gt;&gt;&gt; ffd.reflect(axis=0, in_place=True) # irreversible</span>
+<span class="sd">            &gt;&gt;&gt; # or ...</span>
+<span class="sd">            &gt;&gt;&gt; refle_ffd = ffd.reflect(axis=0, in_place=False)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check axis value</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
@@ -664,6 +683,9 @@
                 <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> you can not diplace the control &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">+</span> \
                 <span class="s2">&quot;points in the symmetry plane along that axis.&quot;</span>
                 <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">in_place</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># double the control points in the given axis -1 (the symmetry plane)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
@@ -692,7 +714,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">array_mu_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array_mu_z</span><span class="p">,</span>
                                     <span class="n">reflection</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
                                     <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array_mu_z</span><span class="p">,</span> <span class="n">axis</span><span class="p">)[</span><span class="n">indeces</span><span class="p">],</span>
-                                    <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+                                    <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">in_place</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span></div>
+
+
 
 <div class="viewcode-block" id="FFD.__call__"><a class="viewcode-back" href="../../ffd.html#pygem.ffd.FFD.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_pts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -735,16 +761,14 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2017-2020, PyGeM contributors
+        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
       <span class="lastupdated">
-        Last updated on Nov 03, 2020.
+        Last updated on Jul 07, 2021.
       </span>
 
     </p>
@@ -752,14 +776,13 @@
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

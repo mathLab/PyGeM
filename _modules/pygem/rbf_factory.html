@@ -3,21 +3,26 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pygem.rbf_factory &mdash; PyGeM 2.0.2 documentation</title>
+  <title>pygem.rbf_factory &mdash; PyGeM 2.0.3 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,10 +32,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -50,7 +55,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PyGeM
+            <a href="../../index.html" class="icon icon-home"> PyGeM
           
 
           
@@ -60,7 +65,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -131,6 +136,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -161,7 +168,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<span class="k">class</span> <span class="nc">classproperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">classproperty</span><span class="p">():</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
 
@@ -169,7 +176,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="RBFFactory"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory">[docs]</a><span class="k">class</span> <span class="nc">RBFFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFFactory"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory">[docs]</a><span class="k">class</span> <span class="nc">RBFFactory</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Factory class that spawns the radial basis functions.</span>
 
@@ -181,7 +188,8 @@
 <span class="sd">        &gt;&gt;&gt; for fname in RBFFactory.bases:</span>
 <span class="sd">        &gt;&gt;&gt;     y = RBFFactory(fname)(x)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="RBFFactory.gaussian_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.gaussian_spline">[docs]</a>    <span class="k">def</span> <span class="nf">gaussian_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFFactory.gaussian_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.gaussian_spline">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">gaussian_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It implements the following formula:</span>
 
@@ -197,7 +205,8 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">X</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">r</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="RBFFactory.multi_quadratic_biharmonic_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.multi_quadratic_biharmonic_spline">[docs]</a>    <span class="k">def</span> <span class="nf">multi_quadratic_biharmonic_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFFactory.multi_quadratic_biharmonic_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.multi_quadratic_biharmonic_spline">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">multi_quadratic_biharmonic_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It implements the following formula:</span>
 
@@ -213,7 +222,8 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">X</span> <span class="o">*</span> <span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">r</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="RBFFactory.inv_multi_quadratic_biharmonic_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.inv_multi_quadratic_biharmonic_spline">[docs]</a>    <span class="k">def</span> <span class="nf">inv_multi_quadratic_biharmonic_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFFactory.inv_multi_quadratic_biharmonic_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.inv_multi_quadratic_biharmonic_spline">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">inv_multi_quadratic_biharmonic_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It implements the following formula:</span>
 
@@ -230,27 +240,32 @@
         <span class="n">result</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">X</span> <span class="o">*</span> <span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">r</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="RBFFactory.thin_plate_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.thin_plate_spline">[docs]</a>    <span class="k">def</span> <span class="nf">thin_plate_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFFactory.thin_plate_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.thin_plate_spline">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">thin_plate_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It implements the following formula:</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            \\varphi(\\boldsymbol{x}) =</span>
-<span class="sd">            \\left(\\frac{\\boldsymbol{x}}{r}\\right)^2</span>
+<span class="sd">            \\left(\\frac{\\boldsymbol{x}}{r}\\right)^k</span>
 <span class="sd">            \\ln\\frac{\\boldsymbol{x}}{r}</span>
 
-<span class="sd">        :param numpy.ndarray X: the norm x in the formula above.</span>
-<span class="sd">        :param float r: the parameter r in the formula above.</span>
+<span class="sd">         With k=2 the function is &quot;radius free&quot;, that means independent of radius value.</span>
 
+<span class="sd">        :param numpy.ndarray X: the norm x in the formula above.</span>
+<span class="sd">        :param float r: the parameter r in the formula above. </span>
+<span class="sd">        :param float k: the parameter k in the formula above.</span>
+<span class="sd">         </span>
 <span class="sd">        :return: result: the result of the formula above.</span>
-<span class="sd">        :rtype: float</span>
+<span class="sd">        :rtype: float      </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">arg</span> <span class="o">=</span> <span class="n">X</span> <span class="o">/</span> <span class="n">r</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">*</span> <span class="n">arg</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">arg</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">result</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">arg</span><span class="p">),</span> <span class="n">result</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="RBFFactory.beckert_wendland_c2_basis"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.beckert_wendland_c2_basis">[docs]</a>    <span class="k">def</span> <span class="nf">beckert_wendland_c2_basis</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFFactory.beckert_wendland_c2_basis"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.beckert_wendland_c2_basis">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">beckert_wendland_c2_basis</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It implements the following formula:</span>
 
@@ -271,7 +286,8 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">first</span> <span class="o">*</span> <span class="n">second</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="RBFFactory.polyharmonic_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.polyharmonic_spline">[docs]</a>    <span class="k">def</span> <span class="nf">polyharmonic_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFFactory.polyharmonic_spline"><a class="viewcode-back" href="../../rbf_factory.html#pygem.rbf_factory.RBFFactory.polyharmonic_spline">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">polyharmonic_spline</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It implements the following formula:</span>
 
@@ -319,13 +335,14 @@
     <span class="c1">##                                                                        ##</span>
     <span class="c1">############################################################################</span>
     <span class="n">__bases</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;gaussian_spline&#39;</span><span class="p">:</span> <span class="n">gaussian_spline</span><span class="p">,</span>
-        <span class="s1">&#39;multi_quadratic_biharmonic_spline&#39;</span><span class="p">:</span> <span class="n">multi_quadratic_biharmonic_spline</span><span class="p">,</span>
+        <span class="s1">&#39;gaussian_spline&#39;</span><span class="p">:</span> <span class="n">gaussian_spline</span><span class="o">.</span><span class="vm">__func__</span><span class="p">,</span>
+        <span class="s1">&#39;multi_quadratic_biharmonic_spline&#39;</span><span class="p">:</span> 
+        <span class="n">multi_quadratic_biharmonic_spline</span><span class="o">.</span><span class="vm">__func__</span><span class="p">,</span>
         <span class="s1">&#39;inv_multi_quadratic_biharmonic_spline&#39;</span><span class="p">:</span>
-        <span class="n">inv_multi_quadratic_biharmonic_spline</span><span class="p">,</span>
-        <span class="s1">&#39;thin_plate_spline&#39;</span><span class="p">:</span> <span class="n">thin_plate_spline</span><span class="p">,</span>
-        <span class="s1">&#39;beckert_wendland_c2_basis&#39;</span><span class="p">:</span> <span class="n">beckert_wendland_c2_basis</span><span class="p">,</span>
-        <span class="s1">&#39;polyharmonic_spline&#39;</span><span class="p">:</span> <span class="n">polyharmonic_spline</span>
+        <span class="n">inv_multi_quadratic_biharmonic_spline</span><span class="o">.</span><span class="vm">__func__</span><span class="p">,</span>
+        <span class="s1">&#39;thin_plate_spline&#39;</span><span class="p">:</span> <span class="n">thin_plate_spline</span><span class="o">.</span><span class="vm">__func__</span><span class="p">,</span>
+        <span class="s1">&#39;beckert_wendland_c2_basis&#39;</span><span class="p">:</span> <span class="n">beckert_wendland_c2_basis</span><span class="o">.</span><span class="vm">__func__</span><span class="p">,</span>
+        <span class="s1">&#39;polyharmonic_spline&#39;</span><span class="p">:</span> <span class="n">polyharmonic_spline</span><span class="o">.</span><span class="vm">__func__</span>
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
@@ -334,11 +351,10 @@
         <span class="c1"># implemented radial basis functions</span>
         <span class="k">if</span> <span class="n">fname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bases</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bases</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
-                <span class="sd">&quot;&quot;&quot;The name of the basis function in the parameters file is not</span>
-<span class="sd">                correct or not implemented. Check the documentation for</span>
-<span class="sd">                all the available functions.&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
+            <span class="sd">&quot;&quot;&quot;The name of the basis function in the parameters file is not</span>
+<span class="sd">            correct or not implemented. Check the documentation for</span>
+<span class="sd">            all the available functions.&quot;&quot;&quot;</span><span class="p">)</span>
 
     <span class="nd">@classproperty</span>
     <span class="k">def</span> <span class="nf">bases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -352,16 +368,14 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2017-2020, PyGeM contributors
+        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
       <span class="lastupdated">
-        Last updated on Nov 03, 2020.
+        Last updated on Jul 07, 2021.
       </span>
 
     </p>
@@ -369,14 +383,13 @@
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

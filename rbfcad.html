@@ -3,21 +3,26 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Radial Basis Function [CAD] &mdash; PyGeM 2.0.2 documentation</title>
+  <title>Radial Basis Function [CAD] &mdash; PyGeM 2.0.3 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,10 +32,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +57,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PyGeM
+            <a href="index.html" class="icon icon-home"> PyGeM
           
 
           
@@ -62,7 +67,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -154,6 +159,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -167,7 +174,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/rbfcad.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -242,19 +249,19 @@ implemented below.</p>
 </tbody>
 </table>
 <dl class="py class">
-<dt>
-<em class="property">class </em><code class="sig-name descname">RBF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">original_control_points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">deformed_control_points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">func</span><span class="o">=</span><span class="default_value">'gaussian_spline'</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">extra_parameter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">u_knots_to_add</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">v_knots_to_add</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">t_knots_to_add</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">tolerance</span><span class="o">=</span><span class="default_value">0.0001</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cad/rbf.html#RBF"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">RBF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deformed_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian_spline'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cad/rbf.html#RBF"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pygem.cad.cad_deformation.CADDeformation</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pygem.rbf.RBF</span></code></p>
 <p>Class that handles the Radial Basis Functions interpolation on CAD
 geometries.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an
+<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an
 (<em>n_control_points</em>, <em>3</em>) array with the coordinates of the original
 interpolation control points before the deformation. The default is the
 vertices of the unit cube.</p></li>
-<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an
+<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an
 (<em>n_control_points</em>, <em>3</em>) array with the coordinates of the
 interpolation control points after the deformation. The default is the
 vertices of the unit cube.</p></li>
@@ -303,15 +310,15 @@ form mm, making some of the aforementioned operations fail. Default is
 </dd>
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the matrix formed by the weights corresponding
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the matrix formed by the weights corresponding
 to the a-priori selected N control points, associated to the basis
 functions and c and Q terms that describe the polynomial of order one
 p(x) = c + Qx.  The shape is (n_control_points+1+3)-by-3. It is computed
 internally.</p></li>
-<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an
+<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an
 (<em>n_control_points</em>, <em>3</em>) array with the coordinates of the original
 interpolation control points before the deformation.</p></li>
-<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an
+<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an
 (<em>n_control_points</em>, <em>3</em>) array with the coordinates of the
 interpolation control points after the deformation.</p></li>
 <li><p><strong>basis</strong> (<em>callable</em>) – the basis functions to use in the
@@ -352,25 +359,18 @@ deformation and placing new poles on curves and surfaces).</p></li>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="idwcad.html" class="btn btn-neutral float-right" title="Inverse Distance Weighting [CAD]" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ffdcad.html" class="btn btn-neutral float-left" title="Free-form Deformation [CAD]" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="idwcad.html" class="btn btn-neutral float-right" title="Inverse Distance Weighting [CAD]" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ffdcad.html" class="btn btn-neutral float-left" title="Free-form Deformation [CAD]" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2017-2020, PyGeM contributors
+        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
       <span class="lastupdated">
-        Last updated on Nov 03, 2020.
+        Last updated on Jul 07, 2021.
       </span>
 
     </p>
@@ -378,14 +378,13 @@ deformation and placing new poles on curves and surfaces).</p></li>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

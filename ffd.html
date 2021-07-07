@@ -3,21 +3,26 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Free-form Deformation &mdash; PyGeM 2.0.2 documentation</title>
+  <title>Free-form Deformation &mdash; PyGeM 2.0.3 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,10 +32,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +57,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PyGeM
+            <a href="index.html" class="icon icon-home"> PyGeM
           
 
           
@@ -62,7 +67,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -147,6 +152,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -160,7 +167,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/ffd.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -220,8 +227,8 @@ involved transformations.</p>
 </tbody>
 </table>
 <dl class="py class">
-<dt>
-<em class="property">class </em><code class="sig-name descname">FFD</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_control_points</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">FFD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pygem.deformation.Deformation</span></code></p>
 <p>Class that handles the Free Form Deformation on the mesh points.</p>
 <dl class="field-list">
@@ -231,19 +238,19 @@ direction. Default is [2, 2, 2].</p>
 </dd>
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>box_length</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – dimension of the FFD bounding box, in the
+<li><p><strong>box_length</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – dimension of the FFD bounding box, in the
 x, y and z direction (local coordinate system).</p></li>
-<li><p><strong>box_origin</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the x, y and z coordinates of the origin of
+<li><p><strong>box_origin</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the x, y and z coordinates of the origin of
 the FFD bounding box.</p></li>
-<li><p><strong>rot_angle</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – rotation angle around x, y and z axis of the
+<li><p><strong>rot_angle</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – rotation angle around x, y and z axis of the
 FFD bounding box.</p></li>
-<li><p><strong>n_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the number of control points in the
+<li><p><strong>n_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the number of control points in the
 x, y, and z direction.</p></li>
-<li><p><strong>array_mu_x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+<li><p><strong>array_mu_x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
 x, normalized with the box length x.</p></li>
-<li><p><strong>array_mu_y</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+<li><p><strong>array_mu_y</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
 y, normalized with the box length y.</p></li>
-<li><p><strong>array_mu_z</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+<li><p><strong>array_mu_z</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
 z, normalized with the box length z.</p></li>
 </ul>
 </dd>
@@ -260,20 +267,20 @@ z, normalized with the box length z.</p></li>
 </div>
 </dd>
 </dl>
-<dl class="py method">
-<dt>
-<em class="property">property </em><code class="sig-name descname">n_control_points</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">n_control_points</span></span></dt>
 <dd><p>The number of control points in X, Y and Z directions</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt>
-<em class="property">property </em><code class="sig-name descname">psi</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">psi</span></span></dt>
 <dd><p>Return the function that map the physical domain to the reference
 domain.</p>
 <dl class="field-list simple">
@@ -283,9 +290,9 @@ domain.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt>
-<em class="property">property </em><code class="sig-name descname">inverse_psi</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">inverse_psi</span></span></dt>
 <dd><p>Return the function that map the reference domain to the physical
 domain.</p>
 <dl class="field-list simple">
@@ -295,9 +302,9 @@ domain.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt>
-<em class="property">property </em><code class="sig-name descname">T</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">T</span></span></dt>
 <dd><p>Return the function that deforms the points within the unit cube.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -306,38 +313,38 @@ domain.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt>
-<em class="property">property </em><code class="sig-name descname">rotation_matrix</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">rotation_matrix</span></span></dt>
 <dd><p>The rotation matrix (according to rot_angle_x, rot_angle_y,
 rot_angle_z).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt>
-<em class="property">property </em><code class="sig-name descname">position_vertices</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">position_vertices</span></span></dt>
 <dd><p>The position of the vertices of the FFD bounding box.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">reset_weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.reset_weights"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">reset_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.reset_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Set transformation parameters to arrays of zeros.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">read_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">'parameters.prm'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.read_parameters"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">read_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parameters.prm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.read_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Reads in the parameters file and fill the self structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -347,8 +354,8 @@ rot_angle_z).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">write_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">'parameters.prm'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.write_parameters"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">write_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parameters.prm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.write_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>This method writes a parameters file (.prm) called <cite>filename</cite> and fills
 it with all the parameters class members.</p>
 <dl class="field-list simple">
@@ -359,8 +366,8 @@ it with all the parameters class members.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">control_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">deformed</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.control_points"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">control_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deformed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.control_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Method that returns the FFD control points. If the <cite>deformed</cite> flag is
 set to True the method returns the deformed lattice, otherwise it
 returns the original undeformed lattice.</p>
@@ -373,14 +380,14 @@ control lattice. The default is True.</p>
 <dd class="field-even"><p>the FFD control points (by row).</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">reflect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.reflect"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">reflect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_place</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.reflect"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Reflect the lattice of control points along the direction defined
 by <cite>axis</cite>. In particular the origin point of the lattice is preserved.
 So, for instance, the reflection along x, is made with respect to the
@@ -390,23 +397,39 @@ axis are reflected, while the others are preserved. The symmetry plane
 can not present deformations along the chosen axis.
 After the refletcion there will be 2n-1 control points along <cite>axis</cite>,
 witha doubled box length.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – axis along which the reflection is performed.
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – axis along which the reflection is performed.
 Default is 0. Possible values are 0, 1, or 2, corresponding
-to x, y, and z respectively.</p>
+to x, y, and z respectively.</p></li>
+<li><p><strong>in_place</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – if True, the object attributes are modified in
+place; if False, a new object is return with the reflected lattice.
+Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new object with the same parameters and the reflected
+lattice if <cite>in_place</cite> is False, otherwise NoneType.</p>
+</dd>
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ffd</span><span class="o">.</span><span class="n">reflect</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># irreversible</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># or ...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refle_ffd</span> <span class="o">=</span> <span class="n">ffd</span><span class="o">.</span><span class="n">reflect</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_pts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.__call__"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_pts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/ffd.html#FFD.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>This method performs the FFD to <cite>src_pts</cite> and return the deformed
 points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>src_pts</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the array of dimensions (<em>n_points</em>, <em>3</em>)
+<dd class="field-odd"><p><strong>src_pts</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the array of dimensions (<em>n_points</em>, <em>3</em>)
 containing the points to deform. The points have to be arranged by
 row.</p>
 </dd>
@@ -428,25 +451,18 @@ row.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="rbf.html" class="btn btn-neutral float-right" title="Radial Basis Function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="code.html" class="btn btn-neutral float-left" title="Code Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="rbf.html" class="btn btn-neutral float-right" title="Radial Basis Function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="code.html" class="btn btn-neutral float-left" title="Code Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2017-2020, PyGeM contributors
+        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
       <span class="lastupdated">
-        Last updated on Nov 03, 2020.
+        Last updated on Jul 07, 2021.
       </span>
 
     </p>
@@ -454,14 +470,13 @@ row.</p>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

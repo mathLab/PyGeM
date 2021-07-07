@@ -3,21 +3,26 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Radial Basis Function &mdash; PyGeM 2.0.2 documentation</title>
+  <title>Radial Basis Function &mdash; PyGeM 2.0.3 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,10 +32,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +57,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PyGeM
+            <a href="index.html" class="icon icon-home"> PyGeM
           
 
           
@@ -62,7 +67,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -147,6 +152,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -160,7 +167,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/rbf.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -181,8 +188,8 @@ technique.  This technique is still based on the use of a set of parameters, the
 so-called control points, as for FFD, but RBF is interpolatory. Another
 important key point of RBF strategy relies in the way we can locate the control
 points: in fact, instead of FFD where control points need to be placed inside a
-regular lattice, with RBF we hano no more limitations. So we have the
-possibility to perform localized control points refiniments.
+regular lattice, with RBF we have no more limitations. So we have the
+possibility to perform localized control points refinements.
 The module is analogous to the freeform one.</p>
 <dl class="field-list">
 <dt class="field-odd">Theoretical Insight</dt>
@@ -235,19 +242,19 @@ implemented below.</p>
 </tbody>
 </table>
 <dl class="py class">
-<dt>
-<em class="property">class </em><code class="sig-name descname">RBF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">original_control_points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">deformed_control_points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">func</span><span class="o">=</span><span class="default_value">'gaussian_spline'</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">extra_parameter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">RBF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deformed_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian_spline'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_parameter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pygem.deformation.Deformation</span></code></p>
 <p>Class that handles the Radial Basis Functions interpolation on the mesh
 points.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an
+<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an
 (<em>n_control_points</em>, <em>3</em>) array with the coordinates of the original
 interpolation control points before the deformation. The default is the
 vertices of the unit cube.</p></li>
-<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an
+<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an
 (<em>n_control_points</em>, <em>3</em>) array with the coordinates of the
 interpolation control points after the deformation. The default is the
 vertices of the unit cube.</p></li>
@@ -265,29 +272,29 @@ the kernel function. Default is None.</p></li>
 </dd>
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the matrix formed by the weights corresponding
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – the matrix formed by the weights corresponding
 to the a-priori selected N control points, associated to the basis
 functions and c and Q terms that describe the polynomial of order one
 p(x) = c + Qx.  The shape is (<em>n_control_points+1+3</em>, <em>3</em>). It is
 computed internally.</p></li>
-<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an
+<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an
 (<em>n_control_points</em>, <em>3</em>) array with the coordinates of the original
 interpolation control points before the deformation.</p></li>
-<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an
+<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an
 (<em>n_control_points</em>, <em>3</em>) array with the coordinates of the
 interpolation control points after the deformation.</p></li>
 <li><p><strong>basis</strong> (<em>callable</em>) – the basis functions to use in the
 transformation.</p></li>
 <li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the scaling parameter that affects the shape of the
 basis functions.</p></li>
-<li><p><strong>extra_parameter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – the additional parameters that may be passed to
-the kernel function.</p></li>
+<li><p><strong>extra</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – the additional parameters that may be passed to the
+kernel function.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Example</dt>
 <dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygem</span> <span class="kn">import</span> <span class="n">RBF</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rbf</span> <span class="o">=</span> <span class="n">RBF</span><span class="p">(</span><span class="s1">&#39;gaussian_spline&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rbf</span> <span class="o">=</span> <span class="n">RBF</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="s1">&#39;gaussian_spline&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">yv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">zv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
@@ -298,9 +305,9 @@ the kernel function.</p></li>
 </div>
 </dd>
 </dl>
-<dl class="py method">
-<dt>
-<em class="property">property </em><code class="sig-name descname">n_control_points</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">n_control_points</span></span></dt>
 <dd><p>Total number of control points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -309,9 +316,9 @@ the kernel function.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt>
-<em class="property">property </em><code class="sig-name descname">basis</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">basis</span></span></dt>
 <dd><p>The kernel to use in the deformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter</dt>
@@ -330,8 +337,8 @@ function.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">_get_weights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF._get_weights"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_get_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF._get_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>This private method, given the original control points and the deformed
 ones, returns the matrix with the weights and the polynomial terms, that
 is <span class="math">W</span>, <span class="math">c^T</span> and <span class="math">Q^T</span>. The shape is
@@ -339,10 +346,10 @@ is <span class="math">W</span>, <span class="math">c^T</span> and <span class="m
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an n_control_points-by-3 array with the
+<li><p><strong>X</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an n_control_points-by-3 array with the
 coordinates of the original interpolation control points before the
 deformation.</p></li>
-<li><p><strong>Y</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – it is an n_control_points-by-3 array with the
+<li><p><strong>Y</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is an n_control_points-by-3 array with the
 coordinates of the interpolation control points after the
 deformation.</p></li>
 </ul>
@@ -351,14 +358,14 @@ deformation.</p></li>
 <dd class="field-even"><p>weights: the 2D array with the weights and the polynomial terms.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">read_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">'parameters_rbf.prm'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.read_parameters"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">read_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parameters_rbf.prm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.read_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Reads in the parameters file and fill the self structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -369,8 +376,8 @@ parameters_rbf.prm.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">write_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">'parameters_rbf.prm'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.write_parameters"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">write_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parameters_rbf.prm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.write_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>This method writes a parameters file (.prm) called <cite>filename</cite> and fills
 it with all the parameters class members. Default value is
 parameters_rbf.prm.</p>
@@ -382,8 +389,8 @@ parameters_rbf.prm.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">plot_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.plot_points"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">plot_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.plot_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Method to plot the control points. It is possible to save the resulting
 figure.</p>
 <dl class="field-list simple">
@@ -395,15 +402,15 @@ on the specified <cite>filename</cite>. Default is None.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">compute_weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.compute_weights"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">compute_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.compute_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>This method compute the weights according to the
 <cite>original_control_points</cite> and <cite>deformed_control_points</cite> arrays.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt>
-<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_pts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.__call__"><span class="viewcode-link">[source]</span></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_pts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/rbf.html#RBF.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>This method performs the deformation of the mesh points. After the
 execution it sets <cite>self.modified_mesh_points</cite>.</p>
 </dd></dl>
@@ -417,25 +424,18 @@ execution it sets <cite>self.modified_mesh_points</cite>.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="rbf_factory.html" class="btn btn-neutral float-right" title="RBF Factory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ffd.html" class="btn btn-neutral float-left" title="Free-form Deformation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="rbf_factory.html" class="btn btn-neutral float-right" title="RBF Factory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ffd.html" class="btn btn-neutral float-left" title="Free-form Deformation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2017-2020, PyGeM contributors
+        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
       <span class="lastupdated">
-        Last updated on Nov 03, 2020.
+        Last updated on Jul 07, 2021.
       </span>
 
     </p>
@@ -443,14 +443,13 @@ execution it sets <cite>self.modified_mesh_points</cite>.</p>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
