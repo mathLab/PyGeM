@@ -1,9 +1,10 @@
 name: "Deploy Documentation"
 
-on: 
+on:
   push:
-    tags:
-      - "*"
+    tags: [ '**' ]
+  release:
+    types: [ 'created' ]
 
 jobs:
   docs:
