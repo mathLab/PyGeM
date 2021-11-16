@@ -1,10 +1,7 @@
 """
 PyGeM setup.py
 """
-import os
-import sys
-from setuptools import setup, find_packages, Command
-import pygem
+from setuptools import setup, find_packages
 
 meta = {}
 with open("pygem/meta.py") as fp:
@@ -25,13 +22,14 @@ REQUIRED = [
 
 EXTRAS = {
     'docs': ['Sphinx==1.4', 'sphinx_rtd_theme'],
+    'test': ['pytest', 'pytest-cov'],
 }
 
 LDESCRIPTION = (
     "PyGeM is a python package using Free Form Deformation, Radial Basis "
-    "Functions and Inverse Distance Weighting to parametrize and morph complex "
-    "geometries. It is ideally suited for actual industrial problems, since it "
-    "allows to handle:\n"
+    "Functions and Inverse Distance Weighting to parametrize and morph "
+    "complex geometries. It is ideally suited for actual industrial problems, "
+    "since it allows to handle:\n"
     "1) Computer Aided Design files (in .iges, .step, and .stl formats) Mesh "
     "files (in .unv and OpenFOAM formats)\n"
     "2) Output files (in .vtk format)\n"
@@ -42,44 +40,6 @@ LDESCRIPTION = (
     "below and the Tutorials to have an idea of the potential of this package."
 )
 
-here = os.path.abspath(os.path.dirname(__file__))
-class UploadCommand(Command):
-    """Support setup.py upload."""
-
-    description = 'Build and publish the package.'
-    user_options = []
-
-    @staticmethod
-    def status(s):
-        """Prints things in bold."""
-        print('\033[1m{0}\033[0m'.format(s))
-
-    def initialize_options(self):
-        """ void """
-        pass
-
-    def finalize_options(self):
-        """ void """
-        pass
-
-    def run(self):
-        try:
-            self.status('Removing previous builds...')
-            rmtree(os.path.join(here, 'dist'))
-        except OSError:
-            pass
-
-        self.status('Building Source and Wheel (universal) distribution...')
-        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
-
-        self.status('Uploading the package to PyPI via Twine...')
-        os.system('twine upload dist/*')
-
-        self.status('Pushing git tags...')
-        os.system('git tag v{0}'.format(VERSION))
-        os.system('git push --tags')
-
-        sys.exit()
 
 setup(
     name=NAME,
@@ -102,12 +62,6 @@ setup(
     packages=find_packages(),
     install_requires=REQUIRED,
     extras_require=EXTRAS,
-    test_suite='nose.collector',
-    tests_require=['nose'],
     include_package_data=True,
     zip_safe=False,
-
-    # $ setup.py publish support.
-    cmdclass={
-        'upload': UploadCommand,
-    },)
+)
