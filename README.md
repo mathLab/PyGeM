@@ -51,7 +51,7 @@ See the [**Examples**](#examples) section below and the [**Tutorials**](tutorial
 
 ## Dependencies and installation
 **PyGeM** requires `numpy`, `scipy`, `matplotlib`, `sphinx` (for the
-documentation) and `nose` (for local test). They can be easily installed via
+documentation) and `pytest` (for local test). They can be easily installed via
 `pip`. The code has been tested with Python3.7 version, but it should be
 compatible with a generic Python3.x. The Python2 support is no longer maintained.
 To enable the `CAD`
@@ -82,8 +82,7 @@ To install the package just type:
 To uninstall the package you have to rerun the installation and record the installed files in order to remove them:
 
 ```bash
-> python setup.py install --record installed_files.txt
-> cat installed_files.txt | xargs rm -rf
+> pip uninstall pygem
 ```
 
 ### Docker
@@ -128,12 +127,12 @@ The generated html can be found in `docs/build/html`. Open up the `index.html` y
 
 
 ## Testing
-We are using Travis CI for continuous intergration testing. You can check out the current status [here](https://travis-ci.org/mathLab/PyGeM).
+We are using Github Actions for continuous intergration testing. You can check out the current status [here](https://github.com/mathLab/PyGeM/actions/workflows/testing_pr.yml).
 
-To run tests locally (the package `nose` is required):
+To run tests locally (the package `pytest` is required):
 
 ```bash
-> python test.py
+> pytest
 ```
 
 
