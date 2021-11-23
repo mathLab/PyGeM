@@ -24,9 +24,18 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Setup conda
+      uses: s-weigand/setup-conda@v1
+      with:
+        update-conda: true
+        python-version: ${{ matrix.python-version }}
+        conda-channels: anaconda, conda-forge
+  
     - name: Install Python dependencies
       run: |
+        conda install --yes pythonocc-core=7.4.0
         python3 -m pip install --upgrade pip
+        python3 -m pip install smithers[vtk]
         python3 -m pip install .[test]
 
     - name: Test with pytest
