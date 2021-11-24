@@ -1,10 +1,7 @@
-import filecmp
-import os
 from unittest import TestCase
 
 import numpy as np
 from pygem import CustomDeformation
-
 
 
 class TestCustomDeformation(TestCase):
@@ -23,13 +20,15 @@ class TestCustomDeformation(TestCase):
     def test_class_members_func(self):
         def move(x):
             return x + x**2
-        deform = CustomDeformation(move)
+        CustomDeformation(move)
 
     def test_ffd_sphere_mod(self):
         def move(x):
             x0, x1, x2 = x
             return [x0**2, x1, x2]
         deform = CustomDeformation(move)
-        mesh_points = self.get_cube_mesh_points() 
+        mesh_points = self.get_cube_mesh_points()
         mesh_points_test = deform(mesh_points)
+        mesh_points_ref = mesh_points.copy()
+        mesh_points_ref[:, 0] **= 2
         np.testing.assert_array_almost_equal(mesh_points_test, mesh_points_ref)
