@@ -1,11 +1,8 @@
-import filecmp
-import os
 from unittest import TestCase
 
 import numpy as np
 from pygem.cad import CustomDeformation
 from pygem.cad import CADDeformation
-
 
 
 class TestCustomDeformation(TestCase):
@@ -15,7 +12,7 @@ class TestCustomDeformation(TestCase):
             return x + x**2
         deform = CustomDeformation(move)
 
-    def test_ffd_sphere_mod(self):
+    def test_customdeform_cad_type(self):
         def move(x):
             x0, x1, x2 = x
             return [x0**2, x1, x2]
@@ -23,7 +20,4 @@ class TestCustomDeformation(TestCase):
         orig_shape = CADDeformation.read_shape(filename)
         deform = CustomDeformation(move)
         new_shape = deform(orig_shape)
-        assert False
-        mesh_points = self.get_cube_mesh_points() 
-        mesh_points_test = deform(mesh_points)
-        np.testing.assert_array_almost_equal(mesh_points_test, mesh_points_ref)
+        assert type(new_shape) == type(orig_shape)
