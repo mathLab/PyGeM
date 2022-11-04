@@ -93,7 +93,9 @@ class FFD(Deformation):
 
         self.box_length = np.array([1., 1., 1.])
         self.box_origin = np.array([0., 0., 0.])
+        self.rot_mode = 0
         self.rot_angle = np.array([0., 0., 0.])
+        self.rot_matrix = np.eye(3)
 
         self.array_mu_x = None
         self.array_mu_y = None
@@ -206,15 +208,23 @@ class FFD(Deformation):
 
     @property
     def rotation_matrix(self):
-        """
-        The rotation matrix (according to rot_angle_x, rot_angle_y,
-        rot_angle_z).
-
-        :rtype: numpy.ndarray
-        """
-        return angles2matrix(np.radians(self.rot_angle[2]),
-                             np.radians(self.rot_angle[1]),
-                             np.radians(self.rot_angle[0]))
+        if self.rot_mode == 0:
+            """
+            The rotation matrix (according to rot_angle_x, rot_angle_y,
+            rot_angle_z).
+    
+            :rtype: numpy.ndarray
+            """
+            return angles2matrix(np.radians(self.rot_angle[2]),
+                                 np.radians(self.rot_angle[1]),
+                                 np.radians(self.rot_angle[0]))
+        else:
+            """
+            The rotation matrix as input
+    
+            :rtype: numpy.ndarray
+            """
+            return self.rot_matrix
 
     @property
     def position_vertices(self):
@@ -269,6 +279,7 @@ class FFD(Deformation):
         self.box_origin[1] = config.getfloat('Box info', 'box origin y')
         self.box_origin[2] = config.getfloat('Box info', 'box origin z')
 
+        self.rot_mode = config.getfloat('Box info', 'rotation mode')
         self.rot_angle[0] = config.getfloat('Box info', 'rotation angle x')
         self.rot_angle[1] = config.getfloat('Box info', 'rotation angle y')
         self.rot_angle[2] = config.getfloat('Box info', 'rotation angle z')
@@ -358,6 +369,8 @@ class FFD(Deformation):
         output_string += 'direction, use the following: rotation angle: '
         output_string += '0., 0., 2.\n'
 
+        output_string += 'rotation mode: ' + str(self.rot_mode) + '\n'
+
         output_string += 'rotation angle x: ' + str(self.rot_angle[0]) + '\n'
         output_string += 'rotation angle y: ' + str(self.rot_angle[1]) + '\n'
         output_string += 'rotation angle z: ' + str(self.rot_angle[2]) + '\n'
@@ -434,6 +447,7 @@ class FFD(Deformation):
         string += 'n_control_points = {}\n\n'.format(self.n_control_points)
         string += 'box_length = {}\n'.format(self.box_length)
         string += 'box_origin = {}\n'.format(self.box_origin)
+        string += 'rot_mode = {}\n'.format(self.rot_mode)
         string += 'rot_angle  = {}\n'.format(self.rot_angle)
         string += '\narray_mu_x =\n{}\n'.format(self.array_mu_x)
         string += '\narray_mu_y =\n{}\n'.format(self.array_mu_y)
