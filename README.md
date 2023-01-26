@@ -7,14 +7,14 @@
     <a href="LICENSE.rst" target="_blank">
         <img alt="Software License" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square">
     </a>
-    <a href="https://travis-ci.org/mathLab/PyGeM" target="_blank">
-        <img alt="Build Status" src="https://travis-ci.org/mathLab/PyGeM.svg">
+    <a href="https://github.com/mathLab/PyGeM/actions/workflows/ci.yml" target="_blank">
+        <img alt="Build Status" src="https://github.com/mathLab/PyGeM/actions/workflows/ci.yml/badge.svg">
     </a>
     <a href="https://coveralls.io/github/mathLab/PyGeM?branch=master" target="_blank">
         <img alt="Coverage Status" src="https://coveralls.io/repos/github/mathLab/PyGeM/badge.svg?branch=master">
     </a>
-    <a href="https://www.codacy.com/app/mathLab/PyGeM?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mathLab/PyGeM&amp;utm_campaign=Badge_Grade" target="_blank">
-        <img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/7299abd9d61c4aa586903d80cea01c82">
+    <a href="https://www.codacy.com/gh/mathLab/PyGeM/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mathLab/PyGeM&amp;utm_campaign=Badge_Grade">
+        <img alt="Codacy Badge" src="https://app.codacy.com/project/badge/Grade/f9bb7eb2759746e2b175c040efb975c2"/>
     </a>
     <a href="https://registry.hub.docker.com/r/sissamathlab/pygem">	
 	<img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/sissamathlab/pygem">
