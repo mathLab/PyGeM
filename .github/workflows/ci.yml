@@ -31,7 +31,7 @@ jobs:
         then
           python3 -m pytest
         else
-          python3 -m pytest --cov-report term --cov-report xml:cobertura.xml --cov=pygem
+          python3 -m pytest tests/test_ffd.py --cov-report term --cov-report xml:cobertura.xml --cov=pygem
           curl -s https://coverage.codacy.com/get.sh -o CodacyCoverageReporter.sh
           chmod +x CodacyCoverageReporter.sh
           ./CodacyCoverageReporter.sh report -r cobertura.xml  -t $CODACY_API_TOKEN
