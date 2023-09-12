@@ -9,4 +9,4 @@ We made some tutorial examples:
 - `Tutorial 4 <tutorial-4-idw.html>`_ shows how to perform a deformation using the inverse distance weighting method to mesh nodes.
 - `Tutorial 5 <tutorial-5-file.html>`_ shows how to perform a deformation to an object stored in a file.
 - `Tutorial 6 <tutorial-6-ffd-rbf.html>`_ shows deforming a computational mesh.
-- `Tutorial 8 <tutorial-8-cffd.html>`_ shows deforming a computational mesh.
+- `Tutorial 7 <tutorial-7-cffd.html>`_ shows deforming a computational mesh.
