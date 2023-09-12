@@ -5,6 +5,9 @@ Code Documentation
    :maxdepth: 2
 
    ffd
+   cffd
+   bffd
+   vffd   
    rbf
    rbf_factory
    idw
