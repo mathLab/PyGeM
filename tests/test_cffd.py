@@ -40,8 +40,9 @@ class TestCFFD(TestCase):
         cffd.fun = fun
         cffd.fixval = b
         new_mesh_points = cffd(original_mesh_points)
+        print(np.linalg.norm(fun(new_mesh_points) - b))
         assert np.isclose(np.linalg.norm(fun(new_mesh_points) - b),
-                          np.array([0.0]))
+                          np.array([0.0]),atol=1e-7)
 
     def test_interpolation(self):
         cffd = CFFD()

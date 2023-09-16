@@ -88,8 +88,7 @@ class CFFD(FFD):
         A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),indices)
         d = A @ saved_parameters[indices] + b
         invM=np.linalg.inv(self.M)
-        deltax = invM @ A.T @ np.linalg.inv(
-            (A @ invM @ A.T)) @ (self.fixval - d)
+        deltax = np.linalg.multi_dot([invM , A.T , np.linalg.inv((A @ invM @ A.T)) , (self.fixval - d)])
         saved_parameters[indices] = saved_parameters[indices] + deltax
         self._load_parameters(saved_parameters)
         return self.ffd(src_pts)
@@ -167,22 +166,5 @@ class CFFD(FFD):
         A = sol[0].T[:, :-1]  #coefficient
         b = sol[0].T[:, -1]  #intercept
         return A, b
+    
 
-np.random.seed(0)
-cffd = CFFD()
-cffd.read_parameters(
-    "tests/test_datasets/parameters_test_ffd_sphere.prm")
-original_mesh_points = np.load(
-    "tests/test_datasets/meshpoints_sphere_orig.npy")
-A = np.random.rand(3, original_mesh_points.reshape(-1).shape[0])
-
-def fun(x):
-    x = x.reshape(-1)
-    return A @ x
-
-b = fun(original_mesh_points)
-cffd.fun = fun
-cffd.fixval = b
-new_mesh_points = cffd(original_mesh_points)
-assert np.isclose(np.linalg.norm(fun(new_mesh_points) - b),
-                    np.array([0.0]))
