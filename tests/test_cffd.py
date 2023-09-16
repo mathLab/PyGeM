@@ -6,6 +6,20 @@ from pygem import CFFD
 
 
 class TestCFFD(TestCase):
+    def test_nothing_happens_0(self):
+        np.random.seed(0)
+        cffd = CFFD()
+        original_mesh_points = np.load(
+            "tests/test_datasets/meshpoints_sphere_orig.npy")
+        A = np.random.rand(3, original_mesh_points.reshape(-1).shape[0])
+
+        def fun(x):
+            x = x.reshape(-1)
+            return A @ x
+        new_mesh_points = cffd(original_mesh_points)
+        assert np.array_equal(original_mesh_points, new_mesh_points)
+
+
     def test_nothing_happens(self):
         np.random.seed(0)
         cffd = CFFD()
