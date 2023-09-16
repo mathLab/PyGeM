@@ -34,52 +34,51 @@ class CFFD(FFD):
         y, normalized with the box length y.
     :cvar numpy.ndarray array_mu_z: collects the displacements (weights) along
         z, normalized with the box length z.
-    :cvar callable fun: it defines the F of the constraint F(x)=c.
-    :cvar numpy.ndarray fixval: it defines the c of the constraint F(x)=c.
-    :cvar list indices: it defines the indices of the control points 
-        that are moved to enforce the constraint. The control index is obtained by doing:
-        all_indices=np.arange(n_x*n_y*n_z*3).reshape(n_x,n_y,n_z,3).tolist().
-    :cvar numpy.ndarray M: a SDP weigth matrix. It must be of size len(indices) x len(indices).
+    :cvar callable fun: it defines the F of the constraint F(x)=c. Default is the constant 1 function.
+    :cvar numpy.ndarray fixval: it defines the c of the constraint F(x)=c. Default is 1.
+    :cvar numpy.ndarray mask: a boolean tensor that tells to the class 
+        which control points can be moved, and in what direction, to enforce the constraint. 
+        The tensor has shape (n_x,n_y,n_z,3), where the last dimension indicates movement
+        on x,y,z respectively. Default is all true.
+    :cvar numpy.ndarray weight_matrix: a symmetric positive definite weigth matrix. 
+        It must be of row and column size the number of trues in the mask.
+        It weights the movemement of the control points which have a true flag in the mask.
+        Default is identity.
 
     :Example:
 
         >>> from pygem import CFFD
         >>> import numpy as np
-        >>> cffd = CFFD()
-        >>> cffd.read_parameters('tests/test_datasets/parameters_test_ffd_sphere.prm')
         >>> original_mesh_points = np.load('tests/test_datasets/meshpoints_sphere_orig.npy')
-        >>> A=np.random.rand(3,original_mesh_points.reshape(-1).shape[0])
-        >>> def fun(x):
-        >>>     x=x.reshape(-1)
-        >>>     return A@x
-        >>> b=fun(original_mesh_points)
-        >>> cffd.fun=fun
-        >>> cffd.fixval=b
-        >>> cffd.indices=np.arange(np.prod(cffd.n_control_points)*3).tolist()
-        >>> cffd.M=np.eye(len(cffd.indices))
-        >>> new_mesh_points = cffd(original_mesh_points)
-        >>> assert np.isclose(np.linalg.norm(fun(new_mesh_points)-b),np.array([0.]))
+        >>> A=np.random.rand(3,original_mesh_points[:-4].reshape(-1).shape[0])
+        >>> fun=lambda x: A@x.reshape(-1)
+        >>> b=np.random.rand(3)
+        >>> cffd = CFFD([2,2,2],fun,b)
+        >>> cffd.read_parameters('tests/test_datasets/parameters_test_ffd_sphere.prm')
+        >>> cffd.adjust_control_points(original_mesh_points[:-4])
+        >>> assert np.isclose(np.linalg.norm(fun(cffd.ffd(original_mesh_points[:-4]))-b),np.array([0.]),atol=1e-06)
+        >>> new_mesh_points = cffd.ffd(original_mesh_points)
     """
     def __init__(self, n_control_points=None, fun=None, fixval=None, weight_matrix=None, mask=None ):
         super().__init__(n_control_points)
 
-        if mask==None:
+        if mask is None:
             self.mask=np.full((*self.n_control_points,3), True, dtype=bool)
         else:
             self.mask=mask
 
-        if fixval==None:
+        if fixval is None:
             self.fixval=np.array([1.])    
         else:
             self.fixval=fixval
         
-        if fun==None:
+        if fun is None:
             self.fun=lambda x: self.fixval
         
         else:
             self.fun=fun
 
-        if weight_matrix==None:
+        if weight_matrix is None:
             self.weight_matrix=np.eye(np.sum(self.mask.astype(int)))
 
     def adjust_control_points(self,src_pts):
@@ -165,5 +164,3 @@ class CFFD(FFD):
         A = sol[0].T[:, :-1]  #coefficient
         b = sol[0].T[:, -1]  #intercept
         return A, b
-    
-
