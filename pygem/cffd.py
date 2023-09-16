@@ -82,6 +82,14 @@ class CFFD(FFD):
             self.weight_matrix=np.eye(np.sum(self.mask.astype(int)))
 
     def adjust_control_points(self,src_pts):
+        '''
+        Adjust the FFD control points such that F(ffd(src_pts))=c
+            
+        :param np.ndarray src_pts: the points whose deformation we want to be 
+            constrained.
+        :rtype: None.
+        '''
+
         saved_parameters = self._save_parameters()
         indices=np.arange(np.prod(self.n_control_points)*3)[self.mask.reshape(-1)]
         A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),indices)

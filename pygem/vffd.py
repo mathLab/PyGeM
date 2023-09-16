@@ -20,6 +20,9 @@ class VFFD(CFFD):
     :param list n_control_points: number of control points in the x, y, and z
         direction. Default is [2, 2, 2].
         
+    :param list n_control_points: number of control points in the x, y, and z
+        direction. Default is [2, 2, 2].
+        
     :cvar numpy.ndarray box_length: dimension of the FFD bounding box, in the
         x, y and z direction (local coordinate system).
     :cvar numpy.ndarray box_origin: the x, y and z coordinates of the origin of
@@ -34,12 +37,16 @@ class VFFD(CFFD):
         y, normalized with the box length y.
     :cvar numpy.ndarray array_mu_z: collects the displacements (weights) along
         z, normalized with the box length z.
-    :cvar callable linconstraint: it defines the F of the constraint F(x)=c.
-    :cvar numpy.ndarray valconstraint: it defines the c of the constraint F(x)=c.
-    :cvar list indices: it defines the indices of the control points 
-        that are moved to enforce the constraint. The control index is obtained by doing:
-        all_indices=np.arange(n_x*n_y*n_z*3).reshape(n_x,n_y,n_z,3).tolist().
-    :cvar numpy.ndarray M: a SDP weigth matrix. It must be of size len(indices) x len(indices).
+    :cvar callable fun: it defines the F of the constraint F(x)=c. Default is the constant 1 function.
+    :cvar numpy.ndarray fixval: it defines the c of the constraint F(x)=c. Default is 1.
+    :cvar numpy.ndarray mask: a boolean tensor that tells to the class 
+        which control points can be moved, and in what direction, to enforce the constraint. 
+        The tensor has shape (n_x,n_y,n_z,3), where the last dimension indicates movement
+        on x,y,z respectively. Default is all true.
+    :cvar numpy.ndarray weight_matrix: a symmetric positive definite weigth matrix. 
+        It must be of row and column size the number of trues in the mask.
+        It weights the movemement of the control points which have a true flag in the mask.
+        Default is identity.
     :cvar np.ndarray vweight: specifies the weight of every step of the volume enforcement.
 
     :Example:
@@ -59,8 +66,8 @@ class VFFD(CFFD):
         >>> new_mesh_points = vffd(original_mesh_points)
         >>> assert np.isclose(np.linalg.norm(vffd.linconstraint(new_mesh_points)-b),np.array([0.]))
     '''
-    def __init__(self, triangles, n_control_points=None):
-        super().__init__(n_control_points)
+    def __init__(self, triangles, n_control_points=None, fun=None, fixval=None, weight_matrix=None, mask=None ):
+        super().__init__(n_control_points,fun,fixval,weight_matrix,mask)
         self.triangles = triangles
         self.vweight = [1 / 3, 1 / 3, 1 / 3]
 
