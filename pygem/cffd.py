@@ -88,7 +88,7 @@ class CFFD(FFD):
         A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),indices)
         d = A @ saved_parameters[indices] + b
         invM=np.linalg.inv(self.M)
-        deltax = np.linalg.multi_dot([invM , A.T , np.linalg.inv((A @ invM @ A.T)) , (self.fixval - d)])
+        deltax = np.linalg.multi_dot([invM , A.T , np.linalg.inv(np.linalg.multi_dot([A, invM, A.T])) , (self.fixval - d)])
         saved_parameters[indices] = saved_parameters[indices] + deltax
         self._load_parameters(saved_parameters)
         return self.ffd(src_pts)
