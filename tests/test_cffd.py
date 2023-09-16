@@ -16,9 +16,9 @@ class TestCFFD(TestCase):
         def fun(x):
             x = x.reshape(-1)
             return A @ x
+
         new_mesh_points = cffd(original_mesh_points)
         assert np.array_equal(original_mesh_points, new_mesh_points)
-
 
     def test_nothing_happens(self):
         np.random.seed(0)
@@ -57,7 +57,8 @@ class TestCFFD(TestCase):
         cffd.adjust_control_points(original_mesh_points)
         new_mesh_points = cffd.ffd(original_mesh_points)
         assert np.isclose(np.linalg.norm(fun(new_mesh_points) - b),
-                          np.array([0.0]),atol=1e-7)
+                          np.array([0.0]),
+                          atol=1e-7)
 
     def test_interpolation(self):
         cffd = CFFD()
@@ -73,8 +74,10 @@ class TestCFFD(TestCase):
         cffd.fixval = b
         cffd.fun = fun
         save_par = cffd._save_parameters()
-        indices=np.arange(np.prod(cffd.n_control_points)*3)[cffd.mask.reshape(-1)]
-        C, d = cffd._compute_linear_map(original_mesh_points, save_par.copy(),indices)
+        indices = np.arange(np.prod(cffd.n_control_points) *
+                            3)[cffd.mask.reshape(-1)]
+        C, d = cffd._compute_linear_map(original_mesh_points, save_par.copy(),
+                                        indices)
         for i in range(2 * len(indices)):
             tmp = np.random.rand(len(indices))
             save_par[indices] = tmp

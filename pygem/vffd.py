@@ -65,8 +65,13 @@ class VFFD(CFFD):
         >>> assert np.isclose(np.linalg.norm(vffd.fun(new_mesh_points)-b),np.array([0.]),atol=1e-07)
 
     '''
-    def __init__(self, triangles, n_control_points=None, fixval=None, weight_matrix=None, mask=None ):
-        super().__init__(n_control_points,None,fixval,weight_matrix,mask)
+    def __init__(self,
+                 triangles,
+                 n_control_points=None,
+                 fixval=None,
+                 weight_matrix=None,
+                 mask=None):
+        super().__init__(n_control_points, None, fixval, weight_matrix, mask)
         self.triangles = triangles
         self.vweight = [1 / 3, 1 / 3, 1 / 3]
 
@@ -79,11 +84,11 @@ class VFFD(CFFD):
 
     def adjust_control_points(self, src_pts):
         self.vweight = np.abs(self.vweight) / np.sum(np.abs(self.vweight))
-        mask_bak=self.mask.copy()        
+        mask_bak = self.mask.copy()
         diffvolume = self.fixval - self.fun(self.ffd(src_pts))
         for i in range(3):
-            self.mask=np.full((*self.n_control_points,3), False, dtype=bool)
-            self.mask[:,:,:,i]=mask_bak[:,:,:,i].copy()
+            self.mask = np.full((*self.n_control_points, 3), False, dtype=bool)
+            self.mask[:, :, :, i] = mask_bak[:, :, :, i].copy()
             self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
             self.fixval = self.fun(
                 self.ffd(src_pts)) + self.vweight[i] * (diffvolume)

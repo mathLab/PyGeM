@@ -19,32 +19,29 @@ def custom_linear_constraint(x):
 print("The custom linear function on the non deformed points is", custom_linear_constraint(x))
 print("The custom linear function on the classic FFD deformed points is", custom_linear_constraint(x_def))
 from pygem.cffd import CFFD
-ffd=CFFD([3,3,1])
+ffd=CFFD([3,3,1],custom_linear_constraint,np.array([1.]))
 np.random.seed(0)
 ffd.array_mu_x=ffd.array_mu_x+0.5*np.random.rand(*ffd.array_mu_x.shape)
 ffd.array_mu_y=ffd.array_mu_x+0.5*np.random.rand(*ffd.array_mu_x.shape)
-ffd.linconstraint=custom_linear_constraint
-ffd.valconstraint=np.array([1.])
-ffd.indices=np.arange(3*3*3*1).reshape(3,3,1,3)
-ffd.indices=ffd.indices[:,:,:,:-1] #removing z indices
-ffd.indices=ffd.indices.reshape(-1).tolist()
-ffd.M=np.eye(len(ffd.indices))#no weighting
+ffd.mask[:,:,:,-1]=False #removing z masks
+ffd.weight_matrix=np.eye(np.sum(ffd.mask))#no weighting
+ffd.adjust_control_points(x)
 x_def=ffd(x)
 plt.plot(x_def[:,0],x_def[:,1],'o')
 print("The custom linear function on the constrained FFD deformed points is", custom_linear_constraint(x_def))
 from pygem.bffd import BFFD
 def mesh_points(num_pts = 2000):
     indices = np.arange(0, num_pts, dtype=float) + 0.5
+
     phi = np.arccos(1 - 2*indices/num_pts)
     theta = np.pi * (1 + 5**0.5) * indices
+
     return np.array([np.cos(theta) * np.sin(phi), np.sin(theta) * np.sin(phi), np.cos(phi)]).T
 mesh = mesh_points()
-ffd = BFFD([2, 2, 2])
-ffd.valconstraint=np.array([0.,0.,0.])
+ffd = BFFD([2, 2, 2],np.array([0.,0.,0.]))
 ffd.array_mu_x[1, 1, 1] = 2
 ffd.array_mu_z[1, 1, 1] = 0
-ffd.indices=np.arange(2*2*2*3).tolist()
-ffd.M=np.eye(len(ffd.indices))
+ffd.adjust_control_points(mesh)
 mesh_def=ffd(mesh)
 print(np.mean(mesh_def,axis=0))
 ax = plt.figure(figsize=(8,8)).add_subplot(111, projection='3d')
@@ -65,19 +62,19 @@ ax = fig.add_subplot(1, 2, 1, projection='3d')
 ax.plot_trisurf(points[:,0], points[:,1], points[:,2], triangles=faces, cmap=plt.cm.Spectral)
 from pygem.vffd import VFFD
 vffd=VFFD(faces,[2,2,2])
-initvolume=vffd.linconstraint(points)
-vffd.valconstraint=np.array([initvolume])
-vffd.indices=np.arange(2*2*2*3).tolist()
-vffd.M=np.eye(len(vffd.indices))
+initvolume=vffd.fun(points)
+vffd.fixval=np.array([initvolume])
 vffd.vweight=np.array([0,1,0])
 np.random.seed(0)
 vffd.array_mu_x=vffd.array_mu_x+0.5*np.random.rand(2,2,2)
 vffd.array_mu_y=vffd.array_mu_y+0.5*np.random.rand(2,2,2)
 vffd.array_mu_z=vffd.array_mu_z+0.5*np.random.rand(2,2,2)
+vffd.adjust_control_points(points)
 mesh_def=vffd(points)
 mesh_def=mesh_def.reshape(points.shape)
 print("Percentage difference from the original mesh is ", np.linalg.norm(mesh_def-points)/np.linalg.norm(points)*100)
 fig = plt.figure(figsize=plt.figaspect(0.5))
 ax = fig.add_subplot(1, 2, 1, projection='3d')
 ax.plot_trisurf(mesh_def[:,0], mesh_def[:,1], mesh_def[:,2], triangles=faces, cmap=plt.cm.Spectral)
+
 

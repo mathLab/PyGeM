@@ -59,29 +59,34 @@ class CFFD(FFD):
         >>> assert np.isclose(np.linalg.norm(fun(cffd.ffd(original_mesh_points[:-4]))-b),np.array([0.]),atol=1e-06)
         >>> new_mesh_points = cffd.ffd(original_mesh_points)
     """
-    def __init__(self, n_control_points=None, fun=None, fixval=None, weight_matrix=None, mask=None ):
+    def __init__(self,
+                 n_control_points=None,
+                 fun=None,
+                 fixval=None,
+                 weight_matrix=None,
+                 mask=None):
         super().__init__(n_control_points)
 
         if mask is None:
-            self.mask=np.full((*self.n_control_points,3), True, dtype=bool)
+            self.mask = np.full((*self.n_control_points, 3), True, dtype=bool)
         else:
-            self.mask=mask
+            self.mask = mask
 
         if fixval is None:
-            self.fixval=np.array([1.])    
+            self.fixval = np.array([1.])
         else:
-            self.fixval=fixval
-        
+            self.fixval = fixval
+
         if fun is None:
-            self.fun=lambda x: self.fixval
-        
+            self.fun = lambda x: self.fixval
+
         else:
-            self.fun=fun
+            self.fun = fun
 
         if weight_matrix is None:
-            self.weight_matrix=np.eye(np.sum(self.mask.astype(int)))
+            self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
 
-    def adjust_control_points(self,src_pts):
+    def adjust_control_points(self, src_pts):
         '''
         Adjust the FFD control points such that F(ffd(src_pts))=c
             
@@ -91,11 +96,17 @@ class CFFD(FFD):
         '''
 
         saved_parameters = self._save_parameters()
-        indices=np.arange(np.prod(self.n_control_points)*3)[self.mask.reshape(-1)]
-        A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),indices)
+        indices = np.arange(np.prod(self.n_control_points) *
+                            3)[self.mask.reshape(-1)]
+        A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),
+                                        indices)
         d = A @ saved_parameters[indices] + b
-        invM=np.linalg.inv(self.weight_matrix)
-        deltax = np.linalg.multi_dot([invM , A.T , np.linalg.inv(np.linalg.multi_dot([A, invM, A.T])) , (self.fixval - d)])
+        invM = np.linalg.inv(self.weight_matrix)
+        deltax = np.linalg.multi_dot([
+            invM, A.T,
+            np.linalg.inv(np.linalg.multi_dot([A, invM, A.T])),
+            (self.fixval - d)
+        ])
         saved_parameters[indices] = saved_parameters[indices] + deltax
         self._load_parameters(saved_parameters)
 
@@ -134,14 +145,15 @@ class CFFD(FFD):
         self.array_mu_y = tmp[:, :, :, 1]
         self.array_mu_z = tmp[:, :, :, 2]
 
-    def read_parameters(self,filename='parameters.prm'):
+    def read_parameters(self, filename='parameters.prm'):
         super().read_parameters(filename)
-        self.mask=np.full((*self.n_control_points,3), True, dtype=bool)
-        self.weight_matrix=np.eye(np.sum(self.mask.astype(int)))
+        self.mask = np.full((*self.n_control_points, 3), True, dtype=bool)
+        self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
+
 
 # I see that a similar function already exists in pygem.utils, but it does not work for inputs and outputs of different dimensions
 
-    def _compute_linear_map(self, src_pts, saved_parameters,indices):
+    def _compute_linear_map(self, src_pts, saved_parameters, indices):
         '''
         Computes the coefficient and the intercept of the linear map from the control points to the output.
         

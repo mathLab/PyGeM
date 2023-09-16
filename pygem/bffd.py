@@ -59,8 +59,12 @@ class BFFD(CFFD):
         >>> assert np.isclose(np.linalg.norm(bffd.fun(bffd.ffd(original_mesh_points[:-4]))-b),np.array([0.]))
         >>> new_mesh_points = bffd.ffd(original_mesh_points)
     '''
-    def __init__(self, n_control_points=None, fixval=None, weight_matrix=None, mask=None):
-        super().__init__(n_control_points,None,fixval,weight_matrix,mask)
+    def __init__(self,
+                 n_control_points=None,
+                 fixval=None,
+                 weight_matrix=None,
+                 mask=None):
+        super().__init__(n_control_points, None, fixval, weight_matrix, mask)
 
         def linfun(x):
             return np.mean(x.reshape(-1, 3), axis=0)
