@@ -34,7 +34,8 @@ class TestCFFD(TestCase):
         b = fun(original_mesh_points)
         cffd.fun = fun
         cffd.fixval = b
-        new_mesh_points = cffd(original_mesh_points)
+        cffd.adjust_control_points(original_mesh_points)
+        new_mesh_points = cffd.ffd(original_mesh_points)
         assert np.array_equal(original_mesh_points, new_mesh_points)
 
     def test_constraint(self):
@@ -53,7 +54,8 @@ class TestCFFD(TestCase):
         b = fun(original_mesh_points)
         cffd.fun = fun
         cffd.fixval = b
-        new_mesh_points = cffd(original_mesh_points)
+        cffd.adjust_control_points(original_mesh_points)
+        new_mesh_points = cffd.ffd(original_mesh_points)
         assert np.isclose(np.linalg.norm(fun(new_mesh_points) - b),
                           np.array([0.0]),atol=1e-7)
 

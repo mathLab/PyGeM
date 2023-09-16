@@ -82,7 +82,7 @@ class CFFD(FFD):
         if weight_matrix==None:
             self.weight_matrix=np.eye(np.sum(self.mask.astype(int)))
 
-    def __call__(self, src_pts):
+    def adjust_control_points(self,src_pts):
         saved_parameters = self._save_parameters()
         indices=np.arange(np.prod(self.n_control_points)*3)[self.mask.reshape(-1)]
         A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),indices)
@@ -91,7 +91,6 @@ class CFFD(FFD):
         deltax = np.linalg.multi_dot([invM , A.T , np.linalg.inv(np.linalg.multi_dot([A, invM, A.T])) , (self.fixval - d)])
         saved_parameters[indices] = saved_parameters[indices] + deltax
         self._load_parameters(saved_parameters)
-        return self.ffd(src_pts)
 
     def ffd(self, src_pts):
         '''

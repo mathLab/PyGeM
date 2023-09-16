@@ -71,7 +71,7 @@ class VFFD(CFFD):
 
         self.fun = volume
 
-    def __call__(self, src_pts):
+    def adjust_control_points(self, src_pts):
         self.vweight = np.abs(self.vweight) / np.sum(np.abs(self.vweight))
         mask_bak=self.mask.copy()        
         diffvolume = self.fixval - self.fun(self.ffd(src_pts))
@@ -81,7 +81,5 @@ class VFFD(CFFD):
             self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
             self.fixval = self.fun(
                 self.ffd(src_pts)) + self.vweight[i] * (diffvolume)
-            _ = super().__call__(src_pts)
-        tmp = super().__call__(src_pts)
-        self.mask = mask_bak
-        return tmp
+            super().adjust_control_points(src_pts)
+   
