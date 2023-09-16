@@ -60,7 +60,7 @@ class CFFD(FFD):
         >>> new_mesh_points = cffd(original_mesh_points)
         >>> assert np.isclose(np.linalg.norm(fun(new_mesh_points)-b),np.array([0.]))
     """
-    def __init__(self, n_control_points=None, fun=None, fixval=None, M=None, mask=None ):
+    def __init__(self, n_control_points=None, fun=None, fixval=None, weight_matrix=None, mask=None ):
         super().__init__(n_control_points)
 
         if mask==None:
@@ -79,15 +79,15 @@ class CFFD(FFD):
         else:
             self.fun=fun
 
-        if M==None:
-            self.M=np.eye(np.sum(self.mask.astype(int)))
+        if weight_matrix==None:
+            self.weight_matrix=np.eye(np.sum(self.mask.astype(int)))
 
     def __call__(self, src_pts):
         saved_parameters = self._save_parameters()
         indices=np.arange(np.prod(self.n_control_points)*3)[self.mask.reshape(-1)]
         A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),indices)
         d = A @ saved_parameters[indices] + b
-        invM=np.linalg.inv(self.M)
+        invM=np.linalg.inv(self.weight_matrix)
         deltax = np.linalg.multi_dot([invM , A.T , np.linalg.inv(np.linalg.multi_dot([A, invM, A.T])) , (self.fixval - d)])
         saved_parameters[indices] = saved_parameters[indices] + deltax
         self._load_parameters(saved_parameters)
@@ -131,7 +131,7 @@ class CFFD(FFD):
     def read_parameters(self,filename='parameters.prm'):
         super().read_parameters(filename)
         self.mask=np.full((*self.n_control_points,3), True, dtype=bool)
-        self.M=np.eye(np.sum(self.mask.astype(int)))
+        self.weight_matrix=np.eye(np.sum(self.mask.astype(int)))
 
 # I see that a similar function already exists in pygem.utils, but it does not work for inputs and outputs of different dimensions
 

@@ -78,7 +78,7 @@ class VFFD(CFFD):
         for i in range(3):
             self.mask=np.full((*self.n_control_points,3), False, dtype=bool)
             self.mask[:,:,:,i]=mask_bak[:,:,:,i].copy()
-            self.M = np.eye(np.sum(self.mask.astype(int)))
+            self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
             self.fixval = self.fun(
                 self.ffd(src_pts)) + self.vweight[i] * (diffvolume)
             _ = super().__call__(src_pts)
