@@ -8,40 +8,36 @@ from pygem import VFFD
 class TestVFFD(TestCase):
     def test_nothing_happens(self):
         np.random.seed(0)
-        points = 0.5 * np.array(
-            [
-                [0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0],
-                [0.0, 1.0, 1.0],
-                [0.0, 0.0, 0.0],
-                [1.0, 0.0, 1.0],
-                [1.0, 1.0, 0.0],
-                [1.0, 1.0, 1.0],
-                [1.0, 0.0, 0.0],
-            ]
-        )
+        points = 0.5 * np.array([
+            [0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0],
+            [0.0, 1.0, 1.0],
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 1.0],
+            [1.0, 1.0, 0.0],
+            [1.0, 1.0, 1.0],
+            [1.0, 0.0, 0.0],
+        ])
 
-        triangles = np.array(
-            [
-                [0, 1, 2],
-                [3, 1, 0],
-                [4, 5, 6],
-                [4, 7, 5],
-                [7, 4, 3],
-                [3, 4, 1],
-                [6, 5, 0],
-                [6, 0, 2],
-                [0, 5, 3],
-                [3, 5, 7],
-                [6, 2, 1],
-                [6, 1, 4],
-            ]
-        )
+        triangles = np.array([
+            [0, 1, 2],
+            [3, 1, 0],
+            [4, 5, 6],
+            [4, 7, 5],
+            [7, 4, 3],
+            [3, 4, 1],
+            [6, 5, 0],
+            [6, 0, 2],
+            [0, 5, 3],
+            [3, 5, 7],
+            [6, 2, 1],
+            [6, 1, 4],
+        ])
 
         cffd = VFFD(triangles, [2, 2, 2])
         cffd.vweight = np.array([1 / 3, 1 / 3, 1 / 3])
-        b = cffd.linconstraint(points)
-        cffd.valconstraint = np.array([b])
+        b = cffd.fun(points)
+        cffd.fixval = np.array([b])
         cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
         cffd.M = np.eye(len(cffd.indices))
         new_mesh_points = cffd(points)
@@ -49,43 +45,39 @@ class TestVFFD(TestCase):
 
     def test_constraint(self):
         np.random.seed(0)
-        points = np.array(
-            [
-                [0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0],
-                [0.0, 1.0, 1.0],
-                [0.0, 0.0, 0.0],
-                [1.0, 0.0, 1.0],
-                [1.0, 1.0, 0.0],
-                [1.0, 1.0, 1.0],
-                [1.0, 0.0, 0.0],
-            ]
-        )
+        points = np.array([
+            [0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0],
+            [0.0, 1.0, 1.0],
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 1.0],
+            [1.0, 1.0, 0.0],
+            [1.0, 1.0, 1.0],
+            [1.0, 0.0, 0.0],
+        ])
 
-        triangles = np.array(
-            [
-                [0, 1, 2],
-                [3, 1, 0],
-                [4, 5, 6],
-                [4, 7, 5],
-                [7, 4, 3],
-                [3, 4, 1],
-                [6, 5, 0],
-                [6, 0, 2],
-                [0, 5, 3],
-                [3, 5, 7],
-                [6, 2, 1],
-                [6, 1, 4],
-            ]
-        )
+        triangles = np.array([
+            [0, 1, 2],
+            [3, 1, 0],
+            [4, 5, 6],
+            [4, 7, 5],
+            [7, 4, 3],
+            [3, 4, 1],
+            [6, 5, 0],
+            [6, 0, 2],
+            [0, 5, 3],
+            [3, 5, 7],
+            [6, 2, 1],
+            [6, 1, 4],
+        ])
         cffd = VFFD(triangles, [2, 2, 2])
-        b = cffd.linconstraint(points)
+        b = cffd.fun(points)
         cffd.vweight = np.array([1 / 3, 1 / 3, 1 / 3])
-        cffd.read_parameters("tests/test_datasets/parameters_test_ffd_sphere.prm")
-        cffd.valconstraint = np.array([b])
+        cffd.read_parameters(
+            "tests/test_datasets/parameters_test_ffd_sphere.prm")
+        cffd.fixval = np.array([b])
         cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
         cffd.M = np.eye(len(cffd.indices))
         new_mesh_points = cffd(points)
-        assert np.isclose(
-            np.linalg.norm(cffd.linconstraint(new_mesh_points) - b), np.array([0.0])
-        )
+        assert np.isclose(np.linalg.norm(cffd.fun(new_mesh_points) - b),
+                          np.array([0.0]))

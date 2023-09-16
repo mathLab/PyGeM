@@ -12,6 +12,7 @@ from pygem.cffd import CFFD
 import numpy as np
 from copy import deepcopy
 
+
 class VFFD(CFFD):
     '''
     Class that handles the Volumetric Free Form Deformation on the mesh points.
@@ -58,32 +59,33 @@ class VFFD(CFFD):
         >>> new_mesh_points = vffd(original_mesh_points)
         >>> assert np.isclose(np.linalg.norm(vffd.linconstraint(new_mesh_points)-b),np.array([0.]))
     '''
-
-    def __init__(self,triangles ,n_control_points=None):
+    def __init__(self, triangles, n_control_points=None):
         super().__init__(n_control_points)
-        self.triangles=triangles
-        self.vweight=[1/3,1/3,1/3]
+        self.triangles = triangles
+        self.vweight = [1 / 3, 1 / 3, 1 / 3]
+
         def volume(x):
-            x=x.reshape(-1,3)
-            mesh=x[self.triangles]
-            return np.sum(np.linalg.det(mesh)) 
-        self.linconstraint=volume
+            x = x.reshape(-1, 3)
+            mesh = x[self.triangles]
+            return np.sum(np.linalg.det(mesh))
 
+        self.fun = volume
 
-    def __call__(self,src_pts):
-        self.vweight=np.abs(self.vweight)/np.sum(np.abs(self.vweight))
-        indices_bak=deepcopy(self.indices)
-        self.indices=np.array(self.indices)
-        indices_x=self.indices[self.indices%3==0].tolist()
-        indices_y=self.indices[self.indices%3==1].tolist()
-        indices_z=self.indices[self.indices%3==2].tolist()
-        indexes=[indices_x,indices_y,indices_z]
-        diffvolume=self.valconstraint-self.linconstraint(self.ffd(src_pts))
+    def __call__(self, src_pts):
+        self.vweight = np.abs(self.vweight) / np.sum(np.abs(self.vweight))
+        indices_bak = deepcopy(self.indices)
+        self.indices = np.array(self.indices)
+        indices_x = self.indices[self.indices % 3 == 0].tolist()
+        indices_y = self.indices[self.indices % 3 == 1].tolist()
+        indices_z = self.indices[self.indices % 3 == 2].tolist()
+        indexes = [indices_x, indices_y, indices_z]
+        diffvolume = self.fixval - self.fun(self.ffd(src_pts))
         for i in range(3):
-            self.indices=indexes[i]
-            self.M=np.eye(len(self.indices))
-            self.valconstraint=self.linconstraint(self.ffd(src_pts))+self.vweight[i]*(diffvolume)
-            _=super().__call__(src_pts)
-        tmp=super().__call__(src_pts)
-        self.indices=indices_bak
+            self.indices = indexes[i]
+            self.M = np.eye(len(self.indices))
+            self.fixval = self.fun(
+                self.ffd(src_pts)) + self.vweight[i] * (diffvolume)
+            _ = super().__call__(src_pts)
+        tmp = super().__call__(src_pts)
+        self.indices = indices_bak
         return tmp

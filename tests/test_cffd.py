@@ -9,7 +9,8 @@ class TestCFFD(TestCase):
     def test_nothing_happens(self):
         np.random.seed(0)
         cffd = CFFD()
-        original_mesh_points = np.load("tests/test_datasets/meshpoints_sphere_orig.npy")
+        original_mesh_points = np.load(
+            "tests/test_datasets/meshpoints_sphere_orig.npy")
         A = np.random.rand(3, original_mesh_points.reshape(-1).shape[0])
 
         def fun(x):
@@ -17,8 +18,8 @@ class TestCFFD(TestCase):
             return A @ x
 
         b = fun(original_mesh_points)
-        cffd.linconstraint = fun
-        cffd.valconstraint = b
+        cffd.fun = fun
+        cffd.fixval = b
         cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
         cffd.M = np.eye(len(cffd.indices))
         new_mesh_points = cffd(original_mesh_points)
@@ -27,8 +28,10 @@ class TestCFFD(TestCase):
     def test_constraint(self):
         np.random.seed(0)
         cffd = CFFD()
-        cffd.read_parameters("tests/test_datasets/parameters_test_ffd_sphere.prm")
-        original_mesh_points = np.load("tests/test_datasets/meshpoints_sphere_orig.npy")
+        cffd.read_parameters(
+            "tests/test_datasets/parameters_test_ffd_sphere.prm")
+        original_mesh_points = np.load(
+            "tests/test_datasets/meshpoints_sphere_orig.npy")
         A = np.random.rand(3, original_mesh_points.reshape(-1).shape[0])
 
         def fun(x):
@@ -36,16 +39,18 @@ class TestCFFD(TestCase):
             return A @ x
 
         b = fun(original_mesh_points)
-        cffd.linconstraint = fun
-        cffd.valconstraint = b
+        cffd.fun = fun
+        cffd.fixval = b
         cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
         cffd.M = np.eye(len(cffd.indices))
         new_mesh_points = cffd(original_mesh_points)
-        assert np.isclose(np.linalg.norm(fun(new_mesh_points) - b), np.array([0.0]))
+        assert np.isclose(np.linalg.norm(fun(new_mesh_points) - b),
+                          np.array([0.0]))
 
     def test_interpolation(self):
         cffd = CFFD()
-        original_mesh_points = np.load("tests/test_datasets/meshpoints_sphere_orig.npy")
+        original_mesh_points = np.load(
+            "tests/test_datasets/meshpoints_sphere_orig.npy")
         A = np.random.rand(3, original_mesh_points.reshape(-1).shape[0])
 
         def fun(x):
@@ -53,8 +58,8 @@ class TestCFFD(TestCase):
             return A @ x
 
         b = fun(original_mesh_points)
-        cffd.linconstraint = fun
-        cffd.valconstraint = b
+        cffd.fixval = b
+        cffd.fun = fun
         cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
         cffd.M = np.eye(len(cffd.indices))
         save_par = cffd._save_parameters()
@@ -64,8 +69,7 @@ class TestCFFD(TestCase):
             save_par[cffd.indices] = tmp
             cffd._load_parameters(tmp)
             assert np.allclose(
-                np.linalg.norm(
-                    C @ tmp + d - cffd.linconstraint(cffd.ffd(original_mesh_points))
-                ),
+                np.linalg.norm(C @ tmp + d -
+                               cffd.fun(cffd.ffd(original_mesh_points))),
                 0.0,
             )
