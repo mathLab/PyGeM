@@ -73,19 +73,15 @@ class VFFD(CFFD):
 
     def __call__(self, src_pts):
         self.vweight = np.abs(self.vweight) / np.sum(np.abs(self.vweight))
-        indices_bak = deepcopy(self.indices)
-        self.indices = np.array(self.indices)
-        indices_x = self.indices[self.indices % 3 == 0].tolist()
-        indices_y = self.indices[self.indices % 3 == 1].tolist()
-        indices_z = self.indices[self.indices % 3 == 2].tolist()
-        indexes = [indices_x, indices_y, indices_z]
+        mask_bak=self.mask.copy()        
         diffvolume = self.fixval - self.fun(self.ffd(src_pts))
         for i in range(3):
-            self.indices = indexes[i]
-            self.M = np.eye(len(self.indices))
+            self.mask=np.full((*self.n_control_points,3), False, dtype=bool)
+            self.mask[:,:,:,i]=mask_bak[:,:,:,i].copy()
+            self.M = np.eye(np.sum(self.mask.astype(int)))
             self.fixval = self.fun(
                 self.ffd(src_pts)) + self.vweight[i] * (diffvolume)
             _ = super().__call__(src_pts)
         tmp = super().__call__(src_pts)
-        self.indices = indices_bak
+        self.mask = mask_bak
         return tmp

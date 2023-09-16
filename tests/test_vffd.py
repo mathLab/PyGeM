@@ -38,8 +38,6 @@ class TestVFFD(TestCase):
         cffd.vweight = np.array([1 / 3, 1 / 3, 1 / 3])
         b = cffd.fun(points)
         cffd.fixval = np.array([b])
-        cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
-        cffd.M = np.eye(len(cffd.indices))
         new_mesh_points = cffd(points)
         assert np.allclose(np.linalg.norm(points - new_mesh_points), 0.0)
 
@@ -76,8 +74,6 @@ class TestVFFD(TestCase):
         cffd.read_parameters(
             "tests/test_datasets/parameters_test_ffd_sphere.prm")
         cffd.fixval = np.array([b])
-        cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
-        cffd.M = np.eye(len(cffd.indices))
         new_mesh_points = cffd(points)
         assert np.isclose(np.linalg.norm(cffd.fun(new_mesh_points) - b),
                           np.array([0.0]))

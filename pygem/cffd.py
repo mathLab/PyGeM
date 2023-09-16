@@ -60,20 +60,37 @@ class CFFD(FFD):
         >>> new_mesh_points = cffd(original_mesh_points)
         >>> assert np.isclose(np.linalg.norm(fun(new_mesh_points)-b),np.array([0.]))
     """
-    def __init__(self, n_control_points=None):
+    def __init__(self, n_control_points=None, fun=None, fixval=None, M=None, mask=None ):
         super().__init__(n_control_points)
-        self.fun = None
-        self.fixval = None
-        self.indices = None
-        self.M = None
+
+        if mask==None:
+            self.mask=np.full((*self.n_control_points,3), True, dtype=bool)
+        else:
+            self.mask=mask
+
+        if fixval==None:
+            self.fixval=np.array([1.])    
+        else:
+            self.fixval=fixval
+        
+        if fun==None:
+            self.fun=lambda x: self.fixval
+        
+        else:
+            self.fun=fun
+
+        if M==None:
+            self.M=np.eye(np.sum(self.mask.astype(int)))
 
     def __call__(self, src_pts):
         saved_parameters = self._save_parameters()
-        A, b = self._compute_linear_map(src_pts, saved_parameters.copy())
-        d = A @ saved_parameters[self.indices] + b
-        deltax = np.linalg.inv(self.M) @ A.T @ np.linalg.inv(
-            (A @ np.linalg.inv(self.M) @ A.T)) @ (self.fixval - d)
-        saved_parameters[self.indices] = saved_parameters[self.indices] + deltax
+        indices=np.arange(np.prod(self.n_control_points)*3)[self.mask.reshape(-1)]
+        A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),indices)
+        d = A @ saved_parameters[indices] + b
+        invM=np.linalg.inv(self.M)
+        deltax = invM @ A.T @ np.linalg.inv(
+            (A @ invM @ A.T)) @ (self.fixval - d)
+        saved_parameters[indices] = saved_parameters[indices] + deltax
         self._load_parameters(saved_parameters)
         return self.ffd(src_pts)
 
@@ -112,10 +129,14 @@ class CFFD(FFD):
         self.array_mu_y = tmp[:, :, :, 1]
         self.array_mu_z = tmp[:, :, :, 2]
 
+    def read_parameters(self,filename='parameters.prm'):
+        super().read_parameters(filename)
+        self.mask=np.full((*self.n_control_points,3), True, dtype=bool)
+        self.M=np.eye(np.sum(self.mask.astype(int)))
 
 # I see that a similar function already exists in pygem.utils, but it does not work for inputs and outputs of different dimensions
 
-    def _compute_linear_map(self, src_pts, saved_parameters):
+    def _compute_linear_map(self, src_pts, saved_parameters,indices):
         '''
         Computes the coefficient and the intercept of the linear map from the control points to the output.
         
@@ -124,7 +145,7 @@ class CFFD(FFD):
         :return: a tuple containing the coefficient and the intercept.
         :rtype: tuple(np.ndarray,np.ndarray)
         '''
-        n_indices = len(self.indices)
+        n_indices = len(indices)
         inputs = np.zeros([n_indices + 1, n_indices + 1])
         outputs = np.zeros([n_indices + 1, self.fixval.shape[0]])
         np.random.seed(0)
@@ -134,7 +155,7 @@ class CFFD(FFD):
             tmp = tmp.reshape(1, -1)
             inputs[i] = np.hstack([tmp, np.ones(
                 (tmp.shape[0], 1))])  #dependent variable
-            saved_parameters[self.indices] = tmp
+            saved_parameters[indices] = tmp
             self._load_parameters(
                 saved_parameters
             )  #loading the depent variable as a control point
@@ -146,3 +167,22 @@ class CFFD(FFD):
         A = sol[0].T[:, :-1]  #coefficient
         b = sol[0].T[:, -1]  #intercept
         return A, b
+
+np.random.seed(0)
+cffd = CFFD()
+cffd.read_parameters(
+    "tests/test_datasets/parameters_test_ffd_sphere.prm")
+original_mesh_points = np.load(
+    "tests/test_datasets/meshpoints_sphere_orig.npy")
+A = np.random.rand(3, original_mesh_points.reshape(-1).shape[0])
+
+def fun(x):
+    x = x.reshape(-1)
+    return A @ x
+
+b = fun(original_mesh_points)
+cffd.fun = fun
+cffd.fixval = b
+new_mesh_points = cffd(original_mesh_points)
+assert np.isclose(np.linalg.norm(fun(new_mesh_points) - b),
+                    np.array([0.0]))

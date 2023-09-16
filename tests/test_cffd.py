@@ -20,8 +20,6 @@ class TestCFFD(TestCase):
         b = fun(original_mesh_points)
         cffd.fun = fun
         cffd.fixval = b
-        cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
-        cffd.M = np.eye(len(cffd.indices))
         new_mesh_points = cffd(original_mesh_points)
         assert np.array_equal(original_mesh_points, new_mesh_points)
 
@@ -41,8 +39,6 @@ class TestCFFD(TestCase):
         b = fun(original_mesh_points)
         cffd.fun = fun
         cffd.fixval = b
-        cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
-        cffd.M = np.eye(len(cffd.indices))
         new_mesh_points = cffd(original_mesh_points)
         assert np.isclose(np.linalg.norm(fun(new_mesh_points) - b),
                           np.array([0.0]))
@@ -60,13 +56,12 @@ class TestCFFD(TestCase):
         b = fun(original_mesh_points)
         cffd.fixval = b
         cffd.fun = fun
-        cffd.indices = np.arange(np.prod(cffd.n_control_points) * 3).tolist()
-        cffd.M = np.eye(len(cffd.indices))
         save_par = cffd._save_parameters()
-        C, d = cffd._compute_linear_map(original_mesh_points, save_par.copy())
-        for i in range(2 * len(cffd.indices)):
-            tmp = np.random.rand(len(cffd.indices))
-            save_par[cffd.indices] = tmp
+        indices=np.arange(np.prod(cffd.n_control_points)*3)[cffd.mask.reshape(-1)]
+        C, d = cffd._compute_linear_map(original_mesh_points, save_par.copy(),indices)
+        for i in range(2 * len(indices)):
+            tmp = np.random.rand(len(indices))
+            save_par[indices] = tmp
             cffd._load_parameters(tmp)
             assert np.allclose(
                 np.linalg.norm(C @ tmp + d -
