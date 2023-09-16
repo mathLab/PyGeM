@@ -51,23 +51,18 @@ class BFFD(CFFD):
 
         >>> from pygem import BFFD
         >>> import numpy as np
-        >>> bffd = BFFD()
+        >>> b=np.random.rand(3)
+        >>> bffd = BFFD([2,2,2],b)
         >>> bffd.read_parameters('tests/test_datasets/parameters_test_ffd_sphere.prm')
         >>> original_mesh_points = np.load('tests/test_datasets/meshpoints_sphere_orig.npy')
-        >>> b=bffd.linconstraint(original_mesh_points)
-        >>> bffd.valconstraint=b
-        >>> bffd.indices=np.arange(np.prod(bffd.n_control_points)*3).tolist()
-        >>> bffd.M=np.eye(len(bffd.indices))
-        >>> new_mesh_points = bffd(original_mesh_points)
-        >>> assert np.isclose(np.linalg.norm(bffd.linconstraint(new_mesh_points)-b),np.array([0.]))
+        >>> bffd.adjust_control_points(original_mesh_points[:-4])
+        >>> assert np.isclose(np.linalg.norm(bffd.fun(bffd.ffd(original_mesh_points[:-4]))-b),np.array([0.]))
+        >>> new_mesh_points = bffd.ffd(original_mesh_points)
     '''
-    def __init__(self, n_control_points=None, fun=None, fixval=None, weight_matrix=None, mask=None):
-        super().__init__(n_control_points,fun,fixval,weight_matrix,mask)
+    def __init__(self, n_control_points=None, fixval=None, weight_matrix=None, mask=None):
+        super().__init__(n_control_points,None,fixval,weight_matrix,mask)
 
         def linfun(x):
             return np.mean(x.reshape(-1, 3), axis=0)
 
         self.fun = linfun
-
-    def __call__(self, src_pts):
-        return super().__call__(src_pts)

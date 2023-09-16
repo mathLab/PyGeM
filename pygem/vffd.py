@@ -57,17 +57,16 @@ class VFFD(CFFD):
         >>> mesh = meshio.read('tests/test_datasets/test_sphere.stl')  
         >>> original_mesh_points=mesh.points
         >>> triangles = mesh.cells_dict["triangle"]
-        >>> vffd = VFFD(triangles,[2,2,2])
+        >>> b=np.random.rand()
+        >>> vffd = VFFD(triangles,[2,2,2],b)
         >>> vffd.read_parameters('tests/test_datasets/parameters_test_ffd_sphere.prm')
-        >>> b=vffd.linconstraint(original_mesh_points)
-        >>> vffd.valconstraint=np.array([b])
-        >>> vffd.indices=np.arange(np.prod(vffd.n_control_points)*3).tolist()
-        >>> vffd.M=np.eye(len(vffd.indices))
+        >>> vffd.adjust_control_points(original_mesh_points)
         >>> new_mesh_points = vffd(original_mesh_points)
-        >>> assert np.isclose(np.linalg.norm(vffd.linconstraint(new_mesh_points)-b),np.array([0.]))
+        >>> assert np.isclose(np.linalg.norm(vffd.fun(new_mesh_points)-b),np.array([0.]),atol=1e-07)
+
     '''
-    def __init__(self, triangles, n_control_points=None, fun=None, fixval=None, weight_matrix=None, mask=None ):
-        super().__init__(n_control_points,fun,fixval,weight_matrix,mask)
+    def __init__(self, triangles, n_control_points=None, fixval=None, weight_matrix=None, mask=None ):
+        super().__init__(n_control_points,None,fixval,weight_matrix,mask)
         self.triangles = triangles
         self.vweight = [1 / 3, 1 / 3, 1 / 3]
 
@@ -89,4 +88,3 @@ class VFFD(CFFD):
             self.fixval = self.fun(
                 self.ffd(src_pts)) + self.vweight[i] * (diffvolume)
             super().adjust_control_points(src_pts)
-   
