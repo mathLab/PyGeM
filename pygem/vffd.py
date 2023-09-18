@@ -91,5 +91,5 @@ class VFFD(CFFD):
             self.mask[:, :, :, i] = mask_bak[:, :, :, i].copy()
             self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
             self.fixval = self.fun(
-                self.ffd(src_pts)) + self.vweight[i] * (diffvolume)
+                self.ffd(src_pts)) + self.vweight[i] * (diffvolume) #in this way the constraint is enforced in three steps (one per every dim)
             super().adjust_control_points(src_pts)
