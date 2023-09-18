@@ -88,7 +88,7 @@ class CFFD(FFD):
 
     def adjust_control_points(self, src_pts):
         '''
-        Adjust the FFD control points such that F(ffd(src_pts))=c
+        Adjust the FFD control points such that fun(ffd(src_pts))=fixval
             
         :param np.ndarray src_pts: the points whose deformation we want to be 
             constrained.
