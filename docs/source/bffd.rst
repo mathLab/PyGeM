@@ -1,15 +1,15 @@
 Barycenter Free-form Deformation
 =====================
 
-.. currentmodule:: pygem.bffd
+.. currentmodule:: pygem.cffd
 
-.. automodule:: pygem.bffd
+.. automodule:: pygem.cffd
 
 .. autosummary::
 	:toctree: _summaries
 	:nosignatures:
 
-.. autoclass:: pygem.bffd.BFFD
+.. autoclass:: pygem.cffd.BFFD
 	:members:
 	:special-members: __call__
 	:private-members:
