@@ -42,7 +42,10 @@ class CFFD(FFD):
     :cvar numpy.ndarray fun_mask: a boolean tensor that tells to the class 
         on which axis which constraint depends on. The tensor has shape (n_cons,3), where the last dimension indicates dependency on
         on x,y,z respectively. Default is all true. It used only in the triaffine mode.
-    
+    :cvar numpy.ndarray weight_matrix: a symmetric positive definite weigth matrix. 
+        It must be of row and column size the number of trues in the mask.
+        It weights the movemement of the control points which have a true flag in the ffd_mask.
+        Default is identity.
 
     :Example:
 
@@ -64,7 +67,7 @@ class CFFD(FFD):
                 fun,
                 n_control_points=None,
                 ffd_mask=None,
-                fun_mask=None):
+                fun_mask=None, weight_matrix=None):
         super().__init__(n_control_points)
 
         if ffd_mask is None:
@@ -79,22 +82,23 @@ class CFFD(FFD):
             self.fun_mask = np.full((self.num_cons, 3), True, dtype=bool)
         else:
             self.fun_mask = fun_mask
-    def adjust_control_points(self,src_pts):
+
+        if weight_matrix is None:
+            self.weight_matrix = np.eye(np.sum(self.ffd_mask))
+    def _adjust_control_points_inner(self,src_pts,hyper_param):
         '''
-        Adjust the FFD control points such that fun(ffd(src_pts))=fixval
+        Adjust the FFD control points such that fun(ffd(src_pts))=fixval given a hyperparameter.
             
         :param np.ndarray src_pts: the points whose deformation we want to be 
             constrained.
         :rtype: None.
         '''
-        vweight=self.fun_mask.copy().astype(float)
-        vweight=vweight/np.sum(vweight,axis=1)
         mask_bak = self.ffd_mask.copy()
         diffvolume = self.fixval - self.fun(self.ffd(src_pts))
         for i in range(3):
             self.ffd_mask = np.full((*self.n_control_points, 3), False, dtype=bool)
             self.ffd_mask[:, :, :, i] = mask_bak[:, :, :, i].copy()
-            self.fixval = self.fun(self.ffd(src_pts)) + vweight[:,i] * (
+            self.fixval = self.fun(self.ffd(src_pts)) + hyper_param[:,i] * (
                 diffvolume
             )
             saved_parameters = self._save_parameters()
@@ -116,7 +120,17 @@ class CFFD(FFD):
         self.ffd_mask = mask_bak.copy()
 
 
-
+    def adjust_control_points(self,src_pts):
+        '''
+        Adjust the FFD control points such that fun(ffd(src_pts))=fixval
+            
+        :param np.ndarray src_pts: the points whose deformation we want to be 
+            constrained.
+        :rtype: None.
+        '''
+        hyper_param=self.fun_mask.copy().astype(float)
+        hyper_param=hyper_param/np.sum(hyper_param,axis=1)
+        self._adjust_control_points_inner(src_pts,hyper_param)
     def ffd(self, src_pts):
         '''
         Performs Classic Free Form Deformation.
