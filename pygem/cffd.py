@@ -79,36 +79,6 @@ class CFFD(FFD):
             self.fun_mask = np.full((self.num_cons, 3), True, dtype=bool)
         else:
             self.fun_mask = fun_mask
-    def _adjust_control_points_inner(self, src_pts,i):
-        '''
-        Solves the constrained optimization problem of axis i
-
-        :param np.ndarray src_pts: the points whose deformation we want to be 
-            constrained.
-        :param int i: the axis we are considering.
-        :rtype: None.
-        '''
-
-        saved_parameters = self._save_parameters()
-        indices = np.arange(np.prod(self.n_control_points) *
-                            3)[self.ffd_mask.reshape(-1)]
-        A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),
-                                    indices)
-        A=A[self.fun_mask[:,i].reshape(-1),:]
-        b=b[self.fun_mask[:,i].reshape(-1)]
-        d = A @ saved_parameters[indices] + b
-        fixval=self.fixval[self.fun_mask[:,i].reshape(-1)]
-        deltax = np.linalg.multi_dot([
-            A.T,
-            np.linalg.inv(np.linalg.multi_dot([A, A.T])),
-            (fixval - d)
-        ])
-        saved_parameters[indices] = saved_parameters[indices] + deltax
-        self._load_parameters(saved_parameters)
-        return np.linalg.norm(deltax.reshape(-1))
-
-
-
     def adjust_control_points(self,src_pts):
         '''
         Adjust the FFD control points such that fun(ffd(src_pts))=fixval
@@ -127,7 +97,24 @@ class CFFD(FFD):
             self.fixval = self.fun(self.ffd(src_pts)) + vweight[:,i] * (
                 diffvolume
             )
-            self._adjust_control_points_inner(src_pts,i)
+            saved_parameters = self._save_parameters()
+            indices = np.arange(np.prod(self.n_control_points) *
+                                3)[self.ffd_mask.reshape(-1)]
+            A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),
+                                        indices)
+            A=A[self.fun_mask[:,i].reshape(-1),:]
+            b=b[self.fun_mask[:,i].reshape(-1)]
+            d = A @ saved_parameters[indices] + b
+            fixval=self.fixval[self.fun_mask[:,i].reshape(-1)]
+            deltax = np.linalg.multi_dot([
+                A.T,
+                np.linalg.inv(np.linalg.multi_dot([A, A.T])),
+                (fixval - d)
+            ])
+            saved_parameters[indices] = saved_parameters[indices] + deltax
+            self._load_parameters(saved_parameters)
+        self.ffd_mask = mask_bak.copy()
+
 
 
     def ffd(self, src_pts):
