@@ -19,13 +19,12 @@ class CFFD(FFD):
 
     :param list n_control_points: number of control points in the x, y, and z
         direction. Default is [2, 2, 2].
-        
+    :param string mode: it can be ``affine`` or ``triaffine``. The first option is for the F that are affine in all the coordinates of the points. 
+        The second one is for functions that are F in the coordinates of the points. The first option implies the second, but is optimal for that class of functions.
     :cvar numpy.ndarray box_length: dimension of the FFD bounding box, in the
         x, y and z direction (local coordinate system).
     :cvar numpy.ndarray box_origin: the x, y and z coordinates of the origin of
         the FFD bounding box.
-    :cvar numpy.ndarray rot_angle: rotation angle around x, y and z axis of the
-        FFD bounding box.
     :cvar numpy.ndarray n_control_points: the number of control points in the
         x, y, and z direction.
     :cvar numpy.ndarray array_mu_x: collects the displacements (weights) along
@@ -36,57 +35,81 @@ class CFFD(FFD):
         z, normalized with the box length z.
     :cvar callable fun: it defines the F of the constraint F(x)=c. Default is the constant 1 function.
     :cvar numpy.ndarray fixval: it defines the c of the constraint F(x)=c. Default is 1.
-    :cvar numpy.ndarray mask: a boolean tensor that tells to the class 
+    :cvar numpy.ndarray ffd_mask: a boolean tensor that tells to the class 
         which control points can be moved, and in what direction, to enforce the constraint. 
         The tensor has shape (n_x,n_y,n_z,3), where the last dimension indicates movement
         on x,y,z respectively. Default is all true.
-    :cvar numpy.ndarray weight_matrix: a symmetric positive definite weigth matrix. 
-        It must be of row and column size the number of trues in the mask.
-        It weights the movemement of the control points which have a true flag in the mask.
-        Default is identity.
+    :cvar numpy.ndarray fun_mask: a boolean tensor that tells to the class 
+        on which axis which constraint depends on. The tensor has shape (n_cons,3), where the last dimension indicates dependency on
+        on x,y,z respectively. Default is all true. It used only in the triaffine mode.
+    
 
     :Example:
 
         >>> from pygem import CFFD
         >>> import numpy as np
         >>> original_mesh_points = np.load('tests/test_datasets/meshpoints_sphere_orig.npy')
-        >>> A=np.random.rand(3,original_mesh_points[:-4].reshape(-1).shape[0])
-        >>> fun=lambda x: A@x.reshape(-1)
-        >>> b=np.random.rand(3)
-        >>> cffd = CFFD([2,2,2],fun,b)
+        >>> A = np.random.rand(3, original_mesh_points[:-4].reshape(-1).shape[0])
+        >>> fun = lambda x: A @ x.reshape(-1)
+        >>> b = np.random.rand(3)
+        >>> cffd = CFFD(b, fun, [2, 2, 2])
         >>> cffd.read_parameters('tests/test_datasets/parameters_test_ffd_sphere.prm')
         >>> cffd.adjust_control_points(original_mesh_points[:-4])
-        >>> assert np.isclose(np.linalg.norm(fun(cffd.ffd(original_mesh_points[:-4]))-b),np.array([0.]),atol=1e-06)
+        >>> assert np.isclose(np.linalg.norm(fun(cffd.ffd(original_mesh_points[:-4])) - b), np.array([0.]),atol = 1e-06)
         >>> new_mesh_points = cffd.ffd(original_mesh_points)
     """
+
     def __init__(self,
-                 n_control_points=None,
-                 fun=None,
-                 fixval=None,
-                 weight_matrix=None,
-                 mask=None):
+                fixval,
+                fun,
+                n_control_points=None,
+                ffd_mask=None,
+                fun_mask=None):
         super().__init__(n_control_points)
 
-        if mask is None:
-            self.mask = np.full((*self.n_control_points, 3), True, dtype=bool)
+        if ffd_mask is None:
+            self.ffd_mask = np.full((*self.n_control_points, 3), True, dtype=bool)
         else:
-            self.mask = mask
+            self.ffd_mask = ffd_mask
 
-        if fixval is None:
-            self.fixval = np.array([1.])
+        self.num_cons=len(fixval)
+        self.fun=fun
+        self.fixval=fixval
+        if fun_mask is None:
+            self.fun_mask = np.full((self.num_cons, 3), True, dtype=bool)
         else:
-            self.fixval = fixval
+            self.fun_mask = fun_mask
+    def _adjust_control_points_inner(self, src_pts,i):
+        '''
+        Solves the constrained optimization problem of axis i
 
-        if fun is None:
-            self.fun = lambda x: self.fixval
+        :param np.ndarray src_pts: the points whose deformation we want to be 
+            constrained.
+        :param int i: the axis we are considering.
+        :rtype: None.
+        '''
 
-        else:
-            self.fun = fun
+        saved_parameters = self._save_parameters()
+        indices = np.arange(np.prod(self.n_control_points) *
+                            3)[self.ffd_mask.reshape(-1)]
+        A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),
+                                    indices)
+        A=A[self.fun_mask[:,i].reshape(-1),:]
+        b=b[self.fun_mask[:,i].reshape(-1)]
+        d = A @ saved_parameters[indices] + b
+        fixval=self.fixval[self.fun_mask[:,i].reshape(-1)]
+        deltax = np.linalg.multi_dot([
+            A.T,
+            np.linalg.inv(np.linalg.multi_dot([A, A.T])),
+            (fixval - d)
+        ])
+        saved_parameters[indices] = saved_parameters[indices] + deltax
+        self._load_parameters(saved_parameters)
+        return np.linalg.norm(deltax.reshape(-1))
 
-        if weight_matrix is None:
-            self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
 
-    def adjust_control_points(self, src_pts):
+
+    def adjust_control_points(self,src_pts):
         '''
         Adjust the FFD control points such that fun(ffd(src_pts))=fixval
             
@@ -94,21 +117,18 @@ class CFFD(FFD):
             constrained.
         :rtype: None.
         '''
+        vweight=self.fun_mask.copy().astype(float)
+        vweight=vweight/np.sum(vweight,axis=1)
+        mask_bak = self.ffd_mask.copy()
+        diffvolume = self.fixval - self.fun(self.ffd(src_pts))
+        for i in range(3):
+            self.ffd_mask = np.full((*self.n_control_points, 3), False, dtype=bool)
+            self.ffd_mask[:, :, :, i] = mask_bak[:, :, :, i].copy()
+            self.fixval = self.fun(self.ffd(src_pts)) + vweight[:,i] * (
+                diffvolume
+            )
+            self._adjust_control_points_inner(src_pts,i)
 
-        saved_parameters = self._save_parameters()
-        indices = np.arange(np.prod(self.n_control_points) *
-                            3)[self.mask.reshape(-1)]
-        A, b = self._compute_linear_map(src_pts, saved_parameters.copy(),
-                                        indices)
-        d = A @ saved_parameters[indices] + b
-        invM = np.linalg.inv(self.weight_matrix)
-        deltax = np.linalg.multi_dot([
-            invM, A.T,
-            np.linalg.inv(np.linalg.multi_dot([A, invM, A.T])),
-            (self.fixval - d)
-        ])
-        saved_parameters[indices] = saved_parameters[indices] + deltax
-        self._load_parameters(saved_parameters)
 
     def ffd(self, src_pts):
         '''
@@ -145,14 +165,6 @@ class CFFD(FFD):
         self.array_mu_y = tmp[:, :, :, 1]
         self.array_mu_z = tmp[:, :, :, 2]
 
-    def read_parameters(self, filename='parameters.prm'):
-        super().read_parameters(filename)
-        self.mask = np.full((*self.n_control_points, 3), True, dtype=bool)
-        self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
-
-
-# I see that a similar function already exists in pygem.utils, but it does not work for inputs and outputs of different dimensions
-
     def _compute_linear_map(self, src_pts, saved_parameters, indices):
         '''
         Computes the coefficient and the intercept of the linear map from the control points to the output.
@@ -184,3 +196,5 @@ class CFFD(FFD):
         A = sol[0].T[:, :-1]  #coefficient
         b = sol[0].T[:, -1]  #intercept
         return A, b
+    
+

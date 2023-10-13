@@ -18,17 +18,11 @@ class VFFD(CFFD):
     Class that handles the Volumetric Free Form Deformation on the mesh points.
  
     :param list n_control_points: number of control points in the x, y, and z
-        direction. Default is [2, 2, 2].
-        
-    :param list n_control_points: number of control points in the x, y, and z
-        direction. Default is [2, 2, 2].
-        
+        direction. Default is [2, 2, 2].        
     :cvar numpy.ndarray box_length: dimension of the FFD bounding box, in the
         x, y and z direction (local coordinate system).
     :cvar numpy.ndarray box_origin: the x, y and z coordinates of the origin of
         the FFD bounding box.
-    :cvar numpy.ndarray rot_angle: rotation angle around x, y and z axis of the
-        FFD bounding box.
     :cvar numpy.ndarray n_control_points: the number of control points in the
         x, y, and z direction.
     :cvar numpy.ndarray array_mu_x: collects the displacements (weights) along
@@ -39,15 +33,10 @@ class VFFD(CFFD):
         z, normalized with the box length z.
     :cvar callable fun: it defines the F of the constraint F(x)=c. Default is the constant 1 function.
     :cvar numpy.ndarray fixval: it defines the c of the constraint F(x)=c. Default is 1.
-    :cvar numpy.ndarray mask: a boolean tensor that tells to the class 
+    :cvar numpy.ndarray ffd_mask: a boolean tensor that tells to the class 
         which control points can be moved, and in what direction, to enforce the constraint. 
         The tensor has shape (n_x,n_y,n_z,3), where the last dimension indicates movement
         on x,y,z respectively. Default is all true.
-    :cvar numpy.ndarray weight_matrix: a symmetric positive definite weigth matrix. 
-        It must be of row and column size the number of trues in the mask.
-        It weights the movemement of the control points which have a true flag in the mask.
-        Default is identity.
-    :cvar np.ndarray vweight: specifies the weight of every step of the volume enforcement.
 
     :Example:
 
@@ -55,41 +44,34 @@ class VFFD(CFFD):
         >>> import numpy as np
         >>> import meshio
         >>> mesh = meshio.read('tests/test_datasets/test_sphere.stl')  
-        >>> original_mesh_points=mesh.points
+        >>> original_mesh_points = mesh.points
         >>> triangles = mesh.cells_dict["triangle"]
-        >>> b=np.random.rand()
-        >>> vffd = VFFD(triangles,[2,2,2],b)
+        >>> b = np.random.rand()
+        >>> vffd = VFFD(triangles, b,[2, 2, 2])
         >>> vffd.read_parameters('tests/test_datasets/parameters_test_ffd_sphere.prm')
         >>> vffd.adjust_control_points(original_mesh_points)
         >>> new_mesh_points = vffd(original_mesh_points)
-        >>> assert np.isclose(np.linalg.norm(vffd.fun(new_mesh_points)-b),np.array([0.]),atol=1e-07)
+        >>> assert np.isclose(np.linalg.norm(vffd.fun(new_mesh_points) - b),np.array([0.]), atol=1e-07)
 
     '''
+
     def __init__(self,
-                 triangles,
-                 n_control_points=None,
-                 fixval=None,
-                 weight_matrix=None,
-                 mask=None):
-        super().__init__(n_control_points, None, fixval, weight_matrix, mask)
-        self.triangles = triangles
-        self.vweight = [1 / 3, 1 / 3, 1 / 3]
+                triangles,
+                fixval,
+                n_control_points=None,
+                ffd_mask=None):
+        super().__init__(fixval,None,n_control_points,ffd_mask,None)  
 
-        def volume(x):
-            x = x.reshape(-1, 3)
-            mesh = x[self.triangles]
-            return np.sum(np.linalg.det(mesh))
+        self.triangles=triangles
+        def volume_inn(x):
+            return _volume(x,self.triangles)
 
-        self.fun = volume
+        self.fun = volume_inn
+        self.fixval=fixval
+        self.fun_mask=np.array([[True, True, True]])
+        
+def _volume(x,triangles):
+    x = x.reshape(-1, 3)
+    mesh = x[triangles]
+    return np.array([np.sum(np.linalg.det(mesh))])
 
-    def adjust_control_points(self, src_pts):
-        self.vweight = np.abs(self.vweight) / np.sum(np.abs(self.vweight))
-        mask_bak = self.mask.copy()
-        diffvolume = self.fixval - self.fun(self.ffd(src_pts))
-        for i in range(3):
-            self.mask = np.full((*self.n_control_points, 3), False, dtype=bool)
-            self.mask[:, :, :, i] = mask_bak[:, :, :, i].copy()
-            self.weight_matrix = np.eye(np.sum(self.mask.astype(int)))
-            self.fixval = self.fun(
-                self.ffd(src_pts)) + self.vweight[i] * (diffvolume) #in this way the constraint is enforced in three steps (one per every dim)
-            super().adjust_control_points(src_pts)

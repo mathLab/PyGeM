@@ -19,15 +19,10 @@ class BFFD(CFFD):
     :param list n_control_points: number of control points in the x, y, and z
         direction. Default is [2, 2, 2].
         
-    :param list n_control_points: number of control points in the x, y, and z
-        direction. Default is [2, 2, 2].
-        
     :cvar numpy.ndarray box_length: dimension of the FFD bounding box, in the
         x, y and z direction (local coordinate system).
     :cvar numpy.ndarray box_origin: the x, y and z coordinates of the origin of
         the FFD bounding box.
-    :cvar numpy.ndarray rot_angle: rotation angle around x, y and z axis of the
-        FFD bounding box.
     :cvar numpy.ndarray n_control_points: the number of control points in the
         x, y, and z direction.
     :cvar numpy.ndarray array_mu_x: collects the displacements (weights) along
@@ -51,22 +46,28 @@ class BFFD(CFFD):
 
         >>> from pygem import BFFD
         >>> import numpy as np
-        >>> b=np.random.rand(3)
-        >>> bffd = BFFD([2,2,2],b)
+        >>> b = np.random.rand(3)
+        >>> bffd = BFFD(b, [2, 2, 2])
         >>> bffd.read_parameters('tests/test_datasets/parameters_test_ffd_sphere.prm')
         >>> original_mesh_points = np.load('tests/test_datasets/meshpoints_sphere_orig.npy')
         >>> bffd.adjust_control_points(original_mesh_points[:-4])
-        >>> assert np.isclose(np.linalg.norm(bffd.fun(bffd.ffd(original_mesh_points[:-4]))-b),np.array([0.]))
+        >>> assert np.isclose(np.linalg.norm(bffd.fun(bffd.ffd(original_mesh_points[:-4])) - b), np.array([0.]))
         >>> new_mesh_points = bffd.ffd(original_mesh_points)
     '''
+
     def __init__(self,
+                fixval=None,
                  n_control_points=None,
-                 fixval=None,
-                 weight_matrix=None,
-                 mask=None):
-        super().__init__(n_control_points, None, fixval, weight_matrix, mask)
+                 ffd_mask=None):
+        super().__init__(fixval,None,n_control_points,ffd_mask,None)  
 
         def linfun(x):
             return np.mean(x.reshape(-1, 3), axis=0)
 
         self.fun = linfun
+        self.fixval = fixval
+        self.fun_mask = np.array([[True, False, False],
+                                  [False, True, False],
+                                  [False, False, True]])
+
+
