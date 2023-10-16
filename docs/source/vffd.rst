@@ -1,15 +1,15 @@
 Volume Free-form Deformation
 =====================
 
-.. currentmodule:: pygem.cffd
+.. currentmodule:: pygem.vffd
 
-.. automodule:: pygem.cffd
+.. automodule:: pygem.vffd
 
 .. autosummary::
 	:toctree: _summaries
 	:nosignatures:
 
-.. autoclass:: pygem.cffd.VFFD
+.. autoclass:: pygem.vffd.VFFD
 	:members:
 	:special-members: __call__
 	:private-members:
