@@ -1,6 +1,7 @@
 """
 Derived module from nurbshandler.py to handle step and stp files.
 """
+
 from OCC.Core.IFSelect import IFSelect_RetDone
 from OCC.Core.Interface import Interface_Static_SetCVal
 from OCC.Core.STEPControl import STEPControl_Writer, STEPControl_Reader
@@ -34,7 +35,7 @@ class StepHandler(NurbsHandler):
     def __init__(self):
         super(StepHandler, self).__init__()
         self._control_point_position = None
-        self.extensions = ['.step', '.stp']
+        self.extensions = [".step", ".stp"]
 
     def load_shape_from_file(self, filename):
         """

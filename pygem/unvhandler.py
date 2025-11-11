@@ -3,11 +3,13 @@ Derived module from filehandler.py to handle Universal (unv) files.
 
 .. warning::
     This module will be deprecated in next releases. Follow updates on
-    https://github.com/mathLab for news about file handling. 
+    https://github.com/mathLab for news about file handling.
 """
+
 import numpy as np
 import pygem.filehandler as fh
 import warnings
+
 warnings.warn("This module will be deprecated in next releases", DeprecationWarning)
 
 
@@ -23,7 +25,7 @@ class UnvHandler(fh.FileHandler):
 
     def __init__(self):
         super(UnvHandler, self).__init__()
-        self.extensions = ['.unv']
+        self.extensions = [".unv"]
 
     def parse(self, filename):
         """
@@ -44,15 +46,15 @@ class UnvHandler(fh.FileHandler):
 
         index = -9
         mesh_points = []
-        with open(self.infile, 'r') as input_file:
+        with open(self.infile, "r") as input_file:
             for num, line in enumerate(input_file):
-                if line.startswith('  2411'):
+                if line.startswith("  2411"):
                     index = num
                 if num == index + 2:
-                    if line.startswith('    -1'):
+                    if line.startswith("    -1"):
                         break
                     else:
-                        line = line.replace('D', 'E')
+                        line = line.replace("D", "E")
                         l = []
                         for t in line.split():
                             try:
@@ -83,20 +85,21 @@ class UnvHandler(fh.FileHandler):
 
         index = -9
         i = 0
-        with open(self.outfile, 'w') as output_file:
-            with open(self.infile, 'r') as input_file:
+        with open(self.outfile, "w") as output_file:
+            with open(self.infile, "r") as input_file:
                 for num, line in enumerate(input_file):
-                    if line.startswith('  2411'):
+                    if line.startswith("  2411"):
                         index = num
                     if num == index + 2:
-                        if line.startswith('    -1'):
+                        if line.startswith("    -1"):
                             index = -9
                             output_file.write(line)
                         else:
                             for j in range(0, 3):
-                                output_file.write(3 * ' ' + '{:.16E}'.format(
-                                    mesh_points[i][j]))
-                            output_file.write('\n')
+                                output_file.write(
+                                    3 * " " + "{:.16E}".format(mesh_points[i][j])
+                                )
+                            output_file.write("\n")
                             i += 1
                             index = num
                     else:

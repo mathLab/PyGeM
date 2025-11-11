@@ -50,17 +50,17 @@ See the [**Examples**](#examples) section below and the [**Tutorials**](tutorial
 
 
 ## Dependencies and installation
-**PyGeM** requires `numpy`, `scipy`, `matplotlib`, `sphinx` (for the
-documentation) and `pytest` (for local test). They can be easily installed via
-`pip`. The code has been tested with Python3.7 version, but it should be
-compatible with a generic Python3.x. The Python2 support is no longer maintained.
+**PyGeM** requires `numpy`, `scipy`, and `matplotlib` as core dependencies. `sphinx` is needed for the
+documentation and `pytest` for testing. They can be easily installed via
+`pip`. The code has been tested with Python3.12.9 version, but it should be
+compatible with Python3.9+. The Python2 support is no longer maintained.
 To enable the `CAD`
 [submodule](https://github.com/mathLab/PyGeM/tree/master/pygem/cad), the
 module `pythonocc-core` is required to deal with IGES files. This requirement
 cannot be satisfied through `pip`, but the precompiled binaries are available
 on `conda` using the command:
 ```bash
-conda install -c conda-forge pythonocc-core=7.4.0
+conda install -c conda-forge pythonocc-core
 ```
 For additional information about the compilation and installation of
 `pythonocc`, we refer the original
@@ -76,7 +76,7 @@ The official distribution is on GitHub, and you can clone the repository using
 To install the package just type:
 
 ```bash
-> python setup.py install
+> pip install .
 ```
 
 To uninstall the package you have to rerun the installation and record the installed files in order to remove them:
@@ -84,6 +84,15 @@ To uninstall the package you have to rerun the installation and record the insta
 ```bash
 > pip uninstall pygem
 ```
+
+**Install directly from GitHub:**
+```bash
+pip install "pygem @ git+https://github.com/mathLab/PyGeM.git"
+```
+**Install with optional extras:**
+- For testing: `pip install "pygem[test]"`
+- For documentation: `pip install "pygem[docs]"`
+- For development (all extras): `pip install "pygem[dev]"`
 
 ### Docker
 Alternatively, a way to run the PyGeM library is to use our prebuilt and high-performance Docker images.
@@ -101,7 +110,7 @@ Once the download is complete you can start PyGeM for the first time. Just run:
 ```bash
 >  docker run -ti  sissamathlab/pygem:latest
 ```
-To facilitate the devoloping, using the text editor,version control and other tools already installed on your computers,
+To facilitate the developing, using the text editor,version control and other tools already installed on your computers,
 it is possible to share files from the host into the container:
 
 ```bash
@@ -127,7 +136,7 @@ The generated html can be found in `docs/build/html`. Open up the `index.html` y
 
 
 ## Testing
-We are using Github Actions for continuous intergration testing. You can check out the current status [here](https://github.com/mathLab/PyGeM/actions/workflows/testing_pr.yml).
+We are using GitHub Actions for continuous integration testing. You can check out the current status [here](https://github.com/mathLab/PyGeM/actions/workflows/testing_pr.yml).
 
 To run tests locally (the package `pytest` is required):
 
@@ -232,7 +241,7 @@ Here there is a list of the scientific works involving **PyGeM** you can consult
 
 
 ## Authors and contributors
-**PyGeM** is currently developed and mantained at [SISSA mathLab](http://mathlab.sissa.it/) by
+**PyGeM** is currently developed and maintained at [SISSA mathLab](http://mathlab.sissa.it/) by
 * [Marco Tezzele](mailto:marcotez@gmail.com)
 * [Nicola Demo](mailto:demo.nicola@gmail.com)
 * [Andrea Mola](mailto:amola@sissa.it)

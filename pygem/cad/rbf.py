@@ -24,7 +24,7 @@ The module is analogous to the freeform one.
     is defines as follows
 
     .. math::
-        \\mathcal{M}(\\boldsymbol{x}) = p(\\boldsymbol{x}) + 
+        \\mathcal{M}(\\boldsymbol{x}) = p(\\boldsymbol{x}) +
         \\sum_{i=1}^{\\mathcal{N}_C} \\gamma_i
         \\varphi(\\| \\boldsymbol{x} - \\boldsymbol{x_{C_i}} \\|)
 
@@ -60,11 +60,12 @@ import numpy as np
 from pygem import RBF as OriginalRBF
 from .cad_deformation import CADDeformation
 
+
 class RBF(CADDeformation, OriginalRBF):
     """
     Class that handles the Radial Basis Functions interpolation on CAD
     geometries.
-    
+
     :param numpy.ndarray original_control_points: it is an
         (*n_control_points*, *3*) array with the coordinates of the original
         interpolation control points before the deformation. The default is the
@@ -83,7 +84,7 @@ class RBF(CADDeformation, OriginalRBF):
         basis functions.  For details see the class
         :class:`~pygem.radialbasis.RBF`. The default value is 0.5.
     :param dict extra_parameter: the additional parameters that may be passed to
-    	the kernel function. Default is None.
+        the kernel function. Default is None.
     :param int u_knots_to_add: the number of knots to add to the NURBS surfaces
         along `u` direction before the deformation. This parameter is useful
         whenever the gradient of the imposed deformation present spatial scales
@@ -114,7 +115,7 @@ class RBF(CADDeformation, OriginalRBF):
         default value only if the input file scale is significantly different
         form mm, making some of the aforementioned operations fail. Default is
         0.0001.
-        
+
     :cvar numpy.ndarray weights: the matrix formed by the weights corresponding
         to the a-priori selected N control points, associated to the basis
         functions and c and Q terms that describe the polynomial of order one
@@ -131,9 +132,9 @@ class RBF(CADDeformation, OriginalRBF):
     :cvar float radius: the scaling parameter that affects the shape of the
         basis functions.
     :cvar dict extra_parameter: the additional parameters that may be passed to
-    	the kernel function.
+        the kernel function.
     :cvar int u_knots_to_add: the number of knots to add to the NURBS surfaces
-        along `u` direction before the deformation.   
+        along `u` direction before the deformation.
     :cvar int v_knots_to_add: the number of knots to add to the NURBS surfaces
         along `v` direction before the deformation.
     :cvar int t_knots_to_add: the number of knots to add to the NURBS curves
@@ -152,24 +153,31 @@ class RBF(CADDeformation, OriginalRBF):
         >>> modified_cad_file_name = "output.iges"
         >>> rbf(input_cad_file_name, modified_cad_file_name)
     """
-    def __init__(self,
-                 original_control_points=None,
-                 deformed_control_points=None,
-                 func='gaussian_spline',
-                 radius=0.5,
-                 extra_parameter=None,
-                 u_knots_to_add=0,
-                 v_knots_to_add=0,
-                 t_knots_to_add=0,
-                 tolerance=1e-4):
-        OriginalRBF.__init__(self, 
-                             original_control_points=original_control_points, 
-                             deformed_control_points=deformed_control_points,
-                             func=func,
-                             radius=radius,
-                             extra_parameter=extra_parameter)
-        CADDeformation.__init__(self,
-                                u_knots_to_add=u_knots_to_add,
-                                v_knots_to_add=v_knots_to_add,
-                                t_knots_to_add=t_knots_to_add,
-                                tolerance=tolerance)
+
+    def __init__(
+        self,
+        original_control_points=None,
+        deformed_control_points=None,
+        func="gaussian_spline",
+        radius=0.5,
+        extra_parameter=None,
+        u_knots_to_add=0,
+        v_knots_to_add=0,
+        t_knots_to_add=0,
+        tolerance=1e-4,
+    ):
+        OriginalRBF.__init__(
+            self,
+            original_control_points=original_control_points,
+            deformed_control_points=deformed_control_points,
+            func=func,
+            radius=radius,
+            extra_parameter=extra_parameter,
+        )
+        CADDeformation.__init__(
+            self,
+            u_knots_to_add=u_knots_to_add,
+            v_knots_to_add=v_knots_to_add,
+            t_knots_to_add=t_knots_to_add,
+            tolerance=tolerance,
+        )

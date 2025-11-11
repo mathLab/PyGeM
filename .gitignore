@@ -7,3 +7,8 @@
 build/
 dist/
 pygem.egg-info/
+
+
+# virtual environments
+venv_pygem/
+venv_pygem

@@ -1,6 +1,7 @@
 """
 PyGeM init
 """
+
 __all__ = [
     "deformation",
     "ffd",
@@ -8,9 +9,7 @@ __all__ = [
     "idw",
     "rbf_factory",
     "custom_deformation",
-    "cffd"
-    "bffd"
-    "vffd"
+    "cffd" "bffd" "vffd",
 ]
 
 from .deformation import Deformation

@@ -1,7 +1,8 @@
 """
 Derived module from filehandler.py to handle LS-DYNA keyword (.k) files.
 """
-import re 
+
+import re
 import numpy as np
 import pygem.filehandler as fh
 
@@ -18,7 +19,7 @@ class KHandler(fh.FileHandler):
 
     def __init__(self):
         super(KHandler, self).__init__()
-        self.extensions = ['.k']
+        self.extensions = [".k"]
 
     def parse(self, filename):
         """
@@ -39,29 +40,32 @@ class KHandler(fh.FileHandler):
         mesh_points = []
         node_indicator = False
 
-        with open(self.infile, 'r') as input_file:
+        with open(self.infile, "r") as input_file:
             for num, line in enumerate(input_file):
 
-                expression = re.compile(r'(.+?)(?:,|$)')
+                expression = re.compile(r"(.+?)(?:,|$)")
                 expression = expression.findall(line)
 
                 if line.startswith("$"):
                     continue
 
-                if line.startswith('*NODE'):
+                if line.startswith("*NODE"):
                     node_indicator = True
                     continue
 
-                if line.startswith('*ELEMENT'):
+                if line.startswith("*ELEMENT"):
                     break
 
                 if not node_indicator:
                     pass
                 else:
                     if len(expression) == 1:
-                        expression = re.findall(r'\S+', expression[0])
-                    l = [float(expression[1]), float(expression[2]),
-                         float(expression[3])]
+                        expression = re.findall(r"\S+", expression[0])
+                    l = [
+                        float(expression[1]),
+                        float(expression[2]),
+                        float(expression[3]),
+                    ]
                     mesh_points.append(l)
 
             mesh_points = np.array(mesh_points)
@@ -85,22 +89,22 @@ class KHandler(fh.FileHandler):
         i = 0
         node_indicator = False
 
-        with open(self.outfile, 'w') as output_file:
-            with open(self.infile, 'r') as input_file:
+        with open(self.outfile, "w") as output_file:
+            with open(self.infile, "r") as input_file:
                 for _, line in enumerate(input_file):
-                    get_num = re.findall(r'[-+]?[0-9]*\.?[0-9]+', line)
+                    get_num = re.findall(r"[-+]?[0-9]*\.?[0-9]+", line)
 
                     # Write header files
-                    if line.startswith('$'):
+                    if line.startswith("$"):
                         output_file.write(line)
                         continue
 
                     # Change the node indicator if you find the elements section
-                    if line.startswith('*ELEMENT'):
+                    if line.startswith("*ELEMENT"):
                         node_indicator = False
 
                     # Change the nodes indicator if you find the nodes section
-                    if line.startswith('*NODE'):
+                    if line.startswith("*NODE"):
                         node_indicator = True
                         output_file.write(line)
                         continue
@@ -114,10 +118,12 @@ class KHandler(fh.FileHandler):
                         split_line = line.split(" ")
 
                         # Format the data into correct format
-                        data = [int(get_num[0]),
-                                '{:.10f}'.format(float(mesh_points[i][0])),
-                                '{:.10f}'.format(float(mesh_points[i][1])),
-                                '{:.10f}'.format(float(mesh_points[i][2]))]
+                        data = [
+                            int(get_num[0]),
+                            "{:.10f}".format(float(mesh_points[i][0])),
+                            "{:.10f}".format(float(mesh_points[i][1])),
+                            "{:.10f}".format(float(mesh_points[i][2])),
+                        ]
 
                         comma_seperator = False
                         pointer = 0
@@ -128,7 +134,9 @@ class KHandler(fh.FileHandler):
 
                                 if value[len(value) - 1] == ",":
                                     comma_seperator = True
-                                    new_str = value.replace(value[:-1], str(data[pointer]))
+                                    new_str = value.replace(
+                                        value[:-1], str(data[pointer])
+                                    )
                                     split_line[index] = new_str
 
                                 else:

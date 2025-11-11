@@ -3,14 +3,16 @@ Derived module from filehandler.py to handle vtk files.
 
 .. warning::
     This module will be deprecated in next releases. Follow updates on
-    https://github.com/mathLab for news about file handling. 
+    https://github.com/mathLab for news about file handling.
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d as a3
 import vtk
 import pygem.filehandler as fh
 import warnings
+
 warnings.warn("This module will be deprecated in next releases", DeprecationWarning)
 
 
@@ -26,7 +28,7 @@ class VtkHandler(fh.FileHandler):
 
     def __init__(self):
         super(VtkHandler, self).__init__()
-        self.extensions = ['.vtk']
+        self.extensions = [".vtk"]
 
     def parse(self, filename):
         """
@@ -59,8 +61,7 @@ class VtkHandler(fh.FileHandler):
         mesh_points = np.zeros([n_points, 3])
 
         for i in range(n_points):
-            mesh_points[i][0], mesh_points[i][1], mesh_points[i][
-                2] = data.GetPoint(i)
+            mesh_points[i][0], mesh_points[i][1], mesh_points[i][2] = data.GetPoint(i)
 
         return mesh_points
 
@@ -108,7 +109,7 @@ class VtkHandler(fh.FileHandler):
         :param string plot_file: the vtk filename you want to plot.
         :param bool save_fig: a flag to save the figure in png or
             not. If True the plot is not shown.
-            
+
         :return: figure: matlplotlib structure for the figure of
             the chosen geometry
         :rtype: matplotlib.pyplot.figure
@@ -134,36 +135,39 @@ class VtkHandler(fh.FileHandler):
         for i in range(0, ncells):
             for j in range(0, 3):
                 cell = data.GetCell(i).GetPointId(j)
-                vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(
-                    int(cell))
+                vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(int(cell))
             tri = a3.art3d.Poly3DCollection([vtx[i]])
-            tri.set_color('b')
-            tri.set_edgecolor('k')
+            tri.set_color("b")
+            tri.set_edgecolor("k")
             axes.add_collection3d(tri)
 
         ## Get the limits of the axis and center the geometry
         max_dim = np.array(
-            [np.max(vtx[:, :, 0]),
-             np.max(vtx[:, :, 1]),
-             np.max(vtx[:, :, 2])])
+            [np.max(vtx[:, :, 0]), np.max(vtx[:, :, 1]), np.max(vtx[:, :, 2])]
+        )
         min_dim = np.array(
-            [np.min(vtx[:, :, 0]),
-             np.min(vtx[:, :, 1]),
-             np.min(vtx[:, :, 2])])
+            [np.min(vtx[:, :, 0]), np.min(vtx[:, :, 1]), np.min(vtx[:, :, 2])]
+        )
 
         max_lenght = np.max(max_dim - min_dim)
-        axes.set_xlim(-.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2,
-                      .6 * max_lenght + (max_dim[0] + min_dim[0]) / 2)
-        axes.set_ylim(-.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2,
-                      .6 * max_lenght + (max_dim[1] + min_dim[1]) / 2)
-        axes.set_zlim(-.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2,
-                      .6 * max_lenght + (max_dim[2] + min_dim[2]) / 2)
+        axes.set_xlim(
+            -0.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2,
+            0.6 * max_lenght + (max_dim[0] + min_dim[0]) / 2,
+        )
+        axes.set_ylim(
+            -0.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2,
+            0.6 * max_lenght + (max_dim[1] + min_dim[1]) / 2,
+        )
+        axes.set_zlim(
+            -0.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2,
+            0.6 * max_lenght + (max_dim[2] + min_dim[2]) / 2,
+        )
 
         # Show the plot to the screen
         if not save_fig:
             plt.show()
         else:
-            figure.savefig(plot_file.split('.')[0] + '.png')
+            figure.savefig(plot_file.split(".")[0] + ".png")
 
         return figure
 

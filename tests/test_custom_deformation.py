@@ -20,12 +20,14 @@ class TestCustomDeformation(TestCase):
     def test_class_members_func(self):
         def move(x):
             return x + x**2
+
         CustomDeformation(move)
 
     def test_ffd_sphere_mod(self):
         def move(x):
             x0, x1, x2 = x
             return [x0**2, x1, x2]
+
         deform = CustomDeformation(move)
         mesh_points = self.get_cube_mesh_points()
         mesh_points_test = deform(mesh_points)

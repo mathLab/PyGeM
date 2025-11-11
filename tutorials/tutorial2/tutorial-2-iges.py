@@ -6,7 +6,7 @@
 # ## Tutorial 2: Free Form Deformation on a cylinder in CAD file format
 
 # In this tutorial we show again an application of _free form deformation_ method, now to a CAD file. These files, that are often adopted to model complex geometries, require an additional pre- and post-processing of the surfaces to perform the deformation.
-# 
+#
 # The **CAD** submodule of **PyGeM** takes care of the deformation to all CAD files (.step, .iges, etc.), so first of all we import from the submodule the `FFD` class.
 
 # In[1]:
@@ -16,14 +16,14 @@ from pygem.cad import FFD
 
 
 # Since the visualisation of CAD files may be tricky (depending by the operating system, the graphical front-end, ...), we avoid for this tutorial any graphical renderer, letting to the reader the possibility to implement by himself the needed plotting routines.
-# 
+#
 # The `FFD` class in the **CAD** module shares the same interface with the original `FFD` class (for discrete geometries). We can simply parse a parameter file to set everything like we want (remember you can do the same directly setting the object attributes).
 
 # In[2]:
 
 
 ffd = FFD()
-ffd.read_parameters('../tests/test_datasets/parameters_test_ffd_iges.prm')
+ffd.read_parameters("../tests/test_datasets/parameters_test_ffd_iges.prm")
 print(ffd)
 
 
@@ -42,5 +42,6 @@ ffd(input_cad_file_name, modified_cad_file_name)
 # In[4]:
 
 
-get_ipython().system('diff -y ../tests/test_datasets/test_pipe.iges test_pipe_deformed.iges')
-
+get_ipython().system(
+    "diff -y ../tests/test_datasets/test_pipe.iges test_pipe_deformed.iges"
+)

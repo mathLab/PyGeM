@@ -5,13 +5,13 @@
 # ## Tutorial 5: Inverse Distance Weighting interpolation technique on a cube
 
 # In this tutorial we will show how to use the Inverse Distance Weighting interpolation technique to deform a cube.
-# 
+#
 # First of all, we import the required class, the numpy package and we set matplotlib for the notebook.
 
 # In[1]:
 
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+get_ipython().run_line_magic("matplotlib", "inline")
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -23,7 +23,7 @@ from pygem import IDW
 # In[2]:
 
 
-parameters_file = '../tests/test_datasets/parameters_idw_cube.prm'
+parameters_file = "../tests/test_datasets/parameters_idw_cube.prm"
 
 idw = IDW()
 idw.read_parameters(filename=parameters_file)
@@ -34,7 +34,7 @@ idw.read_parameters(filename=parameters_file)
 # In[3]:
 
 
-get_ipython().run_line_magic('cat', "'../tests/test_datasets/parameters_idw_cube.prm'")
+get_ipython().run_line_magic("cat", "'../tests/test_datasets/parameters_idw_cube.prm'")
 
 
 # Here we create a $10 \times 10 \times 10$ lattice to mimic a cube.
@@ -60,11 +60,11 @@ mesh = mesh.T
 
 
 fig = plt.figure(1)
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(mesh[:, 0], mesh[:, 1], mesh[:, 2], c='blue', marker='o')
-ax.set_xlabel('X axis')
-ax.set_ylabel('Y axis')
-ax.set_zlabel('Z axis')
+ax = fig.add_subplot(111, projection="3d")
+ax.scatter(mesh[:, 0], mesh[:, 1], mesh[:, 2], c="blue", marker="o")
+ax.set_xlabel("X axis")
+ax.set_ylabel("Y axis")
+ax.set_zlabel("Z axis")
 plt.show()
 
 
@@ -82,10 +82,9 @@ new_mesh = idw(mesh)
 
 
 fig = plt.figure(2)
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(new_mesh[:, 0], new_mesh[:, 1], new_mesh[:, 2], c='red', marker='o')
-ax.set_xlabel('X axis')
-ax.set_ylabel('Y axis')
-ax.set_zlabel('Z axis')
+ax = fig.add_subplot(111, projection="3d")
+ax.scatter(new_mesh[:, 0], new_mesh[:, 1], new_mesh[:, 2], c="red", marker="o")
+ax.set_xlabel("X axis")
+ax.set_ylabel("Y axis")
+ax.set_zlabel("Z axis")
 plt.show()
-

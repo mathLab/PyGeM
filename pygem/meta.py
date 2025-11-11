@@ -12,7 +12,7 @@ __all__ = [
 
 
 def get_current_year():
-    """ Return current year """
+    """Return current year"""
     from datetime import datetime
 
     return datetime.now().year
@@ -21,9 +21,7 @@ def get_current_year():
 __project__ = "PyGeM"
 __title__ = "pygem"
 __author__ = "Marco Tezzele, Nicola Demo"
-__copyright__ = "Copyright 2017-{}, PyGeM contributors".format(
-    get_current_year()
-)
+__copyright__ = "Copyright 2017-{}, PyGeM contributors".format(get_current_year())
 __license__ = "MIT"
 __version__ = "2.0.0"
 __mail__ = "marcotez@gmail.com, demo.nicola@gmail.com"

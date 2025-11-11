@@ -2,6 +2,7 @@
 Utilities for the affine transformations of the bounding box of the Free Form
 Deformation.
 """
+
 import math
 from functools import reduce
 import numpy as np
@@ -44,17 +45,20 @@ def angles2matrix(rot_z=0, rot_y=0, rot_x=0):
         cos = math.cos(rot_z)
         sin = math.sin(rot_z)
         rot_matrix.append(
-            np.array([cos, -sin, 0, sin, cos, 0, 0, 0, 1]).reshape((3, 3)))
+            np.array([cos, -sin, 0, sin, cos, 0, 0, 0, 1]).reshape((3, 3))
+        )
     if rot_y:
         cos = math.cos(rot_y)
         sin = math.sin(rot_y)
         rot_matrix.append(
-            np.array([cos, 0, sin, 0, 1, 0, -sin, 0, cos]).reshape((3, 3)))
+            np.array([cos, 0, sin, 0, 1, 0, -sin, 0, cos]).reshape((3, 3))
+        )
     if rot_x:
         cos = math.cos(rot_x)
         sin = math.sin(rot_x)
         rot_matrix.append(
-            np.array([1, 0, 0, 0, cos, -sin, 0, sin, cos]).reshape((3, 3)))
+            np.array([1, 0, 0, 0, cos, -sin, 0, sin, cos]).reshape((3, 3))
+        )
     if rot_matrix:
         return reduce(np.dot, rot_matrix[::-1])
     return np.eye(3)
@@ -89,15 +93,14 @@ def fit_affine_transformation(points_start, points_end):
 
     dim = len(points_start[0])
     if len(points_start) < dim:
-        raise RuntimeError(
-            "Too few starting points => under-determined system.")
+        raise RuntimeError("Too few starting points => under-determined system.")
 
     def pad_column_ones(x):
-        """ Add right column of 1.0 to the given 2D numpy array """
+        """Add right column of 1.0 to the given 2D numpy array"""
         return np.hstack([x, np.ones((x.shape[0], 1))])
 
     def unpad_column(x):
-        """ Remove last column to the given 2D numpy array """
+        """Remove last column to the given 2D numpy array"""
         return x[:, :-1]
 
     def transform(src):
@@ -109,13 +112,11 @@ def fit_affine_transformation(points_start, points_end):
 
         A, res, rank, _ = np.linalg.lstsq(X, Y, rcond=None)
         # TODO add check condition number
-        #if np.linalg.cond(A) >= 1 / sys.float_info.epsilon:
+        # if np.linalg.cond(A) >= 1 / sys.float_info.epsilon:
         #    raise RuntimeError(
         #            "Error: singular matrix. Points are probably coplanar.")
-        return unpad_column(
-                np.dot(
-                    pad_column_ones(np.atleast_2d(src)),
-                    A)
-                ).reshape(shape)
+        return unpad_column(np.dot(pad_column_ones(np.atleast_2d(src)), A)).reshape(
+            shape
+        )
 
     return transform

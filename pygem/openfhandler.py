@@ -3,11 +3,13 @@ Derived module from filehandler.py to handle OpenFOAM files.
 
 .. warning::
     This module will be deprecated in next releases. Follow updates on
-    https://github.com/mathLab for news about file handling. 
+    https://github.com/mathLab for news about file handling.
 """
+
 import numpy as np
 import pygem.filehandler as fh
 import warnings
+
 warnings.warn("This module will be deprecated in next releases", DeprecationWarning)
 
 
@@ -23,7 +25,7 @@ class OpenFoamHandler(fh.FileHandler):
 
     def __init__(self):
         super(OpenFoamHandler, self).__init__()
-        self.extensions = ['']
+        self.extensions = [""]
 
     def parse(self, filename):
         """
@@ -31,7 +33,7 @@ class OpenFoamHandler(fh.FileHandler):
         the coordinates.
 
         :param string filename: name of the input file.
-        
+
         :return: mesh_points: it is a `n_points`-by-3 matrix containing
             the coordinates of the points of the mesh
         :rtype: numpy.ndarray
@@ -47,14 +49,14 @@ class OpenFoamHandler(fh.FileHandler):
 
         nrow = 0
         i = 0
-        with open(self.infile, 'r') as input_file:
+        with open(self.infile, "r") as input_file:
             for line in input_file:
                 nrow += 1
                 if nrow == 19:
                     n_points = int(line)
                     mesh_points = np.zeros(shape=(n_points, 3))
                 if 20 < nrow < 21 + n_points:
-                    line = line[line.index("(") + 1:line.rindex(")")]
+                    line = line[line.index("(") + 1 : line.rindex(")")]
                     j = 0
                     for number in line.split():
                         mesh_points[i][j] = float(number)
@@ -85,14 +87,23 @@ class OpenFoamHandler(fh.FileHandler):
         n_points = mesh_points.shape[0]
         nrow = 0
         i = 0
-        with open(self.infile, 'r') as input_file, open(self.outfile,
-                                                        'w') as output_file:
+        with (
+            open(self.infile, "r") as input_file,
+            open(self.outfile, "w") as output_file,
+        ):
             for line in input_file:
                 nrow += 1
                 if 20 < nrow < 21 + n_points:
-                    output_file.write('(' + str(mesh_points[i][0]) + ' ' + str(
-                        mesh_points[i][1]) + ' ' + str(mesh_points[i][2]) + ')')
-                    output_file.write('\n')
+                    output_file.write(
+                        "("
+                        + str(mesh_points[i][0])
+                        + " "
+                        + str(mesh_points[i][1])
+                        + " "
+                        + str(mesh_points[i][2])
+                        + ")"
+                    )
+                    output_file.write("\n")
                     i += 1
                 else:
                     output_file.write(line)
