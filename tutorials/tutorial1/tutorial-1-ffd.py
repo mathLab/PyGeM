@@ -22,8 +22,6 @@ import numpy as np
 
 np.random.seed(42)
 
-
-import numpy as np
 import mpl_toolkits.mplot3d
 import matplotlib.pyplot as plt
 
