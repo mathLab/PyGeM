@@ -12,5 +12,4 @@ pygem.egg-info/
 # virtual environments
 venv_pygem/
 venv_pygem
-#virtual environments
-venv_pygem/
+
