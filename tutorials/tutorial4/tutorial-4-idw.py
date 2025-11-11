@@ -10,12 +10,27 @@
 
 # In[1]:
 
+import sys
+import platform
+print(f"Python Version: {sys.version}")
+print(f"Platform: {sys.platform}")
+print(f"System: {platform.system()} {platform.release()}")
 
-get_ipython().run_line_magic("matplotlib", "inline")
+try:
+    import pygem
+    print(f"PyGeM version: {pygem.__version__}")
+except ImportError:
+    print(f"PyGeM not found. Installing...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", ".[tut]"])
+    import pygem
+    print(f"PyGeM version: {pygem.__version__}")
+
 import numpy as np
+np.random.seed(42)
 import matplotlib.pyplot as plt
-
 from pygem import IDW
+
 
 
 # We need to set the deformation parameters: we can set manually, by editing the `IDW` attributes, or we can read them by parsing a file. We remark that it is possible to save the parameters (for example, after set them manually) to a file in order to edit this for the future deformations.
@@ -34,8 +49,8 @@ idw.read_parameters(filename=parameters_file)
 # In[3]:
 
 
-get_ipython().run_line_magic("cat", "'../tests/test_datasets/parameters_idw_cube.prm'")
-
+import subprocess
+subprocess.run(["cat", "../tests/test_datasets/parameters_idw_cube.prm"])
 
 # Here we create a $10 \times 10 \times 10$ lattice to mimic a cube.
 
