@@ -1,13 +1,34 @@
 #!/usr/bin/env python
 # coding: utf-8
-from pygem.cffd import CFFD
+
+import sys
+import platform
+print(f"Python Version: {sys.version}")
+print(f"Platform: {sys.platform}")
+print(f"System: {platform.system()} {platform.release()}")
+
+try:
+    import pygem
+    print(f"PyGeM version: {pygem.__version__}")
+except ImportError:
+    print(f"PyGeM not found. Installing...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", ".[tut]"])
+    import pygem
+    print(f"PyGeM version: {pygem.__version__}")
+
 import numpy as np
+np.random.seed(42)
+
 import matplotlib.pyplot as plt
+
+from pygem.cffd import CFFD
 
 np.random.seed(0)
 x = 0.5 * np.random.rand(100, 3) + 0.25
 ax = plt.axes(projection="3d")
 ax.plot3D(x[:, 0], x[:, 1], x[:, 2], "o")
+
 from pygem.ffd import FFD
 
 ffd = FFD([8, 8, 1])
@@ -33,6 +54,7 @@ print(
     "The custom linear function on the classic FFD deformed points is",
     custom_linear_constraint(x_def),
 )
+
 from pygem.cffd import CFFD
 
 ffd = CFFD(np.array([1.0]), custom_linear_constraint, [3, 3, 1])
@@ -47,6 +69,7 @@ print(
     "The custom linear function on the constrained FFD deformed points is",
     custom_linear_constraint(x_def),
 )
+
 from pygem.bffd import BFFD
 
 
@@ -72,8 +95,14 @@ ax = plt.figure(figsize=(8, 8)).add_subplot(111, projection="3d")
 ax.scatter(*mesh_def.T)
 ax.scatter(*ffd.control_points().T, s=50, c="red")
 plt.show()
-import meshio
-import numpy as np
+
+try:
+    import meshio
+except ImportError:
+    print("meshio not found. Installing...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "meshio"])
+    import meshio
 
 mesh = meshio.read("../../tests/test_datasets/Stanford_Bunny.stl")
 points = mesh.points
@@ -87,6 +116,7 @@ ax = fig.add_subplot(1, 2, 1, projection="3d")
 ax.plot_trisurf(
     points[:, 0], points[:, 1], points[:, 2], triangles=faces, cmap=plt.cm.Spectral
 )
+
 from pygem.vffd import VFFD, _volume
 
 initvolume = _volume(points, faces)
