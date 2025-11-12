@@ -13,19 +13,42 @@
 # The methodology that follows is very general and can be extended to many different scenario, since it basically requires only the coordinates of the nodes of the object geometry and of the (undeformed) initial mesh. For sake of simplicity, here we present the deformation of an [OpenFOAM](https://openfoam.org/) grid for simulating a 2D Navier-Stokes flow around a cylinder. We assume that this cilinder is the object to deform.
 # Even if the entire procedure is employable also when the deformation mapping applied to the initial object is unknown (we see in few lines that the required input is just the displacement of the initial object after the deformation), here we apply the *free-form deformation* method to the undeformed cylinder in order to parametrize its geometry.
 
-# First of all, we import all the libraries which we're going to use:
-# - `numpy` and `matplotlib` for the generic scientific environment;
-# - `Smithers` for dealing with the OpenFOAM mesh;
-# - `PyGeM` for the object and mesh deformation.
+import sys
+import platform
+print(f"Python Version: {sys.version}")
+print(f"Platform: {sys.platform}")
+print(f"System: {platform.system()} {platform.release()}")
 
-# In[1]:
-
+try:
+    import pygem
+    print(f"PyGeM version: {pygem.__version__}")
+except ImportError:
+    print(f"PyGeM not found. Installing...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", ".[tut]"])
+    import pygem
+    print(f"PyGeM version: {pygem.__version__}")
 
 import numpy as np
+np.random.seed(42)
+
 import matplotlib.pyplot as plt
 
 # mesh parsing
-from smithers.io.openfoamhandler import OpenFoamHandler
+try:
+    import Ofpp
+except ImportError:
+    print("Ofpp not found. Installing...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "ofpp"])
+    import Ofpp
+try:
+    from smithers.io.openfoamhandler import OpenFoamHandler
+except ImportError:
+    print("smithers not found. Installing from GitHub...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "git+https://github.com/mathLab/Smithers.git"])
+    from smithers.io.openfoamhandler import OpenFoamHandler
 
 # interpolator
 from scipy.interpolate import Rbf
@@ -35,9 +58,6 @@ from pygem import FFD, RBF
 
 
 # Then we define the auxiliary function `scatter3d` which we're going to use often to plot several objects as lists of 3D points. You do not need to understand the exact details of this function since we are going to use it only to show the results:
-
-# In[2]:
-
 
 def scatter3d(arr, figsize=(8, 8), s=10, draw=True, ax=None, alpha=1, labels=None):
     if ax is None:
@@ -65,18 +85,12 @@ def scatter3d(arr, figsize=(8, 8), s=10, draw=True, ax=None, alpha=1, labels=Non
 #
 # As we mentioned before, in this tutorial we use the library `Smithers` to load the OpenFOAM mesh from the folder `openfoam_mesh` which serves as example. First of all, we use the method `read()` from the class `OpenFoamHandler` to load the data. This method returns a dictionary which contains all the informations available about the mesh, included the list of points (`mesh['points']`).
 
-# In[3]:
-
-
 # we load the OpenFOAM mesh
 openfoam_handler = OpenFoamHandler()
 mesh = openfoam_handler.read("openfoam_mesh")
 
 
 # Moreover, the object returned by `read()` contains a list of points for each *boundary*, represented by a list of indexes which refers to `mesh['points']`. We can use these lists to obtain the coordinates of the points which compose the cylinder (which we call *obstacle*) and walls.
-
-# In[4]:
-
 
 wall_keys = [b"inlet", b"outlet", b"top", b"bottom"]
 walls = mesh["points"][
@@ -88,9 +102,6 @@ obstacle = mesh["points"][mesh["boundary"][b"obstacle"]["points"]]
 
 # At this point we can plot the obstacle and the walls using the auxiliary function `scatter3d`:
 
-# In[5]:
-
-
 scatter3d([obstacle, walls], s=1, labels=["obstacle", "walls"])
 
 
@@ -101,9 +112,6 @@ scatter3d([obstacle, walls], s=1, labels=["obstacle", "walls"])
 # Here we need to apply a generic deformation on the initial object (the cylinder here). In case this deformation is already computed, you can skip this section, having the forethought of storing the nodes coordinates of the undeformed and deformed object.
 #
 # We use the `FFD` deformation from [PyGeM](https://github.com/mathLab/PyGeM) (for a reference check [this tutorial](http://mathlab.github.io/PyGeM/tutorial-1-ffd.html)) to deform the original object (the upper and lower faces of a cylinder). We create the new `FFD` object and set its attributes in order to create a simple deformation
-
-# In[6]:
-
 
 ffd = FFD([2, 2, 2])
 
@@ -119,9 +127,6 @@ ffd.array_mu_y[1, 1, 1] = 0.3
 
 # We then operate the deformation and plot the result, against the old version of the obstacle.
 
-# In[7]:
-
-
 new_obstacle = ffd(obstacle)
 scatter3d([new_obstacle, obstacle], s=3, labels=["deformed", "original"])
 
@@ -133,9 +138,6 @@ scatter3d([new_obstacle, obstacle], s=3, labels=["deformed", "original"])
 # We employ the `RBF` class from **PyGeM**.
 # For a reference on the parameters available when using the class `RBF` from **PyGeM**, please check the [documentation](http://mathlab.github.io/PyGeM/rbf.html). We keep the default values for all the parameters except `radius`, for which we set `radius=5`. This parameter is a scaling coefficient which affects the shape of the radial basis function used for the interpolation.
 # A practical note: long story short, `RBF` solves a linear system to fit the input data. However the matrix representing our system may result singular if we pass more times the same point(s). To avoid this issue, we just extract the `unique` points, as show in the next cell.
-
-# In[8]:
-
 
 undeformed_points = np.vstack([walls, obstacle])
 deformed_points = np.vstack([walls, new_obstacle])
@@ -152,9 +154,6 @@ rbf = RBF(
 
 # As visual proof, we plot the original and deformed control points we pass to `RBF` constructor!
 
-# In[9]:
-
-
 scatter3d(
     [rbf.original_control_points, rbf.deformed_control_points],
     s=0.5,
@@ -166,18 +165,12 @@ scatter3d(
 #
 # We can use the `RBF.__call__()` method to determine the new position of the points which compose the mesh. This is a resource-intensive computation and may slow down the device on which you're running this notebook.
 
-# In[10]:
-
-
 new_mesh_points = rbf(mesh["points"])
 
 
 # And basically that's all! The array `new_mesh_points` contains the new coordinates of the mesh points, and give us the possibility to store it in a new file or exploit them for some computation.
 #
 # The last thing we show here is the visualization of the deformed mesh. In order to plot the results we prefer a 2D scatter plot of the upper part of the mesh (`z=0.5`). Therefore we define the auxiliary function `upper_layer` which extracts the points at `z=0.5` from the given list of points.
-
-# In[11]:
-
 
 def upper_layer(*arrs):
     points = arrs[0]
@@ -190,9 +183,6 @@ def upper_layer(*arrs):
 
 
 # We can now plot the interpolated mesh, with the *deformed* and *original* obstacle.
-
-# In[12]:
-
 
 plt.figure(figsize=(20, 8), dpi=300)
 plt.scatter(*upper_layer(new_mesh_points)[:, :2].T, s=0.2, label="Interpolated mesh")
