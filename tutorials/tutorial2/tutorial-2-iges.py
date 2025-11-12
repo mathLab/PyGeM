@@ -31,6 +31,7 @@ np.random.seed(42)
 from pygem.cad import FFD
 
 
+
 # Since the visualisation of CAD files may be tricky (depending by the operating system, the graphical front-end, ...), we avoid for this tutorial any graphical renderer, letting to the reader the possibility to implement by himself the needed plotting routines.
 #
 # The `FFD` class in the **CAD** module shares the same interface with the original `FFD` class (for discrete geometries). We can simply parse a parameter file to set everything like we want (remember you can do the same directly setting the object attributes).
