@@ -13,11 +13,36 @@
 # As usually, at the beginning we import all the modules we need.
 
 # In[1]:
+import sys
+import platform
+print(f"Python Version: {sys.version}")
+print(f"Platform: {sys.platform}")
+print(f"System: {platform.system()} {platform.release()}")
+import subprocess
+try:
+    import pygem
+    print(f"PyGeM version: {pygem.__version__}")
+except ImportError:
+    print(f"PyGeM not found. Installing...")
+    # Installing from local source. It can be replaced with github installation once pushed and merged.
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", ".[tut]"])
+    import pygem
 
+    print(f"PyGeM version: {pygem.__version__}")
 
-get_ipython().run_line_magic("matplotlib", "inline")
+try:
+    from smithers import io
+except ImportError:
+    print("smithers not found. Installing from GitHub...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "git+https://github.com/mathLab/Smithers.git"])
+    from smithers import io
+
 import numpy as np
+np.random.seed(42)
 
+
+
+import matplotlib.pyplot as plt
 from pygem import FFD
 from smithers import io
 
@@ -28,7 +53,6 @@ from smithers import io
 
 
 def plot(data, color=None):
-
     from mpl_toolkits.mplot3d import Axes3D
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import matplotlib.pyplot as plt
@@ -57,11 +81,17 @@ def plot(data, color=None):
 
 # In[3]:
 
+import os
+import urllib.request
 
-get_ipython().system("rm -rf cube.vtp")
-get_ipython().system(
-    "wget https://raw.githubusercontent.com/mathLab/Smithers/master/tests/test_datasets/cube.vtp"
+if os.path.exists("cube.vtp"):
+    os.remove("cube.vtp")
+
+urllib.request.urlretrieve(
+    "https://raw.githubusercontent.com/mathLab/Smithers/master/tests/test_datasets/cube.vtp",
+    "cube.vtp"
 )
+
 vtp_filename = "cube.vtp"
 
 vtp_content = io.VTPHandler.read(vtp_filename)
@@ -112,10 +142,15 @@ io.VTPHandler.write("deform_cube.vtp", vtp_content)
 # In[8]:
 
 
-get_ipython().system("rm -rf cube.stl")
-get_ipython().system(
-    "wget https://raw.githubusercontent.com/mathLab/Smithers/master/tests/test_datasets/cube.stl"
+if os.path.exists("cube.stl"):
+    os.remove("cube.stl")
+
+urllib.request.urlretrieve(
+    "https://raw.githubusercontent.com/mathLab/Smithers/master/tests/test_datasets/cube.stl",
+    "cube.stl"
 )
+
+
 stl_filename = "cube.stl"
 
 stl_content = io.STLHandler.read(stl_filename)
