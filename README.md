@@ -131,11 +131,12 @@ The generated html can be found in docs/build/html. Open up the index.html you f
 ## Testing
 We use GitHub Actions for continuous integration testing. You can check out the current status [here](https://github.com/mathLab/PyGeM/actions/workflows/testing_pr.yml).
 
-To run tests locally (the package `pytest` is required):
+To run tests locally, first install the [`test`](#install-with-optional-extras) extra. Then run
+
 ```bash
 pytest
 ```
-*(Note: The same testing setup is automatically included when installing with `[dev]` extras.)*
+*(Note: The same testing setup is automatically included when installing with `dev` extras.)*
 
 ## Examples
 You can find useful tutorials on how to use the package in the [tutorials](tutorials/README.md) folder.  

@@ -21,7 +21,7 @@ Common Development Tasks
 **Running tests:**
 
 .. code-block:: bash
-
+   pip install -e ".[dev]"      # or ".[test]" if just running tests
    pytest
 
 **Building documentation:**
