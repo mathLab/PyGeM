@@ -4,7 +4,54 @@ How to contribute
 We'd love to accept your patches and contributions to this project. There are
 just a few small guidelines you need to follow.
 
+Development Setup
+-----------------
+
+First, install PyGeM in development mode with all development dependencies:
+
+.. code-block:: bash
+
+   pip install -e ".[dev]"
+
+This installs the package in editable mode with all development extras (testing, documentation, tutorials, and code quality tools).
+
+Common Development Tasks
+------------------------
+
+**Running tests:**
+
+.. code-block:: bash
+
+   pytest
+
+**Building documentation:**
+
+.. code-block:: bash
+
+   pip install ".[docs]"
+   cd docs
+   make html
+
+**Code formatting:**
+
+.. code-block:: bash
+
+   black .
+
+**Code linting:**
+
+.. code-block:: bash
+
+   pylint pygem
+
+**Running tutorials:**
+
+.. code-block:: bash
+
+   pip install ".[tut]"
+
 Submitting a patch:
+-------------------
 
   1. It's generally best to start by opening a new issue describing the bug or
      feature you're intending to fix.  Even if you think it's relatively minor,
