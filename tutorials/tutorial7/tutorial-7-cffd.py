@@ -104,7 +104,7 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "meshio"])
     import meshio
 
-mesh = meshio.read("../../tests/test_datasets/Stanford_Bunny.stl")
+mesh = meshio.read("../tests/test_datasets/Stanford_Bunny.stl")
 points = mesh.points
 faces = mesh.cells_dict["triangle"]
 points = points - np.min(points) + 0.1
