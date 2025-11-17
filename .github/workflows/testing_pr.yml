@@ -23,14 +23,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup Conda
-        if: matrix.os != 'windows-latest'
         uses: s-weigand/setup-conda@v1
         with:
+          python-version: ${{ matrix.python-version }}
           auto-update-conda: true
-          conda-channels: conda-forge
+          conda-channels: anaconda, conda-forge
 
       - name: Install pythonocc-core (Conda)
-        if: matrix.os != 'windows-latest'
         run: conda install --yes pythonocc-core
         shell: bash
 
