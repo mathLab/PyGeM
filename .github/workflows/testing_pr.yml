@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-12, ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10"]
 
     steps:
       - uses: actions/checkout@v4
@@ -23,21 +23,22 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup Conda
-        if: matrix.os == 'macos-12' || matrix.os == 'ubuntu-latest'
+        if: matrix.os != 'windows-latest'
         uses: s-weigand/setup-conda@v1
         with:
           auto-update-conda: true
           conda-channels: conda-forge
 
-      - name: Install Python dependencies
+      - name: Install pythonocc-core (Conda)
+        if: matrix.os != 'windows-latest'
+        run: conda install --yes pythonocc-core
+        shell: bash
+
+      - name: Install pip dependencies
         run: |
-          if [[ "${{ matrix.os }}" == "macos-12" || "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-              conda install --yes pythonocc-core=7.4.0
-          fi
           python -m pip install --upgrade pip
           python -m pip install smithers[vtk]
           python -m pip install .[test]
 
       - name: Run tests with pytest
-        run: |
-          python -m pytest
+        run: python -m pytest

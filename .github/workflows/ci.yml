@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-12]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10"]
 
     steps:
       - uses: actions/checkout@v4
@@ -18,17 +18,30 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Python dependencies
+      - name: Setup Conda
+        if: matrix.os != 'windows-latest'
+        uses: s-weigand/setup-conda@v1
+        with:
+          auto-update-conda: true
+          conda-channels: conda-forge
+
+      - name: Install pythonocc-core (Conda)
+        if: matrix.os != 'windows-latest'
+        run: conda install --yes pythonocc-core
+        shell: bash
+
+      - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install numpy scipy matplotlib pytest pytest-cov
+          python -m pip install smithers[vtk]
+          python -m pip install .[test]
 
       - name: Run tests with pytest
         env:
           CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
         run: |
-          if [ -z "$CODACY_API_TOKEN" ]
-          then
+          if [ -z "$CODACY_API_TOKEN" ]; then
             python -m pytest
           else
             python -m pytest --cov-report term --cov-report xml:cobertura.xml --cov=pygem
