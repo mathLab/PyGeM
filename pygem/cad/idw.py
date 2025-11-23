@@ -1,11 +1,10 @@
-"""
-Module focused on the Inverse Distance Weighting interpolation technique.
+"""Module focused on the Inverse Distance Weighting interpolation technique.
 The IDW algorithm is an average moving interpolation that is usually applied to
-highly variable data. The main idea of this interpolation strategy lies in
-fact that it is not desirable to honour local high/low values but rather to look
-at a moving average of nearby data points and estimate the local trends.
-The node value is calculated by averaging the weighted sum of all the points.
-Data points that lie progressively farther from the node inuence much less the
+highly variable data. The main idea of this interpolation strategy lies in fact
+that it is not desirable to honour local high/low values but rather to look at
+a moving average of nearby data points and estimate the local trends. The node
+value is calculated by averaging the weighted sum of all the points. Data
+points that lie progressively farther from the node inuence much less the
 computed value than those lying closer to the node.
 
 :Theoretical Insight:
@@ -37,14 +36,14 @@ computed value than those lying closer to the node.
     2.
 """
 
-import numpy as np
 from pygem import IDW as OriginalIDW
+
 from .cad_deformation import CADDeformation
 
 
 class IDW(CADDeformation, OriginalIDW):
-    """
-    Class that perform the Inverse Distance Weighting (IDW) on CAD geometries.
+    """Class that perform the Inverse Distance Weighting (IDW) on CAD
+    geometries.
 
     :param int power: the power parameter. The default value is 2.
     :param numpy.ndarray original_control_points: it is an

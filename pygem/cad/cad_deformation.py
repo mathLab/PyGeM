@@ -1,54 +1,50 @@
-"""
-Module for generic deformation for CAD file.
-"""
+"""Module for generic deformation for CAD file."""
 
 import os
-import numpy as np
 from itertools import product
-from OCC.Core.TopoDS import (
-    TopoDS_Shape,
-    TopoDS_Compound,
-    TopoDS_Face,
-    TopoDS_Edge,
-    TopoDS_Wire,
-    topods
-)
-from OCC.Core.BRep import BRep_Builder
-from OCC.Core.TopExp import TopExp_Explorer
-from OCC.Core.TopAbs import TopAbs_EDGE, TopAbs_FACE, TopAbs_WIRE
-from OCC.Core.TopTools import TopTools_ListOfShape
+
+import numpy as np
+from OCC.Core.BRep import BRep_Builder, BRep_Tool, BRep_Tool_Curve
 from OCC.Core.BRepBuilderAPI import (
+    BRepBuilderAPI_MakeEdge,
     BRepBuilderAPI_MakeFace,
     BRepBuilderAPI_MakeWire,
-    BRepBuilderAPI_MakeEdge,
     BRepBuilderAPI_NurbsConvert,
 )
-from OCC.Core.BRep import BRep_Tool, BRep_Tool_Curve
+from OCC.Core.BRepTools import breptools_OuterWire
 from OCC.Core.Geom import Geom_BSplineCurve, Geom_BSplineSurface
 from OCC.Core.GeomConvert import (
-    geomconvert_SurfaceToBSplineSurface,
-    geomconvert_CurveToBSplineCurve,
     GeomConvert_CompCurveToBSplineCurve,
+    geomconvert_CurveToBSplineCurve,
+    geomconvert_SurfaceToBSplineSurface,
 )
 from OCC.Core.gp import gp_Pnt
-from OCC.Core.BRepTools import breptools_OuterWire
 from OCC.Core.IFSelect import IFSelect_RetDone
+from OCC.Core.IGESControl import (
+    IGESControl_Controller_Init,
+    IGESControl_Reader,
+    IGESControl_Writer,
+)
 from OCC.Core.Interface import Interface_Static_SetCVal
 from OCC.Core.STEPControl import (
-    STEPControl_Writer,
-    STEPControl_Reader,
     STEPControl_AsIs,
+    STEPControl_Reader,
+    STEPControl_Writer,
 )
-from OCC.Core.IGESControl import (
-    IGESControl_Writer,
-    IGESControl_Reader,
-    IGESControl_Controller_Init,
+from OCC.Core.TopAbs import TopAbs_EDGE, TopAbs_FACE, TopAbs_WIRE
+from OCC.Core.TopExp import TopExp_Explorer
+from OCC.Core.TopoDS import (
+    TopoDS_Compound,
+    TopoDS_Face,
+    TopoDS_Shape,
+    TopoDS_Wire,
+    topods,
 )
+from OCC.Core.TopTools import TopTools_ListOfShape
 
 
 class CADDeformation:
-    """
-    Base class for applting deformation to CAD geometries.
+    """Base class for applting deformation to CAD geometries.
 
     :param int u_knots_to_add: the number of knots to add to the NURBS surfaces
         along `u` direction before the deformation. This parameter is useful
@@ -93,7 +89,11 @@ class CADDeformation:
     """
 
     def __init__(
-        self, u_knots_to_add=0, v_knots_to_add=0, t_knots_to_add=0, tolerance=1e-4
+        self,
+        u_knots_to_add=0,
+        v_knots_to_add=0,
+        t_knots_to_add=0,
+        tolerance=1e-4,
     ):
         self.u_knots_to_add = u_knots_to_add
         self.v_knots_to_add = v_knots_to_add
@@ -154,14 +154,14 @@ class CADDeformation:
         """
 
         def write_iges(filename, shape):
-            """IGES writer"""
+            """IGES writer."""
             IGESControl_Controller_Init()
             writer = IGESControl_Writer()
             writer.AddShape(shape)
             writer.Write(filename)
 
         def write_step(filename, shape):
-            """STEP writer"""
+            """STEP writer."""
             step_writer = STEPControl_Writer()
             # Changes write schema to STEP standard AP203
             # It is considered the most secure standard for STEP.
@@ -184,8 +184,7 @@ class CADDeformation:
         writer(filename, shape)
 
     def _bspline_surface_from_face(self, face):
-        """
-        Private method that takes a TopoDS_Face and transforms it into a
+        """Private method that takes a TopoDS_Face and transforms it into a
         Bspline_Surface.
 
         :param TopoDS_Face face: the TopoDS_Face to be converted
@@ -202,8 +201,7 @@ class CADDeformation:
         return bspline_surface
 
     def _bspline_curve_from_wire(self, wire):
-        """
-        Private method that takes a TopoDS_Wire and transforms it into a
+        """Private method that takes a TopoDS_Wire and transforms it into a
         Bspline_Curve.
 
         :param TopoDS_Wire wire: the TopoDS_Face to be converted
@@ -247,8 +245,7 @@ class CADDeformation:
         return comp_curve
 
     def _enrich_curve_knots(self, bsp_curve):
-        """
-        Private method that adds `self.t_knots_to_add` poles to the passed
+        """Private method that adds `self.t_knots_to_add` poles to the passed
         curve.
 
         :param Geom_BSplineCurve bsp_curve: the NURBS curve to enrich
@@ -263,17 +260,19 @@ class CADDeformation:
         last_param = bsp_curve.LastParameter()
         for i in range(self.t_knots_to_add):
             bsp_curve.InsertKnot(
-                first_param + i * (last_param - first_param) / self.t_knots_to_add,
+                first_param
+                + i * (last_param - first_param) / self.t_knots_to_add,
                 1,
                 self.tolerance,
             )
 
     def _enrich_surface_knots(self, bsp_surface):
-        """
-        Private method that adds `self.u_knots_to_add` and `self.v_knots_to_add`
-        knots to the input surface `bsp_surface`, in u and v direction respectively.
+        """Private method that adds `self.u_knots_to_add` and
+        `self.v_knots_to_add` knots to the input surface `bsp_surface`, in u
+        and v direction respectively.
 
-        :param Geom_BSplineCurve bsp_surface: the NURBS surface to enrich
+        :param Geom_BSplineCurve bsp_surface: the NURBS surface to
+            enrich
         """
         if not isinstance(bsp_surface, Geom_BSplineSurface):
             raise TypeError("bsp_surface must be a Geom_BSplineSurface")
@@ -297,18 +296,20 @@ class CADDeformation:
             )
 
     def _pole_get_components(self, pole):
-        """Extract component from gp_Pnt"""
+        """Extract component from gp_Pnt."""
         return pole.X(), pole.Y(), pole.Z()
 
     def _pole_set_components(self, components):
-        """Return a gp_Pnt with the passed components"""
-        assert len(components) == 3
+        """Return a gp_Pnt with the passed components."""
+        if len(components) != 3:
+            raise ValueError(
+                f"Expected 3 components for gp_Pnt, got {len(components)}"
+            )
         return gp_Pnt(*components)
 
     def _deform_bspline_curve(self, bsp_curve):
-        """
-        Private method that deforms the control points of `bsp_curve` using the
-        inherited method. All the changes are performed in place.
+        """Private method that deforms the control points of `bsp_curve` using
+        the inherited method. All the changes are performed in place.
 
         :param Geom_Bspline_Curve bsp_curve: the curve to deform
         """
@@ -336,9 +337,8 @@ class CADDeformation:
             bsp_curve.SetPole(pole_id + 1, new_pole)
 
     def _deform_bspline_surface(self, bsp_surface):
-        """
-        Private method that deforms the control points of `surface` using the
-        inherited method. All the changes are performed in place.
+        """Private method that deforms the control points of `surface` using
+        the inherited method. All the changes are performed in place.
 
         :param Geom_Bspline_Surface bsp_surface: the surface to deform
         """
@@ -368,12 +368,11 @@ class CADDeformation:
             bsp_surface.SetPole(u + 1, v + 1, new_pole)
 
     def __call__(self, obj, dst=None):
-        """
-        This method performs the deformation on the CAD geometry. If `obj` is a
-        TopoDS_Shape, the method returns a TopoDS_Shape containing the deformed
-        geometry. If `obj` is a filename, the method deforms the geometry
-        contained in the file and writes the deformed shape to `dst` (which has
-        to be set).
+        """This method performs the deformation on the CAD geometry. If `obj`
+        is a TopoDS_Shape, the method returns a TopoDS_Shape containing the
+        deformed geometry. If `obj` is a filename, the method deforms the
+        geometry contained in the file and writes the deformed shape to `dst`
+        (which has to be set).
 
         :param obj: the input geometry.
         :type obj: str or TopoDS_Shape
@@ -484,7 +483,9 @@ class CADDeformation:
             # so once we finished looping on all the wires to modify them,
             # we first use the only outer one to trim the surface
             # face builder object
-            face_maker = BRepBuilderAPI_MakeFace(bspline_surface, outer_wires[0])
+            face_maker = BRepBuilderAPI_MakeFace(
+                bspline_surface, outer_wires[0]
+            )
 
             # and then add all other inner wires for the holes
             for inner_wire in inner_wires:

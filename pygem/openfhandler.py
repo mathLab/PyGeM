@@ -1,36 +1,37 @@
-"""
-Derived module from filehandler.py to handle OpenFOAM files.
+"""Derived module from filehandler.py to handle OpenFOAM files.
 
 .. warning::
     This module will be deprecated in next releases. Follow updates on
     https://github.com/mathLab for news about file handling.
 """
 
-import numpy as np
-import pygem.filehandler as fh
 import warnings
 
-warnings.warn("This module will be deprecated in next releases", DeprecationWarning)
+import numpy as np
+
+import pygem.filehandler as fh
+
+warnings.warn(
+    "This module will be deprecated in next releases", DeprecationWarning
+)
 
 
 class OpenFoamHandler(fh.FileHandler):
-    """
-    OpenFOAM mesh file handler class.
+    """OpenFOAM mesh file handler class.
 
     :cvar string infile: name of the input file to be processed.
     :cvar string outfile: name of the output file where to write in.
-    :cvar list extensions: extensions of the input/output files. It
-        is equal to [''] since openFOAM files do not have extension.
+    :cvar list extensions: extensions of the input/output files. It is
+        equal to [''] since openFOAM files do not have extension.
     """
 
     def __init__(self):
-        super(OpenFoamHandler, self).__init__()
+        super().__init__()
         self.extensions = [""]
 
-    def parse(self, filename):
-        """
-        Method to parse the `filename`. It returns a matrix with all
-        the coordinates.
+    def parse(self, filename):  # pylint: disable=arguments-differ
+        """Method to parse the `filename`. It returns a matrix with all the
+        coordinates.
 
         :param string filename: name of the input file.
 
@@ -49,7 +50,7 @@ class OpenFoamHandler(fh.FileHandler):
 
         nrow = 0
         i = 0
-        with open(self.infile, "r") as input_file:
+        with open(self.infile, "r", encoding="utf-8") as input_file:
             for line in input_file:
                 nrow += 1
                 if nrow == 19:
@@ -65,12 +66,10 @@ class OpenFoamHandler(fh.FileHandler):
 
         return mesh_points
 
-    def write(self, mesh_points, filename):
-        """
-        Writes a openFOAM file, called filename, copying all the
-        lines from self.filename but the coordinates. mesh_points
-        is a matrix that contains the new coordinates to write in
-        the openFOAM file.
+    def write(self, mesh_points, filename):  # pylint: disable=arguments-differ
+        """Writes a openFOAM file, called filename, copying all the lines from
+        self.filename but the coordinates. mesh_points is a matrix that
+        contains the new coordinates to write in the openFOAM file.
 
         :param numpy.ndarray mesh_points: it is a `n_points`-by-3
             matrix containing the coordinates of the points of the mesh.
@@ -88,8 +87,8 @@ class OpenFoamHandler(fh.FileHandler):
         nrow = 0
         i = 0
         with (
-            open(self.infile, "r") as input_file,
-            open(self.outfile, "w") as output_file,
+            open(self.infile, "r", encoding="utf-8") as input_file,
+            open(self.outfile, "w", encoding="utf-8") as output_file,
         ):
             for line in input_file:
                 nrow += 1

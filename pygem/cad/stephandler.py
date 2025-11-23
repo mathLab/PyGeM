@@ -1,17 +1,18 @@
-"""
-Derived module from nurbshandler.py to handle step and stp files.
-"""
+"""Derived module from nurbshandler.py to handle step and stp files."""
 
 from OCC.Core.IFSelect import IFSelect_RetDone
 from OCC.Core.Interface import Interface_Static_SetCVal
-from OCC.Core.STEPControl import STEPControl_Writer, STEPControl_Reader
-from OCC.Core.STEPControl import STEPControl_AsIs
+from OCC.Core.STEPControl import (
+    STEPControl_AsIs,
+    STEPControl_Reader,
+    STEPControl_Writer,
+)
+
 from pygem.cad import NurbsHandler
 
 
 class StepHandler(NurbsHandler):
-    """
-    Step file handler class
+    """Step file handler class.
 
     :cvar string infile: name of the input file to be processed.
     :cvar string outfile: name of the output file where to write in.
@@ -38,12 +39,10 @@ class StepHandler(NurbsHandler):
         self.extensions = [".step", ".stp"]
 
     def load_shape_from_file(self, filename):
-        """
-        This method loads a shape from the file `filename`.
+        """This method loads a shape from the file `filename`.
 
-        :param string filename: name of the input file.
-            It should have proper extension (.step or .stp)
-
+        :param string filename: name of the input file. It should have
+            proper extension (.step or .stp)
         :return: shape: loaded shape
         :rtype: TopoDS_Shape
         """
@@ -64,12 +63,11 @@ class StepHandler(NurbsHandler):
             raise RuntimeError("Cannot read the file.")
 
     def write_shape_to_file(self, shape, filename):
-        """
-        This method saves the `shape` to the file `filename`.
+        """This method saves the `shape` to the file `filename`.
 
         :param: TopoDS_Shape shape: loaded shape
-        :param string filename: name of the input file.
-            It should have proper extension (.step or .stp)
+        :param string filename: name of the input file. It should have
+            proper extension (.step or .stp)
         """
         self._check_filename_type(filename)
         self._check_extension(filename)

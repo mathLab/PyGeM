@@ -56,14 +56,13 @@ The module is analogous to the freeform one.
     implemented below.
 """
 
-import numpy as np
 from pygem import RBF as OriginalRBF
+
 from .cad_deformation import CADDeformation
 
 
 class RBF(CADDeformation, OriginalRBF):
-    """
-    Class that handles the Radial Basis Functions interpolation on CAD
+    """Class that handles the Radial Basis Functions interpolation on CAD
     geometries.
 
     :param numpy.ndarray original_control_points: it is an

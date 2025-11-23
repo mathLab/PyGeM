@@ -57,25 +57,23 @@ The module is analogous to the freeform one.
 """
 
 import os
+import ast
 import numpy as np
 
 try:
-    import configparser as configparser
+    import configparser
 except ImportError:
     import ConfigParser as configparser
 
-
+import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 
 from .deformation import Deformation
 from .rbf_factory import RBFFactory
 
-import matplotlib.pyplot as plt
-
 
 class RBF(Deformation):
-    """
-    Class that handles the Radial Basis Functions interpolation on the mesh
+    """Class that handles the Radial Basis Functions interpolation on the mesh
     points.
 
     :param numpy.ndarray original_control_points: it is an
@@ -127,7 +125,7 @@ class RBF(Deformation):
         >>> mesh = np.array([x.ravel(), y.ravel(), z.ravel()])
         >>> deformed_mesh = rbf(mesh)
     """
-
+#pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         original_control_points=None,
@@ -172,7 +170,7 @@ class RBF(Deformation):
         else:
             self.deformed_control_points = deformed_control_points
 
-        self.extra = extra_parameter if extra_parameter else dict()
+        self.extra = extra_parameter if extra_parameter else {}
 
         self.weights = self._get_weights(
             self.original_control_points, self.deformed_control_points
@@ -180,17 +178,14 @@ class RBF(Deformation):
 
     @property
     def n_control_points(self):
-        """
-        Total number of control points.
+        """Total number of control points.
 
         :rtype: int
         """
         return self.original_control_points.shape[0]
-
     @property
     def basis(self):
-        """
-        The kernel to use in the deformation.
+        """The kernel to use in the deformation.
 
         :getter: Returns the callable kernel
         :setter: Sets the kernel. It is possible to pass the name of the
@@ -209,27 +204,26 @@ class RBF(Deformation):
             self.__basis = RBFFactory(func)
         else:
             raise TypeError("`func` is not valid.")
-
+    # pylint: disable=invalid-name
     def _get_weights(self, X, Y):
-        """
-        This private method, given the original control points and the deformed
-        ones, returns the matrix with the weights and the polynomial terms, that
-        is :math:`W`, :math:`c^T` and :math:`Q^T`. The shape is
+        """This private method, given the original control points and the
+        deformed ones, returns the matrix with the weights and the polynomial
+        terms, that is :math:`W`, :math:`c^T` and :math:`Q^T`. The shape is
         (*n_control_points+1+3*, *3*).
 
-        :param numpy.ndarray X: it is an n_control_points-by-3 array with the
-            coordinates of the original interpolation control points before the
-            deformation.
-        :param numpy.ndarray Y: it is an n_control_points-by-3 array with the
-            coordinates of the interpolation control points after the
-            deformation.
-
-        :return: weights: the 2D array with the weights and the polynomial terms.
+        :param numpy.ndarray X: it is an n_control_points-by-3 array
+            with the coordinates of the original interpolation control
+            points before the deformation.
+        :param numpy.ndarray Y: it is an n_control_points-by-3 array
+            with the coordinates of the interpolation control points
+            after the deformation.
+        :return: weights: the 2D array with the weights and the
+            polynomial terms.
         :rtype: numpy.ndarray
         """
         npts, dim = X.shape
         H = np.zeros((npts + 3 + 1, npts + 3 + 1))
-        H[:npts, :npts] = self.basis(cdist(X, X), self.radius, **self.extra)
+        H[:npts, :npts] = self.basis(cdist(X, X), self.radius, **self.extra) # pylint: disable=not-callable
         H[npts, :npts] = 1.0
         H[:npts, npts] = 1.0
         H[:npts, -3:] = X
@@ -241,11 +235,10 @@ class RBF(Deformation):
         return weights
 
     def read_parameters(self, filename="parameters_rbf.prm"):
-        """
-        Reads in the parameters file and fill the self structure.
+        """Reads in the parameters file and fill the self structure.
 
-        :param string filename: parameters file to be read in. Default value is
-            parameters_rbf.prm.
+        :param string filename: parameters file to be read in. Default
+            value is parameters_rbf.prm.
         """
         if not isinstance(filename, str):
             raise TypeError("filename must be a string")
@@ -264,7 +257,7 @@ class RBF(Deformation):
 
         self.basis = rbf_settings.pop("basis function")
         self.radius = float(rbf_settings.pop("radius"))
-        self.extra = {k: eval(v) for k, v in rbf_settings.items()}
+        self.extra = {k: ast.literal_eval(v) for k, v in rbf_settings.items()}
 
         ctrl_points = config.get("Control points", "original control points")
         lines = ctrl_points.split("\n")
@@ -283,13 +276,12 @@ class RBF(Deformation):
                 "The number of control points must be equal both in"
                 "the 'original control points' and in the 'deformed"
                 "control points' section of the parameters file"
-                "({0!s})".format(filename)
+                f"({filename})"
             )
 
     def write_parameters(self, filename="parameters_rbf.prm"):
-        """
-        This method writes a parameters file (.prm) called `filename` and fills
-        it with all the parameters class members. Default value is
+        """This method writes a parameters file (.prm) called `filename` and
+        fills it with all the parameters class members. Default value is
         parameters_rbf.prm.
 
         :param string filename: parameters file to be written out.
@@ -311,13 +303,13 @@ class RBF(Deformation):
         output_string += " polyharmonic_spline.\n"
         output_string += "# For a comprehensive list with details see the"
         output_string += " class RBF.\n"
-        output_string += "basis function: {}\n".format("gaussian_spline")
+        output_string += f"basis function: {"gaussian_spline"}\n"
 
         output_string += "\n# radius is the scaling parameter r that affects"
         output_string += " the shape of the basis functions. See the"
         output_string += " documentation\n"
         output_string += "# of the class RBF for details.\n"
-        output_string += "radius: {}\n".format(str(self.radius))
+        output_string += f"radius: {str(self.radius)}\n"
 
         output_string += "\n\n[Control points]\n"
         output_string += "# This section describes the RBF control points.\n"
@@ -358,28 +350,27 @@ class RBF(Deformation):
             )
             offset = 25
 
-        with open(filename, "w") as f:
-            f.write(output_string)
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(output_string)
 
     def __str__(self):
-        """
-        This method prints all the RBF parameters on the screen. Its purpose is
-        for debugging.
+        """This method prints all the RBF parameters on the screen.
+
+        Its purpose is for debugging.
         """
         string = ""
-        string += "basis function = {}\n".format(self.basis)
-        string += "radius = {}\n".format(self.radius)
-        string += "extra_parameter = {}\n".format(self.extra)
+        string += f"basis function = {self.basis}\n"
+        string += f"radius = {self.radius}\n"
+        string += f"extra_parameter = {self.extra}\n"
         string += "\noriginal control points =\n"
-        string += "{}\n".format(self.original_control_points)
+        string += f"{self.original_control_points}\n"
         string += "\ndeformed control points =\n"
-        string += "{}\n".format(self.deformed_control_points)
+        string += f"{self.deformed_control_points}\n"
         return string
 
     def plot_points(self, filename=None):
-        """
-        Method to plot the control points. It is possible to save the resulting
-        figure.
+        """Method to plot the control points. It is possible to save the
+        resulting figure.
 
         :param str filename: if None the figure is shown, otherwise it is saved
             on the specified `filename`. Default is None.
@@ -421,24 +412,25 @@ class RBF(Deformation):
             fig.savefig(filename)
 
     def compute_weights(self):
-        """
-        This method compute the weights according to the
-        `original_control_points` and `deformed_control_points` arrays.
-        """
+        """This method compute the weights according to the
+        `original_control_points` and `deformed_control_points` arrays."""
         self.weights = self._get_weights(
             self.original_control_points, self.deformed_control_points
         )
 
     def __call__(self, src_pts):
-        """
-        This method performs the deformation of the mesh points. After the
+        """This method performs the deformation of the mesh points.
+
+        After the
         execution it sets `self.modified_mesh_points`.
         """
         self.compute_weights()
-
+        # pylint: disable=not-callable
         H = np.zeros((src_pts.shape[0], self.n_control_points + 3 + 1))
         H[:, : self.n_control_points] = self.basis(
-            cdist(src_pts, self.original_control_points), self.radius, **self.extra
+            cdist(src_pts, self.original_control_points),
+            self.radius,
+            **self.extra,
         )
         H[:, self.n_control_points] = 1.0
         H[:, -3:] = src_pts

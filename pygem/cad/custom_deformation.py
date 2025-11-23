@@ -1,15 +1,12 @@
-"""
-Module for custom deformations to CAD geometries.
-"""
+"""Module for custom deformations to CAD geometries."""
 
-import numpy as np
 from pygem import CustomDeformation as OriginalCustomDeformation
+
 from .cad_deformation import CADDeformation
 
 
 class CustomDeformation(CADDeformation, OriginalCustomDeformation):
-    """
-    Class to perform a custom deformation to the CAD geometries.
+    """Class to perform a custom deformation to the CAD geometries.
 
     :param callable func: the function definying the deformation of the input
         points. This function should take as input: *i*) a 2D array of shape
@@ -67,7 +64,12 @@ class CustomDeformation(CADDeformation, OriginalCustomDeformation):
     """
 
     def __init__(
-        self, func, u_knots_to_add=0, v_knots_to_add=0, t_knots_to_add=0, tolerance=1e-4
+        self,
+        func,
+        u_knots_to_add=0,
+        v_knots_to_add=0,
+        t_knots_to_add=0,
+        tolerance=1e-4,
     ):
         OriginalCustomDeformation.__init__(self, func)
         CADDeformation.__init__(

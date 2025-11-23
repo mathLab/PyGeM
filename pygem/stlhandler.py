@@ -1,39 +1,39 @@
-"""
-Derived module from filehandler.py to handle STereoLithography files.
+"""Derived module from filehandler.py to handle STereoLithography files.
 
 .. warning::
     This module will be deprecated in next releases. Follow updates on
     https://github.com/mathLab for news about file handling.
 """
 
-import numpy as np
-from mpl_toolkits import mplot3d
-import matplotlib.pyplot as plt
-import mpl_toolkits.mplot3d as a3
-import pygem.filehandler as fh
-import vtk
 import warnings
 
-warnings.warn("This module will be deprecated in next releases", DeprecationWarning)
+import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d as a3
+import numpy as np
+import vtk
+
+import pygem.filehandler as fh
+
+warnings.warn(
+    "This module will be deprecated in next releases", DeprecationWarning
+)
 
 
 class StlHandler(fh.FileHandler):
-    """
-    STereoLithography file handler class
+    """STereoLithography file handler class.
 
     :cvar string infile: name of the input file to be processed.
     :cvar string outfile: name of the output file where to write in.
-    :cvar list extensions: extensions of the input/output files. It is equal to
-        ['.stl'].
+    :cvar list extensions: extensions of the input/output files. It is
+        equal to ['.stl'].
     """
 
     def __init__(self):
-        super(StlHandler, self).__init__()
+        super().__init__()
         self.extensions = [".stl"]
 
-    def parse(self, filename):
-        """
-        Method to parse the `filename`. It returns a matrix with all the
+    def parse(self, filename):  # pylint: disable=arguments-differ
+        """Method to parse the `filename`. It returns a matrix with all the
         coordinates.
 
         :param string filename: name of the input file.
@@ -56,15 +56,18 @@ class StlHandler(fh.FileHandler):
         mesh_points = np.zeros([n_points, 3])
 
         for i in range(n_points):
-            mesh_points[i][0], mesh_points[i][1], mesh_points[i][2] = data.GetPoint(i)
+            mesh_points[i][0], mesh_points[i][1], mesh_points[i][2] = (
+                data.GetPoint(i)
+            )
 
         return mesh_points
 
-    def write(self, mesh_points, filename, write_bin=False):
-        """
-        Writes a stl file, called filename, copying all the lines from
-        self.filename but the coordinates. mesh_points is a matrix that contains
-        the new coordinates to write in the stl file.
+    def write(
+        self, mesh_points, filename, write_bin=False
+    ):  # pylint: disable=arguments-differ
+        """Writes a stl file, called filename, copying all the lines from
+        self.filename but the coordinates. mesh_points is a matrix that
+        contains the new coordinates to write in the stl file.
 
         :param numpy.ndarray mesh_points: it is a `n_points`-by-3 matrix
             containing the coordinates of the points of the mesh.
@@ -103,16 +106,14 @@ class StlHandler(fh.FileHandler):
         writer.Write()
 
     def plot(self, plot_file=None, save_fig=False):
-        """
-        Method to plot an stl file. If `plot_file` is not given it plots
+        """Method to plot an stl file. If `plot_file` is not given it plots
         `self.infile`.
 
         :param string plot_file: the stl filename you want to plot.
-        :param bool save_fig: a flag to save the figure in png or not. If True
-            the plot is not shown. The default value is False.
-
-        :return: figure: matlplotlib structure for the figure of the chosen
-            geometry
+        :param bool save_fig: a flag to save the figure in png or not.
+            If True the plot is not shown. The default value is False.
+        :return: figure: matlplotlib structure for the figure of the
+            chosen geometry
         :rtype: matplotlib.pyplot.figure
         """
         if plot_file is None:
@@ -129,14 +130,17 @@ class StlHandler(fh.FileHandler):
         points = data.GetPoints()
         ncells = data.GetNumberOfCells()
 
-        # for each cell it contains the indeces of the points that define the cell
+        # for each cell it contains the indeces of the points that define
+        # the cell
         figure = plt.figure()
         axes = a3.Axes3D(figure)
         vtx = np.zeros((ncells, 3, 3))
         for i in range(0, ncells):
             for j in range(0, 3):
                 cell = data.GetCell(i).GetPointId(j)
-                vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(int(cell))
+                vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(
+                    int(cell)
+                )
             tri = a3.art3d.Poly3DCollection([vtx[i]])
             tri.set_color("b")
             tri.set_edgecolor("k")
@@ -173,8 +177,7 @@ class StlHandler(fh.FileHandler):
         return figure
 
     def show(self, show_file=None):
-        """
-        Method to show a vtk file. If `show_file` is not given it shows
+        """Method to show a vtk file. If `show_file` is not given it shows
         `self.infile`.
 
         :param string show_file: the vtk filename you want to show.

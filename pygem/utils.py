@@ -1,19 +1,17 @@
-"""
-Utilities for the affine transformations of the bounding box of the Free Form
-Deformation.
-"""
+"""Utilities for the affine transformations of the bounding box of the Free
+Form Deformation."""
 
 import math
 from functools import reduce
+
 import numpy as np
 
 
 def angles2matrix(rot_z=0, rot_y=0, rot_x=0):
-    """
-    This method returns the rotation matrix for given rotations around z, y and
-    x axes.  The output rotation matrix is equal to the composition of the
-    individual rotations.  Rotations are counter-clockwise. The default value of
-    the three rotations is zero.
+    """This method returns the rotation matrix for given rotations around z, y
+    and x axes.  The output rotation matrix is equal to the composition of the
+    individual rotations.  Rotations are counter-clockwise. The default value
+    of the three rotations is zero.
 
     :param float rot_z: rotation angle (in radians) around z-axis.
     :param float rot_y: rotation angle (in radians) around y-axis.
@@ -65,9 +63,8 @@ def angles2matrix(rot_z=0, rot_y=0, rot_x=0):
 
 
 def fit_affine_transformation(points_start, points_end):
-    """
-    Fit an affine transformation from starting points to ending points through a
-    least square procedure.
+    """Fit an affine transformation from starting points to ending points
+    through a least square procedure.
 
     :param numpy.ndarray points_start: set of starting points.
     :param numpy.ndarray points_end: set of ending points.
@@ -93,30 +90,36 @@ def fit_affine_transformation(points_start, points_end):
 
     dim = len(points_start[0])
     if len(points_start) < dim:
-        raise RuntimeError("Too few starting points => under-determined system.")
+        raise RuntimeError(
+            "Too few starting points => under-determined system."
+        )
 
     def pad_column_ones(x):
-        """Add right column of 1.0 to the given 2D numpy array"""
+        """Add right column of 1.0 to the given 2D numpy array."""
         return np.hstack([x, np.ones((x.shape[0], 1))])
 
     def unpad_column(x):
-        """Remove last column to the given 2D numpy array"""
+        """Remove last column to the given 2D numpy array."""
         return x[:, :-1]
 
     def transform(src):
 
         shape = src.shape
 
+        # pylint: disable=C0103
+
         X = pad_column_ones(points_start)
         Y = pad_column_ones(points_end)
+
+        # pylint: disable=W0612
 
         A, res, rank, _ = np.linalg.lstsq(X, Y, rcond=None)
         # TODO add check condition number
         # if np.linalg.cond(A) >= 1 / sys.float_info.epsilon:
         #    raise RuntimeError(
         #            "Error: singular matrix. Points are probably coplanar.")
-        return unpad_column(np.dot(pad_column_ones(np.atleast_2d(src)), A)).reshape(
-            shape
-        )
+        return unpad_column(
+            np.dot(pad_column_ones(np.atleast_2d(src)), A)
+        ).reshape(shape)
 
     return transform

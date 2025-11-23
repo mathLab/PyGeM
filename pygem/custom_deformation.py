@@ -1,21 +1,19 @@
-"""
-Module for a custom deformation.
-"""
+"""Module for a custom deformation."""
 
 import numpy as np
 
 from pygem import Deformation
 
 
-class CustomDeformation(Deformation):
-    """
-    Class to perform a custom deformation to the mesh points.
+class CustomDeformation(Deformation): #pylint: disable=too-few-public-methods
+    """Class to perform a custom deformation to the mesh points.
 
-    :param callable func: the function definying the deformation of the input
-        points. This function should take as input: *i*) a 2D array of shape
-        (*n_points*, *3*) in which the points are arranged by row, or *ii*) an
-        iterable object with 3 components. In this last case, computation of
-        deformation is not vectorized and the overall cost may become heavy.
+    :param callable func: the function definying the deformation of the
+      input points. This function should take as input:
+        *i*) a 2D array of shape (*n_points*, *3*) in which the points are
+          arranged by row, or *ii*) an iterable object with 3 components.
+            In this last case, computation of deformation is not vectorized
+              and the overall cost may become heavy.
 
     :Example:
 
@@ -39,16 +37,15 @@ class CustomDeformation(Deformation):
         self.__func = func
 
     def __call__(self, src_pts):
-        """
-        This method performs the deformation on the input points.
+        """This method performs the deformation on the input points.
 
-        :param numpy.ndarray src_pts: the array of dimensions (*n_points*, *3*)
-            containing the points to deform. The points have to be arranged by
-            row.
+        :param numpy.ndarray src_pts: the array of dimensions
+            (*n_points*, *3*) containing the points to deform. The
+            points have to be arranged by row.
         :return: the deformed points
         :rtype: numpy.ndarray (with shape = (*n_points*, *3*))
         """
         try:
             return self.__func(src_pts)
-        except:
+        except (ValueError, TypeError):
             return np.array([self.__func(pt) for pt in src_pts])

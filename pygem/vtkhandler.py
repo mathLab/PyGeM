@@ -1,39 +1,40 @@
-"""
-Derived module from filehandler.py to handle vtk files.
+"""Derived module from filehandler.py to handle vtk files.
 
 .. warning::
     This module will be deprecated in next releases. Follow updates on
     https://github.com/mathLab for news about file handling.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import mpl_toolkits.mplot3d as a3
-import vtk
-import pygem.filehandler as fh
 import warnings
 
-warnings.warn("This module will be deprecated in next releases", DeprecationWarning)
+import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d as a3
+import numpy as np
+import vtk
+
+import pygem.filehandler as fh
+
+warnings.warn(
+    "This module will be deprecated in next releases", DeprecationWarning
+)
 
 
 class VtkHandler(fh.FileHandler):
-    """
-    Vtk file handler class
+    """Vtk file handler class.
 
     :cvar string infile: name of the input file to be processed.
     :cvar string outfile: name of the output file where to write in.
-    :cvar list extensions: extensions of the input/output files. It
-        is equal to ['.vtk'].
+    :cvar list extensions: extensions of the input/output files. It is
+        equal to ['.vtk'].
     """
 
     def __init__(self):
-        super(VtkHandler, self).__init__()
+        super().__init__()
         self.extensions = [".vtk"]
 
-    def parse(self, filename):
-        """
-        Method to parse the file `filename`. It returns a matrix
-        with all the coordinates.
+    def parse(self, filename):  # pylint: disable=arguments-differ
+        """Method to parse the file `filename`. It returns a matrix with all
+        the coordinates.
 
         :param string filename: name of the input file.
 
@@ -61,16 +62,16 @@ class VtkHandler(fh.FileHandler):
         mesh_points = np.zeros([n_points, 3])
 
         for i in range(n_points):
-            mesh_points[i][0], mesh_points[i][1], mesh_points[i][2] = data.GetPoint(i)
+            mesh_points[i][0], mesh_points[i][1], mesh_points[i][2] = (
+                data.GetPoint(i)
+            )
 
         return mesh_points
 
-    def write(self, mesh_points, filename):
-        """
-        Writes a vtk file, called filename, copying all the
-        structures from self.filename but the coordinates.
-        `mesh_points` is a matrix that contains the new coordinates
-        to write in the vtk file.
+    def write(self, mesh_points, filename):  # pylint: disable=arguments-differ
+        """Writes a vtk file, called filename, copying all the structures from
+        self.filename but the coordinates. `mesh_points` is a matrix that
+        contains the new coordinates to write in the vtk file.
 
         :param numpy.ndarray mesh_points: it is a `n_points`-by-3
             matrix containing the coordinates of the points of the
@@ -102,16 +103,14 @@ class VtkHandler(fh.FileHandler):
         writer.Write()
 
     def plot(self, plot_file=None, save_fig=False):
-        """
-        Method to plot a vtk file. If `plot_file` is not given it
-        plots `self.infile`.
+        """Method to plot a vtk file. If `plot_file` is not given it plots
+        `self.infile`.
 
         :param string plot_file: the vtk filename you want to plot.
-        :param bool save_fig: a flag to save the figure in png or
-            not. If True the plot is not shown.
-
-        :return: figure: matlplotlib structure for the figure of
-            the chosen geometry
+        :param bool save_fig: a flag to save the figure in png or not.
+            If True the plot is not shown.
+        :return: figure: matlplotlib structure for the figure of the
+            chosen geometry
         :rtype: matplotlib.pyplot.figure
         """
         if plot_file is None:
@@ -128,14 +127,17 @@ class VtkHandler(fh.FileHandler):
         points = data.GetPoints()
         ncells = data.GetNumberOfCells()
 
-        # for each cell it contains the indeces of the points that define the cell
+        # for each cell it contains the indeces of the points that define
+        # the cell
         figure = plt.figure()
         axes = a3.Axes3D(figure)
         vtx = np.zeros((ncells, 3, 3))
         for i in range(0, ncells):
             for j in range(0, 3):
                 cell = data.GetCell(i).GetPointId(j)
-                vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(int(cell))
+                vtx[i][j][0], vtx[i][j][1], vtx[i][j][2] = points.GetPoint(
+                    int(cell)
+                )
             tri = a3.art3d.Poly3DCollection([vtx[i]])
             tri.set_color("b")
             tri.set_edgecolor("k")
@@ -172,9 +174,8 @@ class VtkHandler(fh.FileHandler):
         return figure
 
     def show(self, show_file=None):
-        """
-        Method to show a vtk file. If `show_file` is not given
-        it shows `self.infile`.
+        """Method to show a vtk file. If `show_file` is not given it shows
+        `self.infile`.
 
         :param string show_file: the vtk filename you want to show.
         """

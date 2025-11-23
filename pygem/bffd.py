@@ -1,10 +1,11 @@
-from pygem.cffd import CFFD
 import numpy as np
+
+from pygem.cffd import CFFD
 
 
 class BFFD(CFFD):
-    """
-    Class that handles the Barycenter Free Form Deformation on the mesh points.
+    """Class that handles the Barycenter Free Form Deformation on the mesh
+    points.
 
     :param list n_control_points: number of control points in the x, y, and z
         direction. Default is [2, 2, 2].
@@ -21,11 +22,15 @@ class BFFD(CFFD):
         y, normalized with the box length y.
     :cvar numpy.ndarray array_mu_z: collects the displacements (weights) along
         z, normalized with the box length z.
-    :cvar callable fun: it defines the F of the constraint F(x)=c. Default is the constant 1 function.
-    :cvar numpy.ndarray fixval: it defines the c of the constraint F(x)=c. Default is 1.
+    :cvar callable fun: it defines the F of the constraint F(x)=c.
+      Default is the constant 1 function.
+    :cvar numpy.ndarray fixval: it defines the c of the constraint
+      F(x)=c. Default is 1.
     :cvar numpy.ndarray mask: a boolean tensor that tells to the class
-        which control points can be moved, and in what direction, to enforce the constraint.
-        The tensor has shape (n_x,n_y,n_z,3), where the last dimension indicates movement
+        which control points can be moved, and in what direction,
+         to enforce the constraint.
+        The tensor has shape (n_x,n_y,n_z,3), where the last
+          dimension indicates movement
         on x,y,z respectively. Default is all true.
 
     :Example:
@@ -34,9 +39,11 @@ class BFFD(CFFD):
         >>> b = np.random.rand(3)
         >>> bffd = BFFD(b, [2, 2, 2])
         >>> bffd.read_parameters('tests/test_datasets/parameters_test_cffd')
-        >>> original_mesh_points = np.load("tests/test_datasets/test_sphere_cffd.npy")
+        >>> original_mesh_points =
+         np.load("tests/test_datasets/test_sphere_cffd.npy")
         >>> bffd.adjust_control_points(original_mesh_points[:-4])
-        >>> assert np.isclose(np.linalg.norm(bffd.fun(bffd.ffd(original_mesh_points[:-4])) - b), np.array([0.]))
+        >>> assert np.isclose(np.linalg.norm(bffd.fun(bffd.ffd(
+        ...     original_mesh_points[:-4])) - b), np.array([0.]))
         >>> new_mesh_points = bffd.ffd(original_mesh_points)
     """
 

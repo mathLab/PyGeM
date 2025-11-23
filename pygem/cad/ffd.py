@@ -1,5 +1,4 @@
-"""
-Utilities for performing Free Form Deformation (FFD) to CAD geometries.
+"""Utilities for performing Free Form Deformation (FFD) to CAD geometries.
 
 :Theoretical Insight:
 
@@ -38,17 +37,15 @@ Utilities for performing Free Form Deformation (FFD) to CAD geometries.
 
     You can try to add more shapes to the lattice to allow more and more
     involved transformations.
-
 """
 
-import numpy as np
 from pygem import FFD as OriginalFFD
+
 from .cad_deformation import CADDeformation
 
 
 class FFD(CADDeformation, OriginalFFD):
-    """
-    Class that handles the Free Form Deformation on CAD geometries.
+    """Class that handles the Free Form Deformation on CAD geometries.
 
     :param list n_control_points: number of control points in the x, y, and z
         direction. If not provided it is set to [2, 2, 2].
