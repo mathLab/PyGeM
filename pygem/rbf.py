@@ -125,7 +125,8 @@ class RBF(Deformation):
         >>> mesh = np.array([x.ravel(), y.ravel(), z.ravel()])
         >>> deformed_mesh = rbf(mesh)
     """
-#pylint: disable=too-many-positional-arguments
+
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         original_control_points=None,
@@ -183,6 +184,7 @@ class RBF(Deformation):
         :rtype: int
         """
         return self.original_control_points.shape[0]
+
     @property
     def basis(self):
         """The kernel to use in the deformation.
@@ -204,6 +206,7 @@ class RBF(Deformation):
             self.__basis = RBFFactory(func)
         else:
             raise TypeError("`func` is not valid.")
+
     # pylint: disable=invalid-name
     def _get_weights(self, X, Y):
         """This private method, given the original control points and the
@@ -223,7 +226,9 @@ class RBF(Deformation):
         """
         npts, dim = X.shape
         H = np.zeros((npts + 3 + 1, npts + 3 + 1))
-        H[:npts, :npts] = self.basis(cdist(X, X), self.radius, **self.extra) # pylint: disable=not-callable
+        H[:npts, :npts] = self.basis(
+            cdist(X, X), self.radius, **self.extra
+        )  # pylint: disable=not-callable
         H[npts, :npts] = 1.0
         H[:npts, npts] = 1.0
         H[:npts, -3:] = X

@@ -1,0 +1,10 @@
+{
+  "default": true,
+  "MD041": false,
+  "MD012": false,
+  "ignores": [
+    "venv_pygem/**",
+    "venv/**",
+    "**/site-packages/**"
+  ]
+}

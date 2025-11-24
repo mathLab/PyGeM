@@ -112,7 +112,7 @@ class CFFD(FFD):
             indices = np.arange(np.prod(self.n_control_points) * 3)[
                 self.ffd_mask.reshape(-1)
             ]
-# pylint: disable=C0103
+            # pylint: disable=C0103
             A, b = self._compute_linear_map(
                 src_pts, saved_parameters.copy(), indices
             )
@@ -181,7 +181,7 @@ class CFFD(FFD):
         np.random.seed(0)
         for i in range(
             n_indices + 1
-        ):  ##now we generate the interpolation points
+        ):  # now we generate the interpolation points
             tmp = np.random.rand(1, n_indices)
             tmp = tmp.reshape(1, -1)
             inputs[i] = np.hstack(

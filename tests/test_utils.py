@@ -1,7 +1,8 @@
 from unittest import TestCase
-import unittest
-from pygem.utils import angles2matrix, fit_affine_transformation
+
 import numpy as np
+
+from pygem.utils import angles2matrix, fit_affine_transformation
 
 
 class TestAffine(TestCase):
@@ -15,7 +16,17 @@ class TestAffine(TestCase):
         roty = 0
         rotx = 50 * np.pi / 180
         mat_exact = np.array(
-            [1.0, 0.0, 0.0, 0.0, 0.64278761, -0.76604444, 0.0, 0.76604444, 0.64278761]
+            [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.64278761,
+                -0.76604444,
+                0.0,
+                0.76604444,
+                0.64278761,
+            ]
         ).reshape((3, 3))
 
         mat_test = angles2matrix(rotz, roty, rotx)
@@ -26,7 +37,17 @@ class TestAffine(TestCase):
         roty = 23 * np.pi / 180
         rotx = 0
         mat_exact = np.array(
-            [0.92050485, 0.0, 0.39073113, 0.0, 1.0, 0.0, -0.39073113, 0.0, 0.92050485]
+            [
+                0.92050485,
+                0.0,
+                0.39073113,
+                0.0,
+                1.0,
+                0.0,
+                -0.39073113,
+                0.0,
+                0.92050485,
+            ]
         ).reshape((3, 3))
 
         mat_test = angles2matrix(rotz, roty, rotx)
@@ -37,7 +58,17 @@ class TestAffine(TestCase):
         roty = 0
         rotx = 0
         mat_exact = np.array(
-            [0.54463904, 0.83867057, 0.0, -0.83867057, 0.54463904, 0.0, 0.0, 0.0, 1.0]
+            [
+                0.54463904,
+                0.83867057,
+                0.0,
+                -0.83867057,
+                0.54463904,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+            ]
         ).reshape((3, 3))
 
         mat_test = angles2matrix(rotz, roty, rotx)
@@ -75,7 +106,9 @@ class TestAffine(TestCase):
         np.testing.assert_array_almost_equal(v_exact, v_trans)
 
     def test_affine_points_fit_identity_2(self):
-        p_start = np.array([[1, 0.5, -0.3], [0, 2, 4], [-1, 0.0, -1.5], [1, -4, 0.5]])
+        p_start = np.array(
+            [[1, 0.5, -0.3], [0, 2, 4], [-1, 0.0, -1.5], [1, -4, 0.5]]
+        )
         p_end = p_start
         v_test = np.array([-1.0, 2.5, 0.3])
         v_exact = v_test
@@ -95,7 +128,9 @@ class TestAffine(TestCase):
         np.testing.assert_array_almost_equal(v_exact, v_trans)
 
     def test_affine_points_fit_generic(self):
-        p_start = np.array([[1, 0.5, -0.3], [0, 2, 4], [-1, 0.0, -1.5], [1, -4, 0.5]])
+        p_start = np.array(
+            [[1, 0.5, -0.3], [0, 2, 4], [-1, 0.0, -1.5], [1, -4, 0.5]]
+        )
         p_end = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1], [0, 0, 0]])
         v_test = np.array([1.0, 2.0, 3.0])
         v_exact = np.array([-0.68443497, 0.7249467, -0.34221748])
@@ -117,16 +152,16 @@ class TestAffine(TestCase):
         p_start = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]])
         p_end = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])
         with self.assertRaises(RuntimeError):
-            transformation = fit_affine_transformation(p_start, p_end)
+            fit_affine_transformation(p_start, p_end)
 
     def test_affine_points_fit_under_determined_system_1(self):
         p_start = np.array([[1, 0, 0]])
         p_end = np.array([[0, 1, 0]])
         with self.assertRaises(RuntimeError):
-            transformation = fit_affine_transformation(p_start, p_end)
+            fit_affine_transformation(p_start, p_end)
 
     def test_affine_points_fit_under_determined_system_2(self):
         p_start = np.array([[1, 0, 0], [0, 1, 0]])
         p_end = np.array([[0, 1, 0], [-1, 0, 0]])
         with self.assertRaises(RuntimeError):
-            transformation = fit_affine_transformation(p_start, p_end)
+            fit_affine_transformation(p_start, p_end)

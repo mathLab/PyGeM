@@ -1,7 +1,9 @@
-import os
 import filecmp
-import numpy as np
+import os
 from unittest import TestCase
+
+import numpy as np
+
 from pygem import IDW
 
 
@@ -19,7 +21,7 @@ class TestIDW(TestCase):
         return original_mesh_points
 
     def test_idw(self):
-        idw = IDW()
+        IDW()
 
     def test_idw_call(self):
         idw = IDW()
@@ -35,7 +37,7 @@ class TestIDW(TestCase):
 
     def test_class_members_default_p(self):
         idw = IDW()
-        assert idw.power == 2
+        assert idw.power == 2  # nosec  # nosec
 
     def test_class_members_default_original_points(self):
         idw = IDW()
@@ -104,7 +106,7 @@ class TestIDW(TestCase):
         idw = IDW()
         filename = "tests/test_datasets/parameters_idw_deform.prm"
         idw.read_parameters(filename)
-        assert idw.power == 3
+        assert idw.power == 3  # nosec  # nosec
 
     def test_read_not_string(self):
         idw = IDW()

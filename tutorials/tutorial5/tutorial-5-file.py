@@ -12,20 +12,26 @@
 #
 # As usually, at the beginning we import all the modules we need.
 
+import platform
+
 # In[1]:
 import sys
-import platform
+
 print(f"Python Version: {sys.version}")
 print(f"Platform: {sys.platform}")
 print(f"System: {platform.system()} {platform.release()}")
 import subprocess
+
 try:
     import pygem
+
     print(f"PyGeM version: {pygem.__version__}")
 except ImportError:
     print(f"PyGeM not found. Installing...")
     # Installing from local source. It can be replaced with github installation once pushed and merged.
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", ".[tut]"])
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]
+    )
     import pygem
 
     print(f"PyGeM version: {pygem.__version__}")
@@ -34,18 +40,25 @@ try:
     from smithers import io
 except ImportError:
     print("smithers not found. Installing from GitHub...")
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "git+https://github.com/mathLab/Smithers.git"])
+    subprocess.check_call(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "git+https://github.com/mathLab/Smithers.git",
+        ]
+    )
     from smithers import io
 
 import numpy as np
+
 np.random.seed(42)
 
 
-
-import matplotlib.pyplot as plt
-from pygem import FFD
 from smithers import io
 
+from pygem import FFD
 
 # For visualization purpose, we also implement a small function that shows the object parsed with **Smithers**.
 
@@ -53,9 +66,8 @@ from smithers import io
 
 
 def plot(data, color=None):
-    from mpl_toolkits.mplot3d import Axes3D
-    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
     if color is None:
         color = (0, 0, 1, 0.1)
@@ -89,7 +101,7 @@ if os.path.exists("cube.vtp"):
 
 urllib.request.urlretrieve(
     "https://raw.githubusercontent.com/mathLab/Smithers/master/tests/test_datasets/cube.vtp",
-    "cube.vtp"
+    "cube.vtp",
 )
 
 vtp_filename = "cube.vtp"
@@ -147,7 +159,7 @@ if os.path.exists("cube.stl"):
 
 urllib.request.urlretrieve(
     "https://raw.githubusercontent.com/mathLab/Smithers/master/tests/test_datasets/cube.stl",
-    "cube.stl"
+    "cube.stl",
 )
 
 

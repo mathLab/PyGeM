@@ -1,23 +1,30 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys
 import platform
+import sys
+
 print(f"Python Version: {sys.version}")
 print(f"Platform: {sys.platform}")
 print(f"System: {platform.system()} {platform.release()}")
 
 try:
     import pygem
+
     print(f"PyGeM version: {pygem.__version__}")
 except ImportError:
     print(f"PyGeM not found. Installing...")
     import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", ".[tut]"])
+
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]
+    )
     import pygem
+
     print(f"PyGeM version: {pygem.__version__}")
 
 import numpy as np
+
 np.random.seed(42)
 
 import matplotlib.pyplot as plt
@@ -101,6 +108,7 @@ try:
 except ImportError:
     print("meshio not found. Installing...")
     import subprocess
+
     subprocess.check_call([sys.executable, "-m", "pip", "install", "meshio"])
     import meshio
 
@@ -114,7 +122,11 @@ points[:, 1] = points[:, 1] - np.min(points[:, 1])
 fig = plt.figure(figsize=plt.figaspect(0.5))
 ax = fig.add_subplot(1, 2, 1, projection="3d")
 ax.plot_trisurf(
-    points[:, 0], points[:, 1], points[:, 2], triangles=faces, cmap=plt.cm.Spectral
+    points[:, 0],
+    points[:, 1],
+    points[:, 2],
+    triangles=faces,
+    cmap=plt.cm.Spectral,
 )
 
 from pygem.vffd import VFFD, _volume

@@ -1,13 +1,15 @@
-from unittest import TestCase
-import pygem.mdpahandler as uh
-import numpy as np
 import filecmp
 import os
+from unittest import TestCase
+
+import numpy as np
+
+import pygem.mdpahandler as uh
 
 
 class TestMdpaHandler(TestCase):
     def test_mdpa_instantiation(self):
-        mdpa_handler = uh.MdpaHandler()
+        uh.MdpaHandler()
 
     def test_mdpa_default_infile_member(self):
         mdpa_handler = uh.MdpaHandler()
@@ -24,17 +26,21 @@ class TestMdpaHandler(TestCase):
     def test_mdpa_parse_failing_filename_type(self):
         mdpa_handler = uh.MdpaHandler()
         with self.assertRaises(TypeError):
-            mesh_points = mdpa_handler.parse(5.2)
+            mdpa_handler.parse(5.2)
 
     def test_mdpa_parse_failing_check_extension(self):
         mdpa_handler = uh.MdpaHandler()
         with self.assertRaises(ValueError):
-            mesh_points = mdpa_handler.parse("tests/test_datasets/test_square.iges")
+            mesh_points = mdpa_handler.parse(
+                "tests/test_datasets/test_square.iges"
+            )
 
     def test_mdpa_parse_infile(self):
         mdpa_handler = uh.MdpaHandler()
-        mesh_points = mdpa_handler.parse("tests/test_datasets/test_square.mdpa")
-        self.assertEqual(mdpa_handler.infile, "tests/test_datasets/test_square.mdpa")
+        mdpa_handler.parse("tests/test_datasets/test_square.mdpa")
+        self.assertEqual(
+            mdpa_handler.infile, "tests/test_datasets/test_square.mdpa"
+        )
 
     def test_mdpa_parse_shape(self):
         mdpa_handler = uh.MdpaHandler()
@@ -76,13 +82,17 @@ class TestMdpaHandler(TestCase):
         mdpa_handler = uh.MdpaHandler()
         mesh_points = mdpa_handler.parse("tests/test_datasets/test_square.mdpa")
         with self.assertRaises(ValueError):
-            mdpa_handler.write(mesh_points, "tests/test_datasets/test_square.iges")
+            mdpa_handler.write(
+                mesh_points, "tests/test_datasets/test_square.iges"
+            )
 
     def test_mdpa_write_failing_infile_instantiation(self):
         mdpa_handler = uh.MdpaHandler()
         mesh_points = np.zeros((20, 3))
         with self.assertRaises(RuntimeError):
-            mdpa_handler.write(mesh_points, "tests/test_datasets/test_square_out.mdpa")
+            mdpa_handler.write(
+                mesh_points, "tests/test_datasets/test_square_out.mdpa"
+            )
 
     def test_mdpa_write_outfile(self):
         infilename = "tests/test_datasets/test_square.mdpa"

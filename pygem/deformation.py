@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 
+
 # pylint: disable=R0903
 class Deformation(ABC):
     """Abstract class for generic deformation.

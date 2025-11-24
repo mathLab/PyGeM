@@ -22,7 +22,8 @@ class RBFFactory:
         >>> for fname in RBFFactory.bases:
         >>>     y = RBFFactory(fname)(x)
     """
-# pylint: disable=C0103
+
+    # pylint: disable=C0103
     @staticmethod
     def gaussian_spline(X, r=1):
         """
@@ -128,7 +129,6 @@ class RBFFactory:
         It implements the following formula:
 
         .. math::
-            
             \\varphi(\\boldsymbol{x}) =
                 \\begin{cases}
                 \\frac{\\boldsymbol{x}}{r}^k

@@ -17,7 +17,8 @@ class IgesHandler(NurbsHandler):
     :cvar string outfile: name of the output file where to write in.
     :cvar list extensions: list of extensions of the input/output files.
         It is equal to ['.iges', '.igs'].
-    :cvar list control_point_position: index of the first NURBS control point (or pole)
+    :cvar list control_point_position: index of the first NURBS control
+      point (or pole)
         of each face of the iges file.
     :cvar float tolerance: tolerance for the construction of the faces and wires
         in the write function. Default value is 1e-6.
@@ -25,9 +26,12 @@ class IgesHandler(NurbsHandler):
 
     .. warning::
 
-            - For non trivial geometries it could be necessary to increase the tolerance.
-              Linking edges into a single wire and then trimming the surface with the wire
-              can be hard for the software, especially when the starting CAD has not been
+            - For non trivial geometries it could be necessary to
+              increase the tolerance.
+              Linking edges into a single wire and then trimming
+                the surface with the wire
+              can be hard for the software, especially when the
+                starting CAD has not been
               made for analysis but for design purposes.
     """
 

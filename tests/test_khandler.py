@@ -1,13 +1,15 @@
-from unittest import TestCase
-import pygem.khandler as uh
-import numpy as np
 import filecmp
 import os
+from unittest import TestCase
+
+import numpy as np
+
+import pygem.khandler as uh
 
 
 class TestKHandler(TestCase):
     def test_k_instantiation(self):
-        k_handler = uh.KHandler()
+        uh.KHandler()
 
     def test_k_default_infile_member(self):
         k_handler = uh.KHandler()
@@ -24,16 +26,18 @@ class TestKHandler(TestCase):
     def test_k_parse_failing_filename_type(self):
         k_handler = uh.KHandler()
         with self.assertRaises(TypeError):
-            mesh_points = k_handler.parse(5.2)
+            k_handler.parse(5.2)
 
     def test_k_parse_failing_check_extension(self):
         k_handler = uh.KHandler()
         with self.assertRaises(ValueError):
-            mesh_points = k_handler.parse("tests/test_datasets/test_square.iges")
+            mesh_points = k_handler.parse(
+                "tests/test_datasets/test_square.iges"
+            )
 
     def test_k_parse_infile(self):
         k_handler = uh.KHandler()
-        mesh_points = k_handler.parse("tests/test_datasets/test_square.k")
+        k_handler.parse("tests/test_datasets/test_square.k")
         self.assertEqual(k_handler.infile, "tests/test_datasets/test_square.k")
 
     def test_k_parse_shape(self):
@@ -82,7 +86,9 @@ class TestKHandler(TestCase):
         k_handler = uh.KHandler()
         mesh_points = np.zeros((20, 3))
         with self.assertRaises(RuntimeError):
-            k_handler.write(mesh_points, "tests/test_datasets/test_square_out.k")
+            k_handler.write(
+                mesh_points, "tests/test_datasets/test_square_out.k"
+            )
 
     def test_k_write_outfile(self):
         k_handler = uh.KHandler()
@@ -134,7 +140,9 @@ class TestKHandler(TestCase):
         mesh_points[132][1] = -1.2
         mesh_points[255][2] = -3.6
         outfilename = "tests/test_datasets/test_square_comma_out.k"
-        outfilename_expected = "tests/test_datasets/test_square_comma_out_true.k"
+        outfilename_expected = (
+            "tests/test_datasets/test_square_comma_out_true.k"
+        )
         k_handler.write(mesh_points, outfilename)
         self.assertTrue(filecmp.cmp(outfilename, outfilename_expected))
         self.addCleanup(os.remove, outfilename)

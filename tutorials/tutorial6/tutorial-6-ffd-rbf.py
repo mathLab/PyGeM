@@ -13,53 +13,70 @@
 # The methodology that follows is very general and can be extended to many different scenario, since it basically requires only the coordinates of the nodes of the object geometry and of the (undeformed) initial mesh. For sake of simplicity, here we present the deformation of an [OpenFOAM](https://openfoam.org/) grid for simulating a 2D Navier-Stokes flow around a cylinder. We assume that this cilinder is the object to deform.
 # Even if the entire procedure is employable also when the deformation mapping applied to the initial object is unknown (we see in few lines that the required input is just the displacement of the initial object after the deformation), here we apply the *free-form deformation* method to the undeformed cylinder in order to parametrize its geometry.
 
-import sys
 import platform
+import sys
+
 print(f"Python Version: {sys.version}")
 print(f"Platform: {sys.platform}")
 print(f"System: {platform.system()} {platform.release()}")
 
 try:
     import pygem
+
     print(f"PyGeM version: {pygem.__version__}")
 except ImportError:
     print(f"PyGeM not found. Installing...")
     import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", ".[tut]"])
+
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]
+    )
     import pygem
+
     print(f"PyGeM version: {pygem.__version__}")
 
 import numpy as np
+
 np.random.seed(42)
 
 import matplotlib.pyplot as plt
 
 # mesh parsing
 try:
-    import Ofpp
+    pass
 except ImportError:
     print("Ofpp not found. Installing...")
     import subprocess
+
     subprocess.check_call([sys.executable, "-m", "pip", "install", "ofpp"])
-    import Ofpp
 try:
     from smithers.io.openfoamhandler import OpenFoamHandler
 except ImportError:
     print("smithers not found. Installing from GitHub...")
     import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "git+https://github.com/mathLab/Smithers.git"])
+
+    subprocess.check_call(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "git+https://github.com/mathLab/Smithers.git",
+        ]
+    )
     from smithers.io.openfoamhandler import OpenFoamHandler
 
 # interpolator
-from scipy.interpolate import Rbf
 
 # deformation
 from pygem import FFD, RBF
 
-
 # Then we define the auxiliary function `scatter3d` which we're going to use often to plot several objects as lists of 3D points. You do not need to understand the exact details of this function since we are going to use it only to show the results:
 
-def scatter3d(arr, figsize=(8, 8), s=10, draw=True, ax=None, alpha=1, labels=None):
+
+def scatter3d(
+    arr, figsize=(8, 8), s=10, draw=True, ax=None, alpha=1, labels=None
+):
     if ax is None:
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(projection="3d")
@@ -142,7 +159,9 @@ scatter3d([new_obstacle, obstacle], s=3, labels=["deformed", "original"])
 undeformed_points = np.vstack([walls, obstacle])
 deformed_points = np.vstack([walls, new_obstacle])
 
-undeformed_points, uindexes = np.unique(undeformed_points, return_index=True, axis=0)
+undeformed_points, uindexes = np.unique(
+    undeformed_points, return_index=True, axis=0
+)
 deformed_points = deformed_points[uindexes]
 
 rbf = RBF(
@@ -172,6 +191,7 @@ new_mesh_points = rbf(mesh["points"])
 #
 # The last thing we show here is the visualization of the deformed mesh. In order to plot the results we prefer a 2D scatter plot of the upper part of the mesh (`z=0.5`). Therefore we define the auxiliary function `upper_layer` which extracts the points at `z=0.5` from the given list of points.
 
+
 def upper_layer(*arrs):
     points = arrs[0]
     idxes = points[:, 2] > 0
@@ -185,10 +205,17 @@ def upper_layer(*arrs):
 # We can now plot the interpolated mesh, with the *deformed* and *original* obstacle.
 
 plt.figure(figsize=(20, 8), dpi=300)
-plt.scatter(*upper_layer(new_mesh_points)[:, :2].T, s=0.2, label="Interpolated mesh")
-plt.scatter(*upper_layer(obstacle)[:, :2].T, s=1, color="g", label="Original obstacle")
 plt.scatter(
-    *upper_layer(new_obstacle)[:, :2].T, s=1, color="r", label="Deformed obstacle"
+    *upper_layer(new_mesh_points)[:, :2].T, s=0.2, label="Interpolated mesh"
+)
+plt.scatter(
+    *upper_layer(obstacle)[:, :2].T, s=1, color="g", label="Original obstacle"
+)
+plt.scatter(
+    *upper_layer(new_obstacle)[:, :2].T,
+    s=1,
+    color="r",
+    label="Deformed obstacle",
 )
 
 plt.margins(x=0, y=0)
@@ -197,10 +224,17 @@ plt.title("New mesh")
 
 plt.show()
 plt.figure(figsize=(20, 8), dpi=300)
-plt.scatter(*upper_layer(new_mesh_points)[:, :2].T, s=0.2, label="Interpolated mesh")
-plt.scatter(*upper_layer(obstacle)[:, :2].T, s=1, color="g", label="Original obstacle")
 plt.scatter(
-    *upper_layer(new_obstacle)[:, :2].T, s=1, color="r", label="Deformed obstacle"
+    *upper_layer(new_mesh_points)[:, :2].T, s=0.2, label="Interpolated mesh"
+)
+plt.scatter(
+    *upper_layer(obstacle)[:, :2].T, s=1, color="g", label="Original obstacle"
+)
+plt.scatter(
+    *upper_layer(new_obstacle)[:, :2].T,
+    s=1,
+    color="r",
+    label="Deformed obstacle",
 )
 plt.axis([-3.5, 4.5, -4, 4])
 plt.margins(x=0, y=0)

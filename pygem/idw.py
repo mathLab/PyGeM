@@ -136,6 +136,7 @@ class IDW(Deformation):
         After the
         execution it sets `self.modified_mesh_points`.
         """
+
         # pylint: disable=invalid-name
         def distance(u, v):
             """Norm of u - v"""

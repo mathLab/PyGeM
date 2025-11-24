@@ -1,7 +1,7 @@
-import filecmp
-import os
 from unittest import TestCase
+
 import numpy as np
+
 from pygem import VFFD
 from pygem.vffd import _volume
 
@@ -43,8 +43,10 @@ class TestVFFD(TestCase):
         cffd = VFFD(triangles, b)
         cffd.adjust_control_points(points)
         new_mesh_points = cffd.ffd(points)
-        new_fix = cffd.fun(new_mesh_points)
-        assert np.allclose(np.linalg.norm(points - new_mesh_points), 0.0)
+        cffd.fun(new_mesh_points)
+        assert np.allclose(
+            np.linalg.norm(points - new_mesh_points), 0.0
+        )  # nosec  # nosec
 
     def test_constraint_vffd(self):
         np.random.seed(0)
@@ -83,4 +85,6 @@ class TestVFFD(TestCase):
         cffd.adjust_control_points(points)
         new_mesh_points = cffd.ffd(points)
         new_fix = cffd.fun(new_mesh_points)
-        assert np.linalg.norm(new_fix - b) / np.linalg.norm(b) < 1e-02
+        assert (
+            np.linalg.norm(new_fix - b) / np.linalg.norm(b) < 1e-02
+        )  # nosec  # nosec

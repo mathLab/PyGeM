@@ -1,8 +1,7 @@
 from unittest import TestCase
-import unittest
+
 import numpy as np
-import filecmp
-import os
+
 from pygem import RBFFactory
 
 unit_cube = np.array(

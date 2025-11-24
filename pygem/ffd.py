@@ -53,6 +53,7 @@ from scipy import special
 from pygem import Deformation
 from pygem.utils import angles2matrix, fit_affine_transformation
 
+
 # pylint: disable=too-many-instance-attributes
 class FFD(Deformation):
     """Class that handles the Free Form Deformation on the mesh points.
@@ -140,13 +141,13 @@ class FFD(Deformation):
         return fit_affine_transformation(self.reference_frame, physical_frame)
 
     @property
-    def T(self): # pylint: disable=invalid-name
+    def T(self):  # pylint: disable=invalid-name
         """Return the function that deforms the points within the unit cube.
 
         :rtype: callable
         """
 
-        def T_mapping(points): # pylint: disable=invalid-name
+        def T_mapping(points):  # pylint: disable=invalid-name
             (n_rows, n_cols) = points.shape
             (dim_n_mu, dim_m_mu, dim_t_mu) = self.array_mu_x.shape
 
@@ -299,7 +300,9 @@ class FFD(Deformation):
             values = line.split()
             self.array_mu_z[tuple(map(int, values[0:3]))] = float(values[3])
 
-    def write_parameters(self, filename="parameters.prm"): # pylint: disable=too-many-statements
+    def write_parameters(
+        self, filename="parameters.prm"
+    ):  # pylint: disable=too-many-statements
         """This method writes a parameters file (.prm) called `filename` and
         fills it with all the parameters class members.
 
@@ -511,7 +514,9 @@ class FFD(Deformation):
 
         return box_points.T
 
-    def reflect(self, axis=0, in_place=True): # pylint: disable=inconsistent-return-statements
+    def reflect(
+        self, axis=0, in_place=True
+    ):  # pylint: disable=inconsistent-return-statements
         """Reflect the lattice of control points along the direction defined by
         `axis`. In particular the origin point of the lattice is preserved. So,
         for instance, the reflection along x, is made with respect to the face
@@ -544,7 +549,9 @@ class FFD(Deformation):
 
         # check that the plane of symmetry is undeformed
         if (
-            (axis == 0 and np.count_nonzero(self.array_mu_x[-1, :, :]) != 0) # pylint: disable=too-many-boolean-expressions
+            (
+                axis == 0 and np.count_nonzero(self.array_mu_x[-1, :, :]) != 0
+            )  # pylint: disable=too-many-boolean-expressions
             or (axis == 1 and np.count_nonzero(self.array_mu_y[:, -1, :]) != 0)
             or (axis == 2 and np.count_nonzero(self.array_mu_z[:, :, -1]) != 0)
         ):
@@ -555,7 +562,7 @@ class FFD(Deformation):
             )
 
         if in_place is False:
-            self = copy.deepcopy(self) # pylint: disable=self-cls-assignment
+            self = copy.deepcopy(self)  # pylint: disable=self-cls-assignment
 
         # double the control points in the given axis -1 (the symmetry plane)
         self.n_control_points[axis] = 2 * self.n_control_points[axis] - 1

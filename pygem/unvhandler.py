@@ -97,8 +97,7 @@ class UnvHandler(fh.FileHandler):
                         else:
                             for j in range(0, 3):
                                 output_file.write(
-                                    3 * " "
-                                    + f"{mesh_points[i][j]:.16E}"
+                                    3 * " " + f"{mesh_points[i][j]:.16E}"
                                 )
                             output_file.write("\n")
                             i += 1

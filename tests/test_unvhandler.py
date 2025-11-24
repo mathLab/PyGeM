@@ -1,14 +1,15 @@
-from unittest import TestCase
-import unittest
-import pygem.unvhandler as uh
-import numpy as np
 import filecmp
 import os
+from unittest import TestCase
+
+import numpy as np
+
+import pygem.unvhandler as uh
 
 
 class TestUnvHandler(TestCase):
     def test_unv_instantiation(self):
-        unv_handler = uh.UnvHandler()
+        uh.UnvHandler()
 
     def test_unv_default_infile_member(self):
         unv_handler = uh.UnvHandler()
@@ -25,17 +26,21 @@ class TestUnvHandler(TestCase):
     def test_unv_parse_failing_filename_type(self):
         unv_handler = uh.UnvHandler()
         with self.assertRaises(TypeError):
-            mesh_points = unv_handler.parse(5.2)
+            unv_handler.parse(5.2)
 
     def test_unv_parse_failing_check_extension(self):
         unv_handler = uh.UnvHandler()
         with self.assertRaises(ValueError):
-            mesh_points = unv_handler.parse("tests/test_datasets/test_square.iges")
+            mesh_points = unv_handler.parse(
+                "tests/test_datasets/test_square.iges"
+            )
 
     def test_unv_parse_infile(self):
         unv_handler = uh.UnvHandler()
-        mesh_points = unv_handler.parse("tests/test_datasets/test_square.unv")
-        self.assertEqual(unv_handler.infile, "tests/test_datasets/test_square.unv")
+        unv_handler.parse("tests/test_datasets/test_square.unv")
+        self.assertEqual(
+            unv_handler.infile, "tests/test_datasets/test_square.unv"
+        )
 
     def test_unv_parse_shape(self):
         unv_handler = uh.UnvHandler()
@@ -77,13 +82,17 @@ class TestUnvHandler(TestCase):
         unv_handler = uh.UnvHandler()
         mesh_points = unv_handler.parse("tests/test_datasets/test_square.unv")
         with self.assertRaises(ValueError):
-            unv_handler.write(mesh_points, "tests/test_datasets/test_square.iges")
+            unv_handler.write(
+                mesh_points, "tests/test_datasets/test_square.iges"
+            )
 
     def test_unv_write_failing_infile_instantiation(self):
         unv_handler = uh.UnvHandler()
         mesh_points = np.zeros((20, 3))
         with self.assertRaises(RuntimeError):
-            unv_handler.write(mesh_points, "tests/test_datasets/test_square_out.unv")
+            unv_handler.write(
+                mesh_points, "tests/test_datasets/test_square_out.unv"
+            )
 
     def test_unv_write_outfile(self):
         unv_handler = uh.UnvHandler()

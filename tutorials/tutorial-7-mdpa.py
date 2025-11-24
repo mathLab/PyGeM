@@ -1,10 +1,13 @@
+import meshio
+import vedo
+
 import pygem as pg
 from pygem.mdpahandler import MdpaHandler
-import vedo
-import meshio
 
 ffd = pg.FFD()
-ffd.read_parameters("../tests/test_datasets/parameters_test_ffd_pipe_unv_C0.prm")
+ffd.read_parameters(
+    "../tests/test_datasets/parameters_test_ffd_pipe_unv_C0.prm"
+)
 
 mdpa_handler = MdpaHandler()
 mesh_points = mdpa_handler.parse("../tests/test_datasets/test_pipe.mdpa")
@@ -24,7 +27,9 @@ vedo.settings.embedWindow(backend="k3d", verbose=True)
 vedo.show(DeformedVTK, viewup="z", resetcam=True)
 
 ffd = pg.FFD()
-ffd.read_parameters("../tests/test_datasets/parameters_test_ffd_pipe_unv_C1.prm")
+ffd.read_parameters(
+    "../tests/test_datasets/parameters_test_ffd_pipe_unv_C1.prm"
+)
 new_mesh_points = ffd(mesh_points)
 mdpa_handler.write(new_mesh_points, "test_pipe_mod_C1.mdpa")
 

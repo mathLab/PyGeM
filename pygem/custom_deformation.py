@@ -5,7 +5,7 @@ import numpy as np
 from pygem import Deformation
 
 
-class CustomDeformation(Deformation): #pylint: disable=too-few-public-methods
+class CustomDeformation(Deformation):  # pylint: disable=too-few-public-methods
     """Class to perform a custom deformation to the mesh points.
 
     :param callable func: the function definying the deformation of the

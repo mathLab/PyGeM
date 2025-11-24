@@ -79,5 +79,5 @@ exclude = ["tests*", "docs*", "tutorials*"]
 version = { attr = "pygem.meta.__version__" }
 
 [tool.black]
-line-length = 88
+line-length = 80
 target-version = ['py39']

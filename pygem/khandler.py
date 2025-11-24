@@ -39,7 +39,9 @@ class KHandler(fh.FileHandler):
         node_indicator = False
 
         with open(self.infile, "r", encoding="utf-8") as input_file:
-            for num, line in enumerate(input_file): # pylint: disable=unused-variable
+            for num, line in enumerate(
+                input_file
+            ):  # pylint: disable=unused-variable
 
                 expression = re.compile(r"(.+?)(?:,|$)")
                 expression = expression.findall(line)

@@ -688,7 +688,8 @@ class NurbsHandler(fh.FileHandler):
                 global_compound_builder.Add(global_comp, new_shell)
 
                 # TODO
-                #print("Shell {0} of type {1} Processed ".format(ishell, itype))
+                # print("Shell {0} of type {1} Processed ".format(ishell
+                # , itype))
                 # print "=============================================="
 
                 ishell += 1
