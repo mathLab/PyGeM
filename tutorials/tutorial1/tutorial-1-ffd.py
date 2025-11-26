@@ -1,28 +1,31 @@
 # Tutorial 1: Free Form Deformation on Spherical Mesh
 import platform
 import sys
+import logging
+import numpy as np
 
-print(f"Python Version: {sys.version}")
-print(f"Platform: {sys.platform}")
-print(f"System: {platform.system()} {platform.release()}")
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
+
+# System info
+logging.info(f"Python Version: {sys.version}")
+logging.info(f"Platform: {sys.platform}")
+logging.info(f"System: {platform.system()} {platform.release()}")
+
+# Import PyGeM
 try:
     import pygem
-
-    print(f"PyGeM version: {pygem.__version__}")
 except ImportError:
-    print("PyGeM not found. Installing...")
-    import subprocess
-
-    # Installing from local source. It can be replaced with github installation once pushed and merged.
-    subprocess.check_call(
-        [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]
+    raise ImportError(
+        "PyGeM not found. Please install it before running this tutorial.\n"
+        "For example, run: pip install -e '.[tut]' in your environment."
     )
-    import pygem
 
-    print(f"PyGeM version: {pygem.__version__}")
-
-import numpy as np
+logging.info(f"PyGeM version: {pygem.__version__}")
 
 np.random.seed(42)
 

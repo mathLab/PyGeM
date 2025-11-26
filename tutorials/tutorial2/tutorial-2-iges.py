@@ -7,29 +7,34 @@
 
 import platform
 import sys
-
-print(f"Python Version: {sys.version}")
-print(f"Platform: {sys.platform}")
-print(f"System: {platform.system()} {platform.release()}")
-
-try:
-    import pygem
-
-    print(f"PyGeM version: {pygem.__version__}")
-except ImportError:
-    print("PyGeM not found. Installing...")
-    import subprocess
-
-    subprocess.check_call(
-        [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]
-    )
-    import pygem
-
-    print(f"PyGeM version: {pygem.__version__}")
-
+import logging
 import numpy as np
 
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+
+# System info
+logging.info(f"Python Version: {sys.version}")
+logging.info(f"Platform: {sys.platform}")
+logging.info(f"System: {platform.system()} {platform.release()}")
+
+# Import PyGeM
+try:
+    import pygem
+except ImportError:
+    raise ImportError(
+        "PyGeM not found. Please install it before running this tutorial.\n"
+        "For example, run: pip install -e '.[tut]' in your environment."
+    )
+
+logging.info(f"PyGeM version: {pygem.__version__}")
+
 np.random.seed(42)
+
 
 # In this tutorial we show again an application of _free form deformation_ method, now to a CAD file. These files, that are often adopted to model complex geometries, require an additional pre- and post-processing of the surfaces to perform the deformation.
 #
