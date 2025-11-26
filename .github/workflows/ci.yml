@@ -22,11 +22,11 @@ jobs:
         uses: s-weigand/setup-conda@v1
         with:
           python-version: ${{ matrix.python-version }}
-          auto-update-conda: true
-          conda-channels: anaconda, conda-forge
+          update-conda: true
+          conda-channels: conda-forge, anaconda
 
       - name: Install pythonocc-core (Conda)
-        run: conda install --yes pythonocc-core
+        run: conda install --yes -c conda-forge -c anaconda pythonocc-core
         shell: bash
 
       - name: Install pip dependencies

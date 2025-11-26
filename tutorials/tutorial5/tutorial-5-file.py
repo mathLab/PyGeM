@@ -27,7 +27,7 @@ try:
 
     print(f"PyGeM version: {pygem.__version__}")
 except ImportError:
-    print(f"PyGeM not found. Installing...")
+    print("PyGeM not found. Installing...")
     # Installing from local source. It can be replaced with github installation once pushed and merged.
     subprocess.check_call(
         [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]

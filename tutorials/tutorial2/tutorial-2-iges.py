@@ -17,7 +17,7 @@ try:
 
     print(f"PyGeM version: {pygem.__version__}")
 except ImportError:
-    print(f"PyGeM not found. Installing...")
+    print("PyGeM not found. Installing...")
     import subprocess
 
     subprocess.check_call(
