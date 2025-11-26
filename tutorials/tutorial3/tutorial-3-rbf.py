@@ -54,9 +54,10 @@ rbf.read_parameters(filename="../tests/test_datasets/parameters_rbf_cube.prm")
 # The following is the parameters file for this particular case. The Radial Basis Functions section describes the basis functions to use. Here we use Gaussian splines with the distance parameter equal to 0.5 (see the documentation of the [RBF](http://mathlab.github.io/PyGeM/rbf.html) class for more details). As control points we consider the 8 vertices of the cube (the first one is not exactly the vertex), and we move 3 of them. In the Control points section there are all the coordinates of the control points.
 
 # In[3]:
-import subprocess
+parameters_file = "../tests/test_datasets/parameters_rbf_cube.prm"
+with open(parameters_file, "r", encoding="utf-8") as f:
+    print(f.read())
 
-subprocess.run(["cat", "../tests/test_datasets/parameters_rbf_cube.prm"])
 
 
 # Here we create a $10 \times10 \times 10$ lattice to mimic a cube.

@@ -60,13 +60,24 @@ ffd(input_cad_file_name, modified_cad_file_name)
 
 # The output file is created and the deformed shape is stored into it. We skip any visual check because of the **CAD** format file, so as final proof we simply show the differences, lines by lines, between the input and the output. Even if we can't be sure about the correctness of the results, in this way we ensure the outcome is different from the original inpuit.
 
-import subprocess
+with open(input_cad_file_name, encoding="utf-8") as f1, open(modified_cad_file_name, encoding="utf-8") as f2:
+    lines1 = f1.readlines()
+    lines2 = f2.readlines()
 
-subprocess.run(
-    [
-        "diff",
-        "-y",
-        "../tests/test_datasets/test_pipe.iges",
-        "test_pipe_deformed.iges",
-    ]
-)
+# Determine max width for alignment
+max_len = max(len(line.rstrip()) for line in lines1)
+
+for l1, l2 in zip(lines1, lines2):
+    l1_clean = l1.rstrip()
+    l2_clean = l2.rstrip()
+    sep = " | " if l1_clean != l2_clean else "   "
+    print(f"{l1_clean.ljust(max_len)}{sep}{l2_clean}")
+
+# Handle extra lines if files have different lengths
+if len(lines1) > len(lines2):
+    for l1 in lines1[len(lines2):]:
+        print(f"{l1.rstrip().ljust(max_len)} | ")
+elif len(lines2) > len(lines1):
+    for l2 in lines2[len(lines1):]:
+        print(f"{' '.ljust(max_len)} | {l2.rstrip()}")
+

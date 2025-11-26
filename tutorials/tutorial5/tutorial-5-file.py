@@ -100,7 +100,7 @@ if os.path.exists("cube.vtp"):
 
 urllib.request.urlretrieve(
     "https://raw.githubusercontent.com/mathLab/Smithers/master/tests/test_datasets/cube.vtp",
-    "cube.vtp",
+    "cube.vtp", # codacy: disable=security/url-open
 )
 
 vtp_filename = "cube.vtp"

@@ -59,9 +59,9 @@ idw.read_parameters(filename=parameters_file)
 # In[3]:
 
 
-import subprocess
+with open(parameters_file, "r", encoding="utf-8") as f:
+    print(f.read())
 
-subprocess.run(["cat", "../tests/test_datasets/parameters_idw_cube.prm"])
 
 # Here we create a $10 \times 10 \times 10$ lattice to mimic a cube.
 

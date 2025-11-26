@@ -65,7 +65,6 @@ print(
     custom_linear_constraint(x_def),
 )
 
-from pygem.cffd import CFFD
 
 ffd = CFFD(np.array([1.0]), custom_linear_constraint, [3, 3, 1])
 np.random.seed(0)
