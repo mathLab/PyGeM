@@ -15,58 +15,56 @@
 
 import platform
 import sys
-
-print(f"Python Version: {sys.version}")
-print(f"Platform: {sys.platform}")
-print(f"System: {platform.system()} {platform.release()}")
-
-try:
-    import pygem
-
-    print(f"PyGeM version: {pygem.__version__}")
-except ImportError:
-    print("PyGeM not found. Installing...")
-    import subprocess
-
-    subprocess.check_call(
-        [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]
-    )
-    import pygem
-
-    print(f"PyGeM version: {pygem.__version__}")
-
+import logging
 import numpy as np
 
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+
+# System info
+logging.info(f"Python Version: {sys.version}")
+logging.info(f"Platform: {sys.platform}")
+logging.info(f"System: {platform.system()} {platform.release()}")
+
+# Import PyGeM
+try:
+    import pygem
+except ImportError:
+    raise ImportError(
+        "PyGeM not found. Please install it before running this tutorial.\n"
+        "For example, run: pip install -e '.[tut]' in your environment."
+    )
+
+logging.info(f"PyGeM version: {pygem.__version__}")
+
 np.random.seed(42)
+
 
 import matplotlib.pyplot as plt
 
 # mesh parsing
+# OFPP import
 try:
-    pass
+    import Ofpp
 except ImportError:
-    print("Ofpp not found. Installing...")
-    import subprocess
-
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "ofpp"])
-try:
-    from smithers.io.openfoamhandler import OpenFoamHandler
-except ImportError:
-    print("smithers not found. Installing from GitHub...")
-    import subprocess
-
-    subprocess.check_call(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "git+https://github.com/mathLab/Smithers.git",
-        ]
+    raise ImportError(
+        "OFPP not found. Please install it before running this script.\n"
+        "For example, run: pip install ofpp"
     )
-    from smithers.io.openfoamhandler import OpenFoamHandler
 
-# interpolator
+# Smithers import
+try:
+    from smithers.io.openfoam import OpenFoamHandler
+except ImportError:
+    raise ImportError(
+        "Smithers not found. Please install it before running this script.\n"
+        "For example, run: pip install git+https://github.com/mathLab/Smithers.git"
+    )
+
 
 # deformation
 from pygem import FFD, RBF
@@ -104,7 +102,11 @@ def scatter3d(
 
 # we load the OpenFOAM mesh
 openfoam_handler = OpenFoamHandler()
-mesh = openfoam_handler.read("openfoam_mesh")
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+mesh_path = os.path.join(script_dir, "openfoam_mesh")
+mesh = openfoam_handler.read(mesh_path)
 
 
 # Moreover, the object returned by `read()` contains a list of points for each *boundary*, represented by a list of indexes which refers to `mesh['points']`. We can use these lists to obtain the coordinates of the points which compose the cylinder (which we call *obstacle*) and walls.

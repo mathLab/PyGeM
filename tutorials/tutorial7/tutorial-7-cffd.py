@@ -3,27 +3,31 @@
 
 import platform
 import sys
+import logging
+import numpy as np
 
-print(f"Python Version: {sys.version}")
-print(f"Platform: {sys.platform}")
-print(f"System: {platform.system()} {platform.release()}")
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
+
+# System info
+logging.info(f"Python Version: {sys.version}")
+logging.info(f"Platform: {sys.platform}")
+logging.info(f"System: {platform.system()} {platform.release()}")
+
+# Import PyGeM
 try:
     import pygem
-
-    print(f"PyGeM version: {pygem.__version__}")
 except ImportError:
-    print(f"PyGeM not found. Installing...")
-    import subprocess
-
-    subprocess.check_call(
-        [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]
+    raise ImportError(
+        "PyGeM not found. Please install it before running this tutorial.\n"
+        "For example, run: pip install -e '.[tut]' in your environment."
     )
-    import pygem
 
-    print(f"PyGeM version: {pygem.__version__}")
-
-import numpy as np
+logging.info(f"PyGeM version: {pygem.__version__}")
 
 np.random.seed(42)
 
@@ -31,7 +35,6 @@ import matplotlib.pyplot as plt
 
 from pygem.cffd import CFFD
 
-np.random.seed(0)
 x = 0.5 * np.random.rand(100, 3) + 0.25
 ax = plt.axes(projection="3d")
 ax.plot3D(x[:, 0], x[:, 1], x[:, 2], "o")
@@ -106,13 +109,13 @@ plt.show()
 try:
     import meshio
 except ImportError:
-    print("meshio not found. Installing...")
-    import subprocess
+    raise ImportError(
+        "meshio not found. Please install it before running this tutorial.\n"
+        "For example, run: pip install meshio"
+    )
 
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "meshio"])
-    import meshio
 
-mesh = meshio.read("../tests/test_datasets/Stanford_Bunny.stl")
+mesh = meshio.read("tests/test_datasets/Stanford_Bunny.stl")
 points = mesh.points
 faces = mesh.cells_dict["triangle"]
 points = points - np.min(points) + 0.1

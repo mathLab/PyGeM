@@ -12,53 +12,52 @@
 #
 # As usually, at the beginning we import all the modules we need.
 
-import platform
-
 # In[1]:
+import platform
 import sys
-
-print(f"Python Version: {sys.version}")
-print(f"Platform: {sys.platform}")
-print(f"System: {platform.system()} {platform.release()}")
-import subprocess
-
-try:
-    import pygem
-
-    print(f"PyGeM version: {pygem.__version__}")
-except ImportError:
-    print("PyGeM not found. Installing...")
-    # Installing from local source. It can be replaced with github installation once pushed and merged.
-    subprocess.check_call(
-        [sys.executable, "-m", "pip", "install", "-e", ".[tut]"]
-    )
-    import pygem
-
-    print(f"PyGeM version: {pygem.__version__}")
-
-try:
-    from smithers import io
-except ImportError:
-    print("smithers not found. Installing from GitHub...")
-    subprocess.check_call(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "git+https://github.com/mathLab/Smithers.git",
-        ]
-    )
-    from smithers import io
-
+import logging
 import numpy as np
+
+# -----------------------------
+# Setup logging
+# -----------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+logging.info(f"Python Version: {sys.version}")
+logging.info(f"Platform: {sys.platform}")
+logging.info(f"System: {platform.system()} {platform.release()}")
+
+# -----------------------------
+# Import PyGeM
+# -----------------------------
+try:
+    import pygem
+except ImportError:
+    raise ImportError(
+        "PyGeM not found. Please install it before running this tutorial.\n"
+        "For example, run: pip install -e '.[tut]'"
+    )
+logging.info(f"PyGeM version: {pygem.__version__}")
 
 np.random.seed(42)
 
+# -----------------------------
+# Import Smithers
+# -----------------------------
+try:
+    from smithers import io
+except ImportError:
+    raise ImportError(
+        "Smithers not found. Please install it before running this script.\n"
+        "For example, run: pip install git+https://github.com/mathLab/Smithers.git"
+    )
 
-from smithers import io
 
 from pygem import FFD
+
 
 # For visualization purpose, we also implement a small function that shows the object parsed with **Smithers**.
 
