@@ -308,7 +308,7 @@ class RBF(Deformation):
         output_string += " polyharmonic_spline.\n"
         output_string += "# For a comprehensive list with details see the"
         output_string += " class RBF.\n"
-        output_string += f"basis function: {"gaussian_spline"}\n"
+        output_string += f"basis function: {'gaussian_spline'}\n"
 
         output_string += "\n# radius is the scaling parameter r that affects"
         output_string += " the shape of the basis functions. See the"

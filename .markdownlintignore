@@ -1,0 +1,21 @@
+# Virtual environments
+venv*/
+env*/
+.venv*/
+
+# Python packages
+**/site-packages/**
+**/dist-packages/**
+
+# Build / distribution folders
+build/
+dist/
+*.egg-info/
+
+# Cache and temporary files
+.mypy_cache/
+.pytest_cache/
+.cache/
+
+# Node.js modules
+node_modules/

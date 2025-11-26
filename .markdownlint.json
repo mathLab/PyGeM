@@ -1,10 +1,20 @@
 {
   "default": true,
-  "MD041": false,
-  "MD012": false,
-  "ignores": [
-    "venv_pygem/**",
-    "venv/**",
-    "**/site-packages/**"
+  "MD013": { "line_length": 80 },
+  "MD040": true,
+  "MD014": true,
+  "ignore": [
+    "venv*/**",
+    "env*/**",
+    ".venv*/**",
+    "**/site-packages/**",
+    "**/dist-packages/**",
+    "build/**",
+    "dist/**",
+    "*.egg-info/**",
+    ".mypy_cache/**",
+    ".pytest_cache/**",
+    ".cache/**",
+    "node_modules/**"
   ]
 }
