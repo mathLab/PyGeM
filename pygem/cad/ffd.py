@@ -1,4 +1,5 @@
-"""Utilities for performing Free Form Deformation (FFD) to CAD geometries.
+"""
+Utilities for performing Free Form Deformation (FFD) to CAD geometries.
 
 :Theoretical Insight:
 
@@ -37,15 +38,16 @@
 
     You can try to add more shapes to the lattice to allow more and more
     involved transformations.
+
 """
 
+import numpy as np
 from pygem import FFD as OriginalFFD
-
 from .cad_deformation import CADDeformation
 
-
 class FFD(CADDeformation, OriginalFFD):
-    """Class that handles the Free Form Deformation on CAD geometries.
+    """
+    Class that handles the Free Form Deformation on CAD geometries.
 
     :param list n_control_points: number of control points in the x, y, and z
         direction. If not provided it is set to [2, 2, 2].
@@ -137,20 +139,16 @@ class FFD(CADDeformation, OriginalFFD):
         >>> # is equivalent to
         >>> new_shape = ffd(CADDeformation.read_shape(input_cad_file_name))
     """
-
-    def __init__(
-        self,
-        n_control_points=None,
-        u_knots_to_add=0,
-        v_knots_to_add=0,
-        t_knots_to_add=0,
-        tolerance=1e-4,
-    ):
-        OriginalFFD.__init__(self, n_control_points=n_control_points)
-        CADDeformation.__init__(
-            self,
-            u_knots_to_add=u_knots_to_add,
-            v_knots_to_add=v_knots_to_add,
-            t_knots_to_add=t_knots_to_add,
-            tolerance=tolerance,
-        )
+    def __init__(self,
+                 n_control_points=None,
+                 u_knots_to_add=0,
+                 v_knots_to_add=0,
+                 t_knots_to_add=0,
+                 tolerance=1e-4):
+        OriginalFFD.__init__(self,
+                             n_control_points=n_control_points)
+        CADDeformation.__init__(self, 
+                                u_knots_to_add=u_knots_to_add, 
+                                v_knots_to_add=v_knots_to_add, 
+                                t_knots_to_add=t_knots_to_add, 
+                                tolerance=tolerance)

@@ -1,16 +1,16 @@
-"""Module for the abstract Deformation class."""
+"""
+Module for the abstract Deformation class
+"""
 
 from abc import ABC, abstractmethod
-
-
-# pylint: disable=R0903
+ 
 class Deformation(ABC):
-    """Abstract class for generic deformation.
-
-    This class should be inherited for the development of new
-    deformation techniques.
     """
-
+    Abstract class for generic deformation.
+    This class should be inherited for the development of new deformation
+    techniques.
+    """
+ 
     @abstractmethod
     def __init__(self, value):
         pass

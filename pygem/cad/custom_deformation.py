@@ -1,12 +1,14 @@
-"""Module for custom deformations to CAD geometries."""
+"""
+Module for custom deformations to CAD geometries.
+"""
 
+import numpy as np
 from pygem import CustomDeformation as OriginalCustomDeformation
-
 from .cad_deformation import CADDeformation
 
-
 class CustomDeformation(CADDeformation, OriginalCustomDeformation):
-    """Class to perform a custom deformation to the CAD geometries.
+    """
+    Class to perform a custom deformation to the CAD geometries.
 
     :param callable func: the function definying the deformation of the input
         points. This function should take as input: *i*) a 2D array of shape
@@ -43,17 +45,17 @@ class CustomDeformation(CADDeformation, OriginalCustomDeformation):
         default value only if the input file scale is significantly different
         form mm, making some of the aforementioned operations fail. Default is
         0.0001.
-
+        
     :cvar int u_knots_to_add: the number of knots to add to the NURBS surfaces
-        along `u` direction before the deformation.
+        along `u` direction before the deformation.   
     :cvar int v_knots_to_add: the number of knots to add to the NURBS surfaces
         along `v` direction before the deformation.
     :cvar int t_knots_to_add: the number of knots to add to the NURBS curves
         before the deformation.
     :cvar float tolerance: the tolerance involved in several internal
         operations of the procedure (joining wires in a single curve before
-        deformation and placing new poles on curves and surfaces).
-
+        deformation and placing new poles on curves and surfaces).          
+         
     :Example:
 
         >>> from pygem.cad import CustomDeformation
@@ -62,20 +64,15 @@ class CustomDeformation(CADDeformation, OriginalCustomDeformation):
         >>> deform = CustomDeformation(move)
         >>> deform('original_shape.iges', dst='new_shape.iges')
     """
-
-    def __init__(
-        self,
-        func,
-        u_knots_to_add=0,
-        v_knots_to_add=0,
-        t_knots_to_add=0,
-        tolerance=1e-4,
-    ):
+    def __init__(self,
+                 func,
+                 u_knots_to_add=0,
+                 v_knots_to_add=0,
+                 t_knots_to_add=0,
+                 tolerance=1e-4):
         OriginalCustomDeformation.__init__(self, func)
-        CADDeformation.__init__(
-            self,
-            u_knots_to_add=u_knots_to_add,
-            v_knots_to_add=v_knots_to_add,
-            t_knots_to_add=t_knots_to_add,
-            tolerance=tolerance,
-        )
+        CADDeformation.__init__(self, 
+                                u_knots_to_add=u_knots_to_add, 
+                                v_knots_to_add=v_knots_to_add, 
+                                t_knots_to_add=t_knots_to_add, 
+                                tolerance=tolerance)

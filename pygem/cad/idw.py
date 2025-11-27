@@ -1,10 +1,11 @@
-"""Module focused on the Inverse Distance Weighting interpolation technique.
+"""
+Module focused on the Inverse Distance Weighting interpolation technique.
 The IDW algorithm is an average moving interpolation that is usually applied to
-highly variable data. The main idea of this interpolation strategy lies in fact
-that it is not desirable to honour local high/low values but rather to look at
-a moving average of nearby data points and estimate the local trends. The node
-value is calculated by averaging the weighted sum of all the points. Data
-points that lie progressively farther from the node inuence much less the
+highly variable data. The main idea of this interpolation strategy lies in
+fact that it is not desirable to honour local high/low values but rather to look
+at a moving average of nearby data points and estimate the local trends.
+The node value is calculated by averaging the weighted sum of all the points.
+Data points that lie progressively farther from the node inuence much less the
 computed value than those lying closer to the node.
 
 :Theoretical Insight:
@@ -36,14 +37,13 @@ computed value than those lying closer to the node.
     2.
 """
 
+import numpy as np
 from pygem import IDW as OriginalIDW
-
 from .cad_deformation import CADDeformation
 
-
 class IDW(CADDeformation, OriginalIDW):
-    """Class that perform the Inverse Distance Weighting (IDW) on CAD
-    geometries.
+    """
+    Class that perform the Inverse Distance Weighting (IDW) on CAD geometries.
 
     :param int power: the power parameter. The default value is 2.
     :param numpy.ndarray original_control_points: it is an
@@ -84,7 +84,7 @@ class IDW(CADDeformation, OriginalIDW):
         default value only if the input file scale is significantly different
         form mm, making some of the aforementioned operations fail. Default is
         0.0001.
-
+        
     :cvar int power: the power parameter. The default value is 2.
     :cvar numpy.ndarray original_control_points: it is an
         (*n_control_points*, *3*) array with the coordinates of the original
@@ -135,27 +135,20 @@ class IDW(CADDeformation, OriginalIDW):
         >>> modified_cad_file_name = "output.iges"
         >>> idw(input_cad_file_name, modified_cad_file_name)
     """
-
-    def __init__(
-        self,
-        original_control_points=None,
-        deformed_control_points=None,
-        power=2,
-        u_knots_to_add=0,
-        v_knots_to_add=0,
-        t_knots_to_add=0,
-        tolerance=1e-4,
-    ):
-        OriginalIDW.__init__(
-            self,
-            original_control_points=original_control_points,
-            deformed_control_points=deformed_control_points,
-            power=power,
-        )
-        CADDeformation.__init__(
-            self,
-            u_knots_to_add=u_knots_to_add,
-            v_knots_to_add=v_knots_to_add,
-            t_knots_to_add=t_knots_to_add,
-            tolerance=tolerance,
-        )
+    def __init__(self,
+                 original_control_points=None,
+                 deformed_control_points=None,
+                 power=2,
+                 u_knots_to_add=0,
+                 v_knots_to_add=0,
+                 t_knots_to_add=0,
+                 tolerance=1e-4):
+        OriginalIDW.__init__(self,
+                             original_control_points=original_control_points,
+                             deformed_control_points=deformed_control_points,
+                             power=power)
+        CADDeformation.__init__(self,
+                                u_knots_to_add=u_knots_to_add,
+                                v_knots_to_add=v_knots_to_add,
+                                t_knots_to_add=t_knots_to_add,
+                                tolerance=tolerance)
