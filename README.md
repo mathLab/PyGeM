@@ -46,7 +46,7 @@ package.
 
 **PyGeM** requires `numpy`, `scipy`, and `matplotlib` as core dependencies.
 `sphinx` is needed for the documentation and `pytest` for testing. They can be
-easily installed via `pip`. The code has been tested with Python3.12.9 version,
+easily installed via `pip`. The code has been tested with Python3.10 version,
 but it should be compatible with Python3.9+. Python2 support is no longer
 maintained.
 

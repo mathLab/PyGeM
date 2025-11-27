@@ -11,7 +11,7 @@ init-hook="import numpy"
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
-ignore=venv_pygem,build,pygem.egg-info,docs,dockerfiles,test_final_verification.py,code_formatter.sh,pyproject.toml
+ignore=build,pygem.egg-info,docs,dockerfiles,code_formatter.sh,pyproject.toml
 
 # Pickle collected data for later comparisons.
 persistent=no
@@ -177,7 +177,7 @@ output-format=parseable
 # Put messages in a separate file for each module / package specified on the
 # command line instead of printing them on stdout. Reports (if any) will be
 # written in a file name "pylint_global.[txt|html]".
-# files-output=no
+files-output=no
 
 # Tells whether to display a full report or only the messages
 reports=no
@@ -217,7 +217,7 @@ single-line-if-stmt=no
 # separator` is used to allow tabulation in dicts, etc.: {1  : 1,\n222: 2}.
 # `trailing-comma` allows a space between comma and closing bracket: (a, ).
 # `empty-line` allows space-only lines.
-# no-space-check=trailing-comma,dict-separator
+no-space-check=trailing-comma,dict-separator
 
 # Maximum number of lines in a module
 max-module-lines=1000
@@ -315,7 +315,7 @@ notes=FIXME,XXX,TODO
 [BASIC]
 
 # List of builtins function names that should not be used, separated by a comma
-# bad-functions=map,filter,input
+bad-functions=map,filter,input
 
 # Good variable names which should always be accepted, separated by a comma
 good-names=i,j,k,x,y,z,ex,Run,_

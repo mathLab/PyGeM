@@ -16,4 +16,4 @@ from .ffd import FFD
 from .rbf import RBF
 from .idw import IDW # noqa: F401
 from .custom_deformation import CustomDeformation # noqa: F401
-from .cad_deformation import CADDeformation
+from .cad_deformation import CADDeformation # noqa: F401
