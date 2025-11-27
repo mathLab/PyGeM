@@ -27,7 +27,7 @@ cad_argv = ["--tests"] + test_cad
 return_value = 0  # Success
 
 try:
-    import pygem.cad  # pylint: disable=unused-import
+    import pygem.cad  # pylint: disable=unused-import # noqa: F401
 
     return_value = 1 if nose.run(argv=cad_argv) is False else 0
 except ImportError:

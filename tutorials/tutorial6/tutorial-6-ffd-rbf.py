@@ -49,7 +49,7 @@ import matplotlib.pyplot as plt
 # mesh parsing
 # OFPP import
 try:
-    import Ofpp
+    import Ofpp # noqa: F401
 except ImportError:
     raise ImportError(
         "OFPP not found. Please install it before running this script.\n"
