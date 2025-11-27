@@ -1,7 +1,7 @@
+import filecmp
+import os
 from unittest import TestCase
-
 import numpy as np
-
 from pygem import CFFD
 
 
@@ -20,11 +20,8 @@ class TestCFFD(TestCase):
         cffd = CFFD(b, fun)
         cffd.adjust_control_points(original_mesh_points)
         new_mesh_points = cffd.ffd(original_mesh_points)
-        assert (  # nosec  # nosec
-            np.linalg.norm(original_mesh_points - new_mesh_points)
-            / np.linalg.norm(original_mesh_points)
-            < 1e-02
-        )
+        assert np.linalg.norm(original_mesh_points - new_mesh_points
+                              ) / np.linalg.norm(original_mesh_points) < 1e-02
 
     def test_constraint_cffd(self):
         np.random.seed(0)
@@ -37,9 +34,9 @@ class TestCFFD(TestCase):
 
         b = fun(original_mesh_points) + 0.02 * np.random.rand(3)
         cffd = CFFD(b, fun)
-        cffd.read_parameters("tests/test_datasets/parameters_test_cffd.prm")
+        cffd.read_parameters('tests/test_datasets/parameters_test_cffd.prm')
         cffd.adjust_control_points(original_mesh_points)
         new_mesh_points = cffd.ffd(original_mesh_points)
-        assert (  # nosec  # nosec
-            np.linalg.norm(b - fun(new_mesh_points)) / np.linalg.norm(b) < 1e-02
-        )
+        assert np.linalg.norm(b -
+                              fun(new_mesh_points)) / np.linalg.norm(b) < 1e-02
+
