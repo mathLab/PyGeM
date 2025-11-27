@@ -31,7 +31,7 @@ jobs:
     - name: Installing packages
       shell: bash -el {0}
       run: |
-        conda install --yes -c conda-forge -c anaconda pythonocc-core
+        conda install --yes -c conda-forge -c anaconda pythonocc-core=7.4.0
         python -m pip install --upgrade pip
         python -m pip install smithers[vtk]
         python -m pip install .[test]
