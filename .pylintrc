@@ -11,7 +11,7 @@ init-hook="import numpy"
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
-ignore=build,pygem.egg-info,docs,dockerfiles,code_formatter.sh,pyproject.toml
+ignore=
 
 # Pickle collected data for later comparisons.
 persistent=no
@@ -39,7 +39,7 @@ extension-pkg-whitelist=
 # operator. Joining a lot of strings can lead to a maximum recursion error in
 # Pylint and this flag can prevent that. It has one side effect, the resulting
 # AST will be different than the one from reality.
-# optimize-ast=no
+optimize-ast=no
 
 
 [MESSAGES CONTROL]
@@ -51,7 +51,7 @@ confidence=
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time. See also the "--disable" option for examples.
-# disable=
+disable=
 #    too-many-instance-attributes,
 #    len-as-condition,
 #    too-few-public-methods,
@@ -126,22 +126,10 @@ confidence=
 #    bad-python3-import,
 #    deprecated-string-function,
 #    deprecated-str-translate-call,
-    ;  import-error,
-    ;  arguments-differ,
-    ;  F401,
-    ;  C0114,
-    ;  C0115,
-    ;  C0116,
-    ;  R0801,
-    ;  W0511,
-    ;  R0914,
-    ;  R0915,
-    ;  C0103,
+     import-error,
+     arguments-differ,
 #    invalid-name,
 #    consider-using-enumerate
-
-disable=import-error,arguments-differ,F401,C0114,C0115,C0116,R0801,W0511,R0914,R0915,C0103
-
 
 # Needs investigation:
 # abstract-method (might be indicating a bug? probably not though)
@@ -334,61 +322,61 @@ include-naming-hint=no
 function-rgx=[a-z_][a-z0-9_]{2,30}$
 
 # Naming hint for function names
-# function-name-hint=[a-z_][a-z0-9_]{2,30}$
+function-name-hint=[a-z_][a-z0-9_]{2,30}$
 
 # Regular expression matching correct variable names
 variable-rgx=[a-z_][a-z0-9_]{2,30}$
 
 # Naming hint for variable names
-# variable-name-hint=[a-z_][a-z0-9_]{2,30}$
+variable-name-hint=[a-z_][a-z0-9_]{2,30}$
 
 # Regular expression matching correct constant names
 const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 
 # Naming hint for constant names
-# const-name-hint=(([A-Z_][A-Z0-9_]*)|(__.*__))$
+const-name-hint=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 
 # Regular expression matching correct attribute names
 attr-rgx=[a-z_][a-z0-9_]{2,30}$
 
 # Naming hint for attribute names
-# attr-name-hint=[a-z_][a-z0-9_]{2,30}$
+attr-name-hint=[a-z_][a-z0-9_]{2,30}$
 
 # Regular expression matching correct argument names
 argument-rgx=[a-z_][a-z0-9_]{2,30}$
 
 # Naming hint for argument names
-# argument-name-hint=[a-z_][a-z0-9_]{2,30}$
+argument-name-hint=[a-z_][a-z0-9_]{2,30}$
 
 # Regular expression matching correct class attribute names
 class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
 
 # Naming hint for class attribute names
-# class-attribute-name-hint=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
+class-attribute-name-hint=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
 
 # Regular expression matching correct inline iteration names
 inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
 
 # Naming hint for inline iteration names
-# inlinevar-name-hint=[A-Za-z_][A-Za-z0-9_]*$
+inlinevar-name-hint=[A-Za-z_][A-Za-z0-9_]*$
 
 # Regular expression matching correct class names
 class-rgx=[A-Z_][a-zA-Z0-9]+$
 
 # Naming hint for class names
-# class-name-hint=[A-Z_][a-zA-Z0-9]+$
+class-name-hint=[A-Z_][a-zA-Z0-9]+$
 
 # Regular expression matching correct module names
 module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
 
 # Naming hint for module names
-# module-name-hint=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+module-name-hint=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
 
 # Regular expression matching correct method names
 method-rgx=[a-z_][a-z0-9_]{2,30}$
 
 # Naming hint for method names
-# method-name-hint=[a-z_][a-z0-9_]{2,30}$
+method-name-hint=[a-z_][a-z0-9_]{2,30}$
 
 # Regular expression which should only match function or class names that do
 # not require a docstring.
@@ -402,7 +390,7 @@ docstring-min-length=-1
 [ELIF]
 
 # Maximum number of nested blocks for function / method body
-max-nested-blocks=6
+max-nested-blocks=5
 
 
 [IMPORTS]
@@ -428,9 +416,6 @@ int-import-graph=
 # Maximum number of arguments for function / method
 max-args=8
 
-# Maximum number of positional arguments for function / method
-max-positional-arguments=6
-
 # Argument names that match this expression will be ignored. Default to name
 # with leading underscore
 ignored-argument-names=_.*
@@ -442,7 +427,7 @@ max-locals=20
 max-returns=4
 
 # Maximum number of branch for function / method body
-max-branches=13
+max-branches=12
 
 # Maximum number of statements in function / method body
 max-statements=50
@@ -451,16 +436,16 @@ max-statements=50
 max-parents=7
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=8
+max-attributes=7
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=1
+min-public-methods=2
 
 # Maximum number of public methods for a class (see R0904).
 max-public-methods=20
 
 # Maximum number of boolean expressions in a if statement
-max-bool-expr=6
+max-bool-expr=5
 
 
 [CLASSES]
@@ -483,4 +468,4 @@ exclude-protected=_asdict,_fields,_replace,_source,_make
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=builtins.Exception
+overgeneral-exceptions=Exception
