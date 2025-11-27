@@ -81,3 +81,7 @@ version = { attr = "pygem.meta.__version__" }
 [tool.black]
 line-length = 80
 target-version = ['py39']
+
+[tool.flake8]
+ignore = "F401"
+

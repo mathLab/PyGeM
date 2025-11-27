@@ -3,6 +3,7 @@
   "MD013": false,
   "MD040": true,
   "MD014": true,
+  "MD041": false,
   "ignore": [
     "venv*/**",
     "env*/**",

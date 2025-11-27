@@ -51,7 +51,7 @@ confidence=
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time. See also the "--disable" option for examples.
-disable=
+# disable=
 #    too-many-instance-attributes,
 #    len-as-condition,
 #    too-few-public-methods,
@@ -126,18 +126,22 @@ disable=
 #    bad-python3-import,
 #    deprecated-string-function,
 #    deprecated-str-translate-call,
-     import-error,
-     arguments-differ,
-     C0114,
-     C0115,
-     C0116,
-     R0801,
-     W0511,
-     R0914,
-     R0915,
-     C0103,
+    ;  import-error,
+    ;  arguments-differ,
+    ;  F401,
+    ;  C0114,
+    ;  C0115,
+    ;  C0116,
+    ;  R0801,
+    ;  W0511,
+    ;  R0914,
+    ;  R0915,
+    ;  C0103,
 #    invalid-name,
 #    consider-using-enumerate
+
+disable=import-error,arguments-differ,F401,C0114,C0115,C0116,R0801,W0511,R0914,R0915,C0103
+
 
 # Needs investigation:
 # abstract-method (might be indicating a bug? probably not though)
