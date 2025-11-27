@@ -2,6 +2,10 @@ name: "Testing Pull Request"
 
 on:
   pull_request:
+    branches:
+      - "master"
+
+
 
 
 jobs:
@@ -11,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
-        python-version: ["3.9", "3.10"]        
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]        
     steps:
     - uses: actions/checkout@v2
 
