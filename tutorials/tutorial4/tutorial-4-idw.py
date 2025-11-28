@@ -5,25 +5,50 @@
 # ## Tutorial 5: Inverse Distance Weighting interpolation technique on a cube
 
 # In this tutorial we will show how to use the Inverse Distance Weighting interpolation technique to deform a cube.
-# 
+#
 # First of all, we import the required class, the numpy package and we set matplotlib for the notebook.
 
 # In[1]:
 
-
-get_ipython().run_line_magic('matplotlib', 'inline')
+import platform
+import sys
+import logging
 import numpy as np
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+
+# System info
+logging.info(f"Python Version: {sys.version}")
+logging.info(f"Platform: {sys.platform}")
+logging.info(f"System: {platform.system()} {platform.release()}")
+
+# Import PyGeM
+try:
+    import pygem
+except ImportError:
+    raise ImportError(
+        "PyGeM not found. Please install it  before running this tutorial.\n"
+        "For example, run: pip install -e '.[tut]' in your environment."
+    )
+
+logging.info(f"PyGeM version: {pygem.__version__}")
+
+np.random.seed(42)
 import matplotlib.pyplot as plt
 
 from pygem import IDW
-
 
 # We need to set the deformation parameters: we can set manually, by editing the `IDW` attributes, or we can read them by parsing a file. We remark that it is possible to save the parameters (for example, after set them manually) to a file in order to edit this for the future deformations.
 
 # In[2]:
 
 
-parameters_file = '../tests/test_datasets/parameters_idw_cube.prm'
+parameters_file = "../tests/test_datasets/parameters_idw_cube.prm"
 
 idw = IDW()
 idw.read_parameters(filename=parameters_file)
@@ -34,7 +59,8 @@ idw.read_parameters(filename=parameters_file)
 # In[3]:
 
 
-get_ipython().run_line_magic('cat', "'../tests/test_datasets/parameters_idw_cube.prm'")
+with open(parameters_file, "r", encoding="utf-8") as f:
+    print(f.read())
 
 
 # Here we create a $10 \times 10 \times 10$ lattice to mimic a cube.
@@ -60,11 +86,11 @@ mesh = mesh.T
 
 
 fig = plt.figure(1)
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(mesh[:, 0], mesh[:, 1], mesh[:, 2], c='blue', marker='o')
-ax.set_xlabel('X axis')
-ax.set_ylabel('Y axis')
-ax.set_zlabel('Z axis')
+ax = fig.add_subplot(111, projection="3d")
+ax.scatter(mesh[:, 0], mesh[:, 1], mesh[:, 2], c="blue", marker="o")
+ax.set_xlabel("X axis")
+ax.set_ylabel("Y axis")
+ax.set_zlabel("Z axis")
 plt.show()
 
 
@@ -82,10 +108,9 @@ new_mesh = idw(mesh)
 
 
 fig = plt.figure(2)
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(new_mesh[:, 0], new_mesh[:, 1], new_mesh[:, 2], c='red', marker='o')
-ax.set_xlabel('X axis')
-ax.set_ylabel('Y axis')
-ax.set_zlabel('Z axis')
+ax = fig.add_subplot(111, projection="3d")
+ax.scatter(new_mesh[:, 0], new_mesh[:, 1], new_mesh[:, 2], c="red", marker="o")
+ax.set_xlabel("X axis")
+ax.set_ylabel("Y axis")
+ax.set_zlabel("Z axis")
 plt.show()
-

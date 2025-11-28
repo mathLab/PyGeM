@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygem"
+dynamic = ["version"]
+description = "Python Geometrical Morphing"
+readme = {file = "README.md", content-type = "text/markdown"}
+keywords = ["dimension_reduction", "mathematics", "ffd", "morphing", "iges", "stl", "vtk", "openfoam"]
+authors = [
+    {name = "Marco Tezzele", email = "marcotez@gmail.com"},
+    {name = "Nicola Demo", email = "demo.nicola@gmail.com"},
+    {name = "Andrea Mola", email = "amola@sissa.it"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10", 
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics"
+]
+requires-python = ">=3.9"
+dependencies = [
+    "future",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "vtk"
+]
+
+[project.urls]
+Homepage = "https://github.com/mathLab/PyGeM"
+Documentation = "http://mathlab.github.io/PyGeM/"
+Repository = "https://github.com/mathLab/PyGeM"
+"Bug Reports" = "https://github.com/mathLab/PyGeM/issues"
+
+[project.optional-dependencies]
+docs = [
+    "Sphinx",
+    "sphinx_rtd_theme"
+]
+test = [
+    "pytest",
+    "pytest-cov"
+]
+tut = [
+    "jupyter",
+    "notebook",
+    "ipywidgets",
+    "nbconvert",
+]
+dev = [
+    "Sphinx",
+    "sphinx_rtd_theme",
+    "pytest",
+    "pytest-cov",
+    "jupyter",
+    "notebook",
+    "ipywidgets",
+    "nbconvert",
+    "black",
+    "pylint"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pygem*"]
+exclude = ["tests*", "docs*", "tutorials*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "pygem.meta.__version__" }
+
+[tool.black]
+line-length = 80
+target-version = ['py39']
+
+[tool.flake8]
+ignore = "F401"
+

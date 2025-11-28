@@ -5,7 +5,6 @@ on:
     branches:
       - "master"
 
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -13,31 +12,27 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
-        python-version: [3.7, 3.8]
-        
+        python-version: ["3.9", "3.10", "3.11", "3.12"]        
     steps:
     - uses: actions/checkout@v2
 
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    
+    - name: Installing conda
+      uses: conda-incubator/setup-miniconda@v3
+      
       with:
+        auto-update-conda: true
         python-version: ${{ matrix.python-version }}
-
-    - name: Setup conda
-      uses: s-weigand/setup-conda@v1
-      with:
-        update-conda: true
-        python-version: ${{ matrix.python-version }}
-        conda-channels: anaconda, conda-forge
-  
-    - name: Install Python dependencies
+        channels: conda-forge
+    
+    - name: Installing packages
+      shell: bash -el {0}
       run: |
-        conda install --yes pythonocc-core=7.4.0
-        python3 -m pip install --upgrade pip
-        python3 -m pip install smithers[vtk]
-        python3 -m pip install .[test]
-
+        conda install --yes -c conda-forge pythonocc-core=7.4.0
+        python -m pip install --upgrade pip
+        python -m pip install .[test]
+    
     - name: Test with pytest
+      shell: bash -el {0}
       run: |
-        python3 -m pytest
+        python -m pytest

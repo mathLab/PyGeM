@@ -1,12 +1,13 @@
-import matplotlib
-matplotlib.use('agg')
-
+import sys
 import nose
+import matplotlib
+
+matplotlib.use("agg")
 
 test_defaults = [
-    'tests/test_ffd.py',
-    'tests/test_idw.py',
-    'tests/test_rbf.py',
+    "tests/test_ffd.py",
+    "tests/test_idw.py",
+    "tests/test_rbf.py",
     #'tests/test_khandler.py',
     #'tests/test_mdpahandler.py',
     #'tests/test_openfhandler.py',
@@ -17,21 +18,21 @@ test_defaults = [
 
 
 test_cad = [
-    'tests/test_ffdcad.py',
+    "tests/test_ffdcad.py",
 ]
 
-default_argv = ['--tests'] + test_defaults
-cad_argv = ['--tests'] + test_cad
+default_argv = ["--tests"] + test_defaults
+cad_argv = ["--tests"] + test_cad
 
-return_value = 0 # Success
+return_value = 0  # Success
 
 try:
-    import pygem.cad
+    import pygem.cad  # pylint: disable=unused-import # noqa: F401
+
     return_value = 1 if nose.run(argv=cad_argv) is False else 0
-except:
-    print('module OCC not found, skip tests for CAD')
+except ImportError:
+    print("module OCC not found, skip tests for CAD")
 
 return_value = 1 if nose.run(argv=default_argv) is False else 0
 
-import sys
 sys.exit(int(return_value))
