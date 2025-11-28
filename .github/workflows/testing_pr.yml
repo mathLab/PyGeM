@@ -5,9 +5,6 @@ on:
     branches:
       - "master"
 
-
-
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -26,14 +23,13 @@ jobs:
       with:
         auto-update-conda: true
         python-version: ${{ matrix.python-version }}
-        channels: anaconda, conda-forge
+        channels: conda-forge
     
     - name: Installing packages
       shell: bash -el {0}
       run: |
-        conda install --yes -c conda-forge -c anaconda pythonocc-core=7.4.0
+        conda install --yes -c conda-forge pythonocc-core=7.4.0
         python -m pip install --upgrade pip
-        python -m pip install smithers[vtk]
         python -m pip install .[test]
     
     - name: Test with pytest
