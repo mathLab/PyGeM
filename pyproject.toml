@@ -25,12 +25,12 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Mathematics"
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 dependencies = [
     "future",
-    "numpy>=1.21.0",
-    "scipy>=1.7.0",
-    "matplotlib>=3.5.0",
+    "numpy",
+    "scipy",
+    "matplotlib",
     "vtk"
 ]
 
@@ -42,12 +42,12 @@ Repository = "https://github.com/mathLab/PyGeM"
 
 [project.optional-dependencies]
 docs = [
-    "Sphinx>=5.0.0",
-    "sphinx_rtd_theme>=1.0.0"
+    "Sphinx",
+    "sphinx_rtd_theme"
 ]
 test = [
-    "pytest>=6.0.0",
-    "pytest-cov>=3.0.0"
+    "pytest",
+    "pytest-cov"
 ]
 tut = [
     "jupyter",
@@ -56,16 +56,16 @@ tut = [
     "nbconvert",
 ]
 dev = [
-    "Sphinx>=5.0.0",
-    "sphinx_rtd_theme>=1.0.0",
-    "pytest>=6.0.0",
-    "pytest-cov>=3.0.0",
+    "Sphinx",
+    "sphinx_rtd_theme",
+    "pytest",
+    "pytest-cov",
     "jupyter",
     "notebook",
     "ipywidgets",
     "nbconvert",
-    "black>=23.0.0",
-    "pylint>=3.0.0"
+    "black",
+    "pylint"
 ]
 
 [tool.setuptools]
