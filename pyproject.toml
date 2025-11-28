@@ -25,7 +25,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Mathematics"
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "future",
     "numpy",
