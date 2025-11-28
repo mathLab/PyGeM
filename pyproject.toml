@@ -30,7 +30,7 @@ dependencies = [
     "future",
     "numpy>=1.21.0",
     "scipy>=1.7.0",
-    "matplotlib>=3.5.0"
+    "matplotlib>=3.5.0",
     "vtk"
 ]
 
