@@ -5,7 +5,7 @@ import os
 import numpy as np
 from itertools import product
 from OCC.Core.TopoDS import (TopoDS_Shape, TopoDS_Wire, TopoDS_Compound,
-                             TopoDS_Face, TopoDS_Edge, TopoDS_Face, TopoDS_Wire)
+                             TopoDS_Face, TopoDS_Wire)
 from OCC.Core.BRep import BRep_Builder
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import (TopAbs_EDGE, TopAbs_FACE, TopAbs_WIRE)
