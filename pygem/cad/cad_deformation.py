@@ -4,8 +4,8 @@ Module for generic deformation for CAD file.
 import os
 import numpy as np
 from itertools import product
-from OCC.Core.TopoDS import (TopoDS_Shape, topods_Wire, TopoDS_Compound,
-                             topods_Face, topods_Edge, TopoDS_Face, TopoDS_Wire)
+from OCC.Core.TopoDS import (TopoDS_Shape, TopoDS_Wire, TopoDS_Compound,
+                             TopoDS_Face, TopoDS_Edge, TopoDS_Face, TopoDS_Wire)
 from OCC.Core.BRep import BRep_Builder
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import (TopAbs_EDGE, TopAbs_FACE, TopAbs_WIRE)
@@ -87,7 +87,7 @@ class CADDeformation():
     @staticmethod
     def read_shape(filename):
         """
-    	Static method to load the `topoDS_Shape` from a file.
+    	Static method to load the `TopoDS_Shape` from a file.
     	Supported extensions are: ".iges", ".step".
     	
     	:param str filename: the name of the file containing the geometry.
@@ -126,7 +126,7 @@ class CADDeformation():
     @staticmethod
     def write_shape(filename, shape):
         """
-    	Static method to save a `topoDS_Shape` object to a file.
+    	Static method to save a `TopoDS_Shape` object to a file.
     	Supported extensions are: ".iges", ".step".
     	
     	:param str filename: the name of the file where the shape will be saved.
@@ -177,7 +177,7 @@ class CADDeformation():
         if not isinstance(face, TopoDS_Face):
             raise TypeError("face must be a TopoDS_Face")
         # TopoDS_Face converted to Nurbs
-        nurbs_face = topods_Face(BRepBuilderAPI_NurbsConvert(face).Shape())
+        nurbs_face = BRepBuilderAPI_NurbsConvert(face).Shape()
         # GeomSurface obtained from Nurbs face
         surface = BRep_Tool.Surface(nurbs_face)
         # surface is now further converted to a bspline surface
@@ -203,7 +203,7 @@ class CADDeformation():
         edge_explorer = TopExp_Explorer(wire, TopAbs_EDGE)
         while edge_explorer.More():
             # getting the edge from the iterator
-            edge = topods_Edge(edge_explorer.Current())
+            edge = edge_explorer.Current()
 
             # edge can be joined only if it is not degenerated (zero length)
             if BRep_Tool.Degenerated(edge):
@@ -213,7 +213,7 @@ class CADDeformation():
             # the edge must be converted to Nurbs edge
             nurbs_converter = BRepBuilderAPI_NurbsConvert(edge)
             nurbs_converter.Perform(edge)
-            nurbs_edge = topods_Edge(nurbs_converter.Shape())
+            nurbs_edge = nurbs_converter.Shape()
 
             # here we extract the underlying curve from the Nurbs edge
             nurbs_curve = BRep_Tool_Curve(nurbs_edge)[0]
@@ -381,7 +381,7 @@ class CADDeformation():
             # performing some conversions to get the right
             # format (BSplineSurface)
             # TopoDS_Face obtained from iterator
-            face = topods_Face(faces_explorer.Current())
+            face = faces_explorer.Current()
             # performing some conversions to get the right
             # format (BSplineSurface)
             bspline_surface = self._bspline_surface_from_face(face)
@@ -411,7 +411,7 @@ class CADDeformation():
             wire_explorer = TopExp_Explorer(face, TopAbs_WIRE)
             while wire_explorer.More():
                 # wire obtained from the iterator
-                wire = topods_Wire(wire_explorer.Current())
+                wire = wire_explorer.Current()
 
                 # getting a bpline curve joining all the edges of the wire
                 composite_curve = self._bspline_curve_from_wire(wire)
