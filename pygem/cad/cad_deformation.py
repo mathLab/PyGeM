@@ -4,7 +4,7 @@ Module for generic deformation for CAD file.
 import os
 import numpy as np
 from itertools import product
-from OCC.Core.TopoDS import (TopoDS_Shape, TopoDS_Wire, TopoDS_Compound,
+from OCC.Core.TopoDS import (TopoDS_Shape, TopoDS_Compound,
                              TopoDS_Face, TopoDS_Wire)
 from OCC.Core.BRep import BRep_Builder
 from OCC.Core.TopExp import TopExp_Explorer
