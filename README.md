@@ -60,7 +60,7 @@ module `pythonocc-core` is required to deal with IGES files. This requirement
 cannot be satisfied through `pip`, but the precompiled binaries are available
 on `conda` using the command:
 ```bash
-conda install -c conda-forge pythonocc-core=7.4.0
+conda install -c conda-forge pythonocc-core
 ```
 For additional information about the compilation and installation of
 `pythonocc`, we refer the original
