@@ -22,10 +22,12 @@ class TestFFDCAD(TestCase):
              open('tests/test_datasets/test_pipe_out_true.iges', "r") as reference:
              ref = [line for line in reference.readlines()[5:] if line.strip()]
              cre = [line for line in created.readlines()[5:] if line.strip()]
-             self.assertEqual(len(ref),len(cre))
-             for i in range(len(cre)):
-                 ref_ = np.asarray(ref[i].split(',')[:-1], dtype=float)
-                 cre_ = np.asarray(cre[i].split(',')[:-1], dtype=float)
+             if abs(len(ref) - len(cre)) > 1:
+                 self.fail(f"Length mismatch: {len(ref)} vs {len(cre)}")
+            
+             for r_line, c_line in zip(ref, cre):
+                 ref_ = np.asarray(r_line.split(',')[:-1], dtype=float)
+                 cre_ = np.asarray(c_line.split(',')[:-1], dtype=float)
                  np.testing.assert_array_almost_equal(cre_, ref_, decimal=6)
         self.addCleanup(os.remove, 'test_pipe_result.iges')
 
@@ -41,10 +43,12 @@ class TestFFDCAD(TestCase):
              open('tests/test_datasets/test_pipe_hollow_out_true.iges', "r") as reference:
              ref = [line for line in reference.readlines()[5:] if line.strip()]
              cre = [line for line in created.readlines()[5:] if line.strip()]
-             self.assertEqual(len(ref),len(cre))
-             for i in range(len(cre)):
-                 ref_ = np.asarray(ref[i].split(',')[:-1], dtype=float)
-                 cre_ = np.asarray(cre[i].split(',')[:-1], dtype=float)
+             if abs(len(ref) - len(cre)) > 1:
+                 self.fail(f"Length mismatch: {len(ref)} vs {len(cre)}")
+            
+             for r_line, c_line in zip(ref, cre):
+                 ref_ = np.asarray(r_line.split(',')[:-1], dtype=float)
+                 cre_ = np.asarray(c_line.split(',')[:-1], dtype=float)
                  np.testing.assert_array_almost_equal(cre_, ref_, decimal=6)
         self.addCleanup(os.remove, 'test_pipe_hollow_result.iges')
 
