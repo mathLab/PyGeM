@@ -20,8 +20,8 @@ class TestFFDCAD(TestCase):
         ffd('tests/test_datasets/test_pipe.iges', 'test_pipe_result.iges')
         with open('test_pipe_result.iges', "r") as created, \
              open('tests/test_datasets/test_pipe_out_true.iges', "r") as reference:
-             ref = reference.readlines()[5:]
-             cre = created.readlines()[5:]
+             ref = [line for line in reference.readlines()[5:] if line.strip()]
+             cre = [line for line in created.readlines()[5:] if line.strip()]
              self.assertEqual(len(ref),len(cre))
              for i in range(len(cre)):
                  ref_ = np.asarray(ref[i].split(',')[:-1], dtype=float)
@@ -39,8 +39,8 @@ class TestFFDCAD(TestCase):
         CADDeformation.write_shape('test_pipe_hollow_result.iges', mod_shape)
         with open('test_pipe_hollow_result.iges', "r") as created, \
              open('tests/test_datasets/test_pipe_hollow_out_true.iges', "r") as reference:
-             ref = reference.readlines()[5:]
-             cre = created.readlines()[5:]
+             ref = [line for line in reference.readlines()[5:] if line.strip()]
+             cre = [line for line in created.readlines()[5:] if line.strip()]
              self.assertEqual(len(ref),len(cre))
              for i in range(len(cre)):
                  ref_ = np.asarray(ref[i].split(',')[:-1], dtype=float)
