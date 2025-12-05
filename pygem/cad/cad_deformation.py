@@ -14,19 +14,19 @@ from OCC.Core.BRepBuilderAPI import (BRepBuilderAPI_MakeFace,
                                      BRepBuilderAPI_MakeWire,
                                      BRepBuilderAPI_MakeEdge,
                                      BRepBuilderAPI_NurbsConvert)
-from OCC.Core.BRep import BRep_Tool, BRep_Tool_Curve
+from OCC.Core.BRep import BRep_Tool
 from OCC.Core.Geom import Geom_BSplineCurve, Geom_BSplineSurface
 from OCC.Core.GeomConvert import (geomconvert_SurfaceToBSplineSurface,
-                                  geomconvert_CurveToBSplineCurve,
+                                  geomconvert,
                                   GeomConvert_CompCurveToBSplineCurve)
 from OCC.Core.gp import gp_Pnt
-from OCC.Core.BRepTools import breptools_OuterWire
+from OCC.Core.BRepTools import breptools
 from OCC.Core.IFSelect import IFSelect_RetDone
 from OCC.Core.Interface import Interface_Static_SetCVal
 from OCC.Core.STEPControl import (STEPControl_Writer, STEPControl_Reader,
                                   STEPControl_AsIs)
 from OCC.Core.IGESControl import (IGESControl_Writer, IGESControl_Reader,
-                                  IGESControl_Controller_Init)
+                                  IGESControl_Controller)
 
 
 class CADDeformation():
@@ -138,7 +138,7 @@ class CADDeformation():
     	"""
         def write_iges(filename, shape):
             """ IGES writer """
-            IGESControl_Controller_Init()
+            IGESControl_Controller.Init()
             writer = IGESControl_Writer()
             writer.AddShape(shape)
             writer.Write(filename)
@@ -181,7 +181,7 @@ class CADDeformation():
         # GeomSurface obtained from Nurbs face
         surface = BRep_Tool.Surface(nurbs_face)
         # surface is now further converted to a bspline surface
-        bspline_surface = geomconvert_SurfaceToBSplineSurface(surface)
+        bspline_surface = geomconvert.SurfaceToBSplineSurface(surface)
         return bspline_surface
 
     def _bspline_curve_from_wire(self, wire):
@@ -216,10 +216,10 @@ class CADDeformation():
             nurbs_edge = nurbs_converter.Shape()
 
             # here we extract the underlying curve from the Nurbs edge
-            nurbs_curve = BRep_Tool_Curve(nurbs_edge)[0]
+            nurbs_curve = BRep_Tool.Curve(nurbs_edge)[0]
 
             # we convert the Nurbs curve to Bspline curve
-            bspline_curve = geomconvert_CurveToBSplineCurve(nurbs_curve)
+            bspline_curve = geomconvert.CurveToBSplineCurve(nurbs_curve)
 
             # we can now add the Bspline curve to the composite wire curve
             composite_curve_builder.Add(bspline_curve, self.tolerance)
@@ -448,7 +448,7 @@ class CADDeformation():
                 # using the outer wire, and then we can trim it
                 # with the wires corresponding to all the holes.
                 # the wire order is important, in the trimming process
-                if wire == breptools_OuterWire(face):
+                if wire == breptools.OuterWire(face):
                     outer_wires.append(modified_wire)
                 else:
                     inner_wires.append(modified_wire)

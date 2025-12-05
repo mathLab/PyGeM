@@ -10,8 +10,31 @@ from pygem.cad import FFD
 from pygem.cad import CADDeformation
 
 
-
 class TestFFDCAD(TestCase):
+
+    def extract_floats(self, lines):
+        """
+        Extract all numeric values from IGES file content.
+
+        This helper function parses a list of IGES file lines and returns
+        a flattened numpy array of all floating-point numbers, ignoring
+        line breaks, empty lines, and non-numeric text.
+
+        IGES files often wrap data lines differently on different platforms.
+        By flattening all numeric values into a single array, this function enables reliable numerical comparison of IGES files regardless of
+        line wrapping or minor formatting differences.
+        """
+        all_values = []
+        for line in lines:
+            if not line.strip():
+                continue
+            parts = line.strip().split(',')[:-1]
+            for p in parts:
+                try:
+                    all_values.append(float(p))
+                except ValueError:
+                    pass
+        return np.asarray(all_values)
 
     def test_ffd_iges_pipe_mod_through_files(self):
         ffd = FFD(None,30,30,30,1e-4)
@@ -20,13 +43,9 @@ class TestFFDCAD(TestCase):
         ffd('tests/test_datasets/test_pipe.iges', 'test_pipe_result.iges')
         with open('test_pipe_result.iges', "r") as created, \
              open('tests/test_datasets/test_pipe_out_true.iges', "r") as reference:
-             ref = reference.readlines()[5:]
-             cre = created.readlines()[5:]
-             self.assertEqual(len(ref),len(cre))
-             for i in range(len(cre)):
-                 ref_ = np.asarray(ref[i].split(',')[:-1], dtype=float)
-                 cre_ = np.asarray(cre[i].split(',')[:-1], dtype=float)
-                 np.testing.assert_array_almost_equal(cre_, ref_, decimal=6)
+             ref_data = self.extract_floats(reference.readlines()[5:])
+             cre_data = self.extract_floats(created.readlines()[5:])
+             np.testing.assert_array_almost_equal(cre_data, ref_data, decimal=6)
         self.addCleanup(os.remove, 'test_pipe_result.iges')
 
     def test_ffd_iges_pipe_mod_through_topods_shape(self):
@@ -39,13 +58,9 @@ class TestFFDCAD(TestCase):
         CADDeformation.write_shape('test_pipe_hollow_result.iges', mod_shape)
         with open('test_pipe_hollow_result.iges', "r") as created, \
              open('tests/test_datasets/test_pipe_hollow_out_true.iges', "r") as reference:
-             ref = reference.readlines()[5:]
-             cre = created.readlines()[5:]
-             self.assertEqual(len(ref),len(cre))
-             for i in range(len(cre)):
-                 ref_ = np.asarray(ref[i].split(',')[:-1], dtype=float)
-                 cre_ = np.asarray(cre[i].split(',')[:-1], dtype=float)
-                 np.testing.assert_array_almost_equal(cre_, ref_, decimal=6)
+             ref_data = self.extract_floats(reference.readlines()[5:])
+             cre_data = self.extract_floats(created.readlines()[5:])
+             np.testing.assert_array_almost_equal(cre_data, ref_data, decimal=6)
         self.addCleanup(os.remove, 'test_pipe_hollow_result.iges')
 
     """
@@ -65,4 +80,3 @@ class TestFFDCAD(TestCase):
                  np.testing.assert_array_almost_equal(cre_, ref_, decimal=6)
         self.addCleanup(os.remove, 'test_pipe_result.step')
     """
-
