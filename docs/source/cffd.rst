@@ -1,5 +1,5 @@
 Constrained Free-form Deformation
-=====================
+=================================
 
 .. currentmodule:: pygem.cffd
 

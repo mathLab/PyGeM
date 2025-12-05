@@ -1,5 +1,5 @@
 Volume Free-form Deformation
-=====================
+============================
 
 .. currentmodule:: pygem.vffd
 

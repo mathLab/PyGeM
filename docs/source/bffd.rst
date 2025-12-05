@@ -1,5 +1,5 @@
 Barycenter Free-form Deformation
-=====================
+================================
 
 .. currentmodule:: pygem.bffd
 
