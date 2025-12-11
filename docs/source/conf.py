@@ -45,10 +45,10 @@ extensions = [
 ]
 
 intersphinx_mapping = {
-    "python": ("http://docs.python.org/3", None),
-    "numpy": ("http://docs.scipy.org/doc/numpy/", None),
-    "scipy": ("http://docs.scipy.org/doc/scipy/reference/", None),
-    "matplotlib": ("http://matplotlib.sourceforge.net/", None),
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "matplotlib": ("https://matplotlib.org/stable", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -87,7 +87,7 @@ release = version
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -133,7 +133,7 @@ todo_include_todos = True
 # classes and attributes. As side effects, this option ... ???
 # If false, ... ???.
 # The default is True.
-viewcode_import = True
+# viewcode_import = True
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -149,7 +149,7 @@ html_theme = "sphinx_rtd_theme"
 # html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+# html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

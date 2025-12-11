@@ -1,13 +1,13 @@
-[build-system]
-requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "pygem"
-dynamic = ["version"]
+dynamic = "2.0.1"
 description = "Python Geometrical Morphing"
 readme = {file = "README.md", content-type = "text/markdown"}
-keywords = ["dimension_reduction", "mathematics", "ffd", "morphing", "iges", "stl", "vtk", "openfoam"]
+keywords = [
+    "vtk", "free-form-deformation", "iges", "radial-basis-function", 
+    "deformation", "shape design", "inverse-distance-weighting",
+    "custom deformation", "mesh parameterization"
+]
 authors = [
     {name = "Marco Tezzele", email = "marcotez@gmail.com"},
     {name = "Nicola Demo", email = "demo.nicola@gmail.com"},
@@ -68,21 +68,15 @@ dev = [
     "pylint"
 ]
 
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.packages.find]
-where = ["."]
 include = ["pygem*"]
-exclude = ["tests*", "docs*", "tutorials*"]
-
-[tool.setuptools.dynamic]
-version = { attr = "pygem.meta.__version__" }
 
 [tool.black]
 line-length = 80
-target-version = ['py39']
-
-[tool.flake8]
-ignore = "F401"
-

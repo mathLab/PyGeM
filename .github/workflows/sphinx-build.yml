@@ -1,4 +1,4 @@
-name: "Deploy Documentation"
+name: "Continuous Deployment"
 
 on: 
   push:
@@ -6,41 +6,47 @@ on:
       - "*"
 
 jobs:
-  docs:
-    runs-on: ubuntu-18.04
+
+  #############################################################################
+  # Create and online deployment of the documentation #########################
+  docs: #######################################################################
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
-        python-version: 3.7
+        python-version: 3.10
 
-    - name: Conda install dependecies
-      shell: bash -l {0}
-      run: conda install --yes -c conda-forge pythonocc-core=7.4.0 numpy scipy matplotlib vtk nose setuptools coveralls sphinx_rtd_theme sphinx python=3.7
+    - name: Install Dependencies (conda and pip)
+      shell: bash
+      run: |
+        conda install --yes -c conda-forge pythonocc-core 
+        python -m pip install --upgrade pip
+        python -m pip install .[doc]
 
-    - name: Conda info
-      shell: bash -l {0}
-      run: conda info
-
-    - name: Conda info
-      shell: bash -l {0}
-      run: cd docs && sphinx-build -b html -d build/doctrees  --keep-going --no-color -w '/tmp/sphinx-log' source build/html
-
-    #- name: Create the new documentation
-      #uses: ammaraskar/sphinx-action@master
-      #with:
-        #docs-folder: "docs/"
-        #pre-build-command: "ls -l /usr/share"
-        #build-command: "sphinx-build -b html -d build/doctrees  --keep-going --no-color -w '/tmp/sphinx-log' source build/html"
-
+    - name: Build Documentation
+      run: |
+        make html
+      working-directory: docs/
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        #deploy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         publish_dir: ./docs/build/html
         allow_empty_commit: true
+  
+  #############################################################################      
+  ## Create a public "Release" on the Github page #############################
+  release_github: #############################################################
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
