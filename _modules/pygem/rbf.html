@@ -1,95 +1,45 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>pygem.rbf &mdash; PyGeM 2.0.3 documentation</title>
-  
+  <title>pygem.rbf &mdash; PyGeM 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> PyGeM
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            PyGeM
           </a>
-
-          
-            
-            
-              <div class="version">
-                2.0.3
-              </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Code Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
@@ -98,69 +48,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">PyGeM</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>pygem.rbf</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pygem.rbf</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for pygem.rbf</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Module focused on the implementation of the Radial Basis Functions interpolation</span>
@@ -234,9 +145,13 @@
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 
-<div class="viewcode-block" id="RBF"><a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF">[docs]</a><span class="k">class</span> <span class="nc">RBF</span><span class="p">(</span><span class="n">Deformation</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RBF">
+<a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF">[docs]</a>
+<span class="k">class</span> <span class="nc">RBF</span><span class="p">(</span><span class="n">Deformation</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that handles the Radial Basis Functions interpolation on the mesh</span>
 <span class="sd">    points.</span>
 
@@ -257,8 +172,12 @@
 <span class="sd">        basis functions.  For details see the class</span>
 <span class="sd">        :class:`RBF`. The default value is 0.5.</span>
 <span class="sd">    :param dict extra_parameter: the additional parameters that may be passed to</span>
-<span class="sd">    	the kernel function. Default is None.</span>
-<span class="sd">        </span>
+<span class="sd">     the kernel function. Default is None.</span>
+<span class="sd">    :param str dtype: Precision specification. Supported values:</span>
+<span class="sd">        &#39;fp16&#39;/&#39;float16&#39;, &#39;fp32&#39;/&#39;float32&#39;, &#39;fp64&#39;/&#39;float64&#39; (default),</span>
+<span class="sd">        &#39;fp96&#39;/&#39;float96&#39;,&#39;fp128&#39;/&#39;float128&#39; (if available on platform).</span>
+<span class="sd">        Default is &#39;fp64&#39;.</span>
+
 <span class="sd">    :cvar numpy.ndarray weights: the matrix formed by the weights corresponding</span>
 <span class="sd">        to the a-priori selected N control points, associated to the basis</span>
 <span class="sd">        functions and c and Q terms that describe the polynomial of order one</span>
@@ -276,7 +195,7 @@
 <span class="sd">        basis functions.</span>
 <span class="sd">    :cvar dict extra: the additional parameters that may be passed to the</span>
 <span class="sd">        kernel function.</span>
-<span class="sd">        </span>
+
 <span class="sd">    :Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; from pygem import RBF</span>
@@ -289,12 +208,61 @@
 <span class="sd">        &gt;&gt;&gt; mesh = np.array([x.ravel(), y.ravel(), z.ravel()])</span>
 <span class="sd">        &gt;&gt;&gt; deformed_mesh = rbf(mesh)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Precision mapping</span>
+    <span class="n">DTYPE_MAP</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;fp16&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span>
+        <span class="s1">&#39;float16&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span>
+        <span class="s1">&#39;fp32&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="s1">&#39;float32&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="s1">&#39;fp64&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="s1">&#39;float64&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="s1">&#39;fp96&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float96</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="s1">&#39;float96&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="s1">&#39;float96&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float96</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="s1">&#39;float96&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="s1">&#39;fp128&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="s1">&#39;float128&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="s1">&#39;float128&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float128</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="s1">&#39;float128&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+    <span class="p">}</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">original_control_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">deformed_control_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">func</span><span class="o">=</span><span class="s1">&#39;gaussian_spline&#39;</span><span class="p">,</span>
                  <span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                 <span class="n">extra_parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">extra_parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;fp64&#39;</span><span class="p">):</span>
+
+        <span class="c1"># Parse and set dtype with platform check</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">dtype_lower</span> <span class="o">=</span> <span class="n">dtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">dtype_lower</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_MAP</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unsupported dtype &#39;</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&#39;. Supported values: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_MAP</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Check for fp128 fallback</span>
+            <span class="k">if</span> <span class="n">dtype_lower</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fp128&#39;</span><span class="p">,</span> <span class="s1">&#39;float128&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="s1">&#39;float128&#39;</span><span class="p">):</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;fp128/float128 is not supported on this platform. &quot;</span>
+                        <span class="s2">&quot;Automatically falling back to fp64. &quot;</span>
+                        <span class="s2">&quot;For true quad-precision, consider using Linux platform.&quot;</span><span class="p">,</span>
+                        <span class="ne">RuntimeWarning</span>
+                    <span class="p">)</span>
+
+            <span class="c1"># Check for fp96 fallback</span>
+            <span class="k">if</span> <span class="n">dtype_lower</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fp96&#39;</span><span class="p">,</span> <span class="s1">&#39;float96&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="s1">&#39;float96&#39;</span><span class="p">):</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;fp96/float96 is not supported on this platform. &quot;</span>
+                        <span class="s2">&quot;Automatically falling back to fp64. &quot;</span>
+                        <span class="s2">&quot;For higher precision consider using &#39;fp128&#39; (if available) &quot;</span><span class="p">,</span>
+                        <span class="ne">RuntimeWarning</span>
+                    <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DTYPE_MAP</span><span class="p">[</span><span class="n">dtype_lower</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="n">func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
@@ -303,29 +271,28 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
                                                      <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
                                                      <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-                                                     <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span>
-                                                                    <span class="mf">1.</span><span class="p">]])</span>
+                                                     <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]],</span>
+                                                    <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span> <span class="o">=</span> <span class="n">original_control_points</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">original_control_points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">deformed_control_points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
                                                      <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
                                                      <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-                                                     <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span>
-                                                                    <span class="mf">1.</span><span class="p">]])</span>
+                                                     <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]],</span>
+                                                    <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span> <span class="o">=</span> <span class="n">deformed_control_points</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">deformed_control_points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">extra</span> <span class="o">=</span> <span class="n">extra_parameter</span> <span class="k">if</span> <span class="n">extra_parameter</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">,</span>
                                          <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span><span class="p">)</span>
 
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_control_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Total number of control points.</span>
 
 <span class="sd">        :rtype: int</span>
@@ -334,7 +301,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The kernel to use in the deformation.</span>
 
 <span class="sd">        :getter: Returns the callable kernel</span>
@@ -348,15 +315,17 @@
 
     <span class="nd">@basis</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__basis</span> <span class="o">=</span> <span class="n">func</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__basis</span> <span class="o">=</span> <span class="n">RBFFactory</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;`func` is not valid.&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="RBF._get_weights"><a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF._get_weights">[docs]</a>    <span class="k">def</span> <span class="nf">_get_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="RBF._get_weights">
+<a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF._get_weights">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This private method, given the original control points and the deformed</span>
 <span class="sd">        ones, returns the matrix with the weights and the polynomial terms, that</span>
 <span class="sd">        is :math:`W`, :math:`c^T` and :math:`Q^T`. The shape is</span>
@@ -373,20 +342,32 @@
 <span class="sd">        :rtype: numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">npts</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">npts</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">npts</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">H</span><span class="p">[:</span><span class="n">npts</span><span class="p">,</span> <span class="p">:</span><span class="n">npts</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">cdist</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">extra</span><span class="p">)</span>
-        <span class="n">H</span><span class="p">[</span><span class="n">npts</span><span class="p">,</span> <span class="p">:</span><span class="n">npts</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="n">H</span><span class="p">[:</span><span class="n">npts</span><span class="p">,</span> <span class="n">npts</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">npts</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
+        <span class="c1"># Compute distances and basis values using configured precision</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">cdist</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+        <span class="n">basis_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">extra</span><span class="p">)</span>
+        <span class="n">basis_block</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">basis_block</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
+        <span class="n">H</span><span class="p">[:</span><span class="n">npts</span><span class="p">,</span> <span class="p">:</span><span class="n">npts</span><span class="p">]</span> <span class="o">=</span> <span class="n">basis_block</span>
+        <span class="n">H</span><span class="p">[</span><span class="n">npts</span><span class="p">,</span> <span class="p">:</span><span class="n">npts</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">H</span><span class="p">[:</span><span class="n">npts</span><span class="p">,</span> <span class="n">npts</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="n">H</span><span class="p">[:</span><span class="n">npts</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="n">X</span>
         <span class="n">H</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:,</span> <span class="p">:</span><span class="n">npts</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span>
 
-        <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">npts</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">size</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
         <span class="n">rhs</span><span class="p">[:</span><span class="n">npts</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Y</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">weights</span></div>
 
-<div class="viewcode-block" id="RBF.read_parameters"><a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.read_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">read_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;parameters_rbf.prm&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="n">solve_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">solve_dtype</span><span class="p">),</span> <span class="n">rhs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">solve_dtype</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">weights</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RBF.read_parameters">
+<a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.read_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;parameters_rbf.prm&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reads in the parameters file and fill the self structure.</span>
 
 <span class="sd">        :param string filename: parameters file to be read in. Default value is</span>
@@ -406,7 +387,7 @@
         <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="n">rbf_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s1">&#39;Radial Basis Functions&#39;</span><span class="p">))</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="n">rbf_settings</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;basis function&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rbf_settings</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">eval</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rbf_settings</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
@@ -414,12 +395,12 @@
         <span class="n">ctrl_points</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Control points&#39;</span><span class="p">,</span> <span class="s1">&#39;original control points&#39;</span><span class="p">)</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="n">ctrl_points</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">lines</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">lines</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
         <span class="n">mod_points</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Control points&#39;</span><span class="p">,</span> <span class="s1">&#39;deformed control points&#39;</span><span class="p">)</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="n">mod_points</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">lines</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">lines</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The number of control points must be equal both in&quot;</span>
@@ -427,8 +408,11 @@
                             <span class="s2">&quot;control points&#39; section of the parameters file&quot;</span>
                             <span class="s2">&quot;(</span><span class="si">{0!s}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="RBF.write_parameters"><a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.write_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">write_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;parameters_rbf.prm&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RBF.write_parameters">
+<a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.write_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">write_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;parameters_rbf.prm&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method writes a parameters file (.prm) called `filename` and fills</span>
 <span class="sd">        it with all the parameters class members. Default value is</span>
 <span class="sd">        parameters_rbf.prm.</span>
@@ -472,8 +456,8 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">):</span>
             <span class="n">output_string</span> <span class="o">+=</span> <span class="n">offset</span> <span class="o">*</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="n">offset</span> <span class="o">=</span> <span class="mi">25</span>
 
         <span class="n">output_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"># deformed control points collects the coordinates&#39;</span>
@@ -485,15 +469,16 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">):</span>
             <span class="n">output_string</span> <span class="o">+=</span> <span class="n">offset</span> <span class="o">*</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="n">offset</span> <span class="o">=</span> <span class="mi">25</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_string</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method prints all the RBF parameters on the screen. Its purpose is</span>
 <span class="sd">        for debugging.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -507,8 +492,10 @@
         <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">string</span>
 
-<div class="viewcode-block" id="RBF.plot_points"><a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.plot_points">[docs]</a>    <span class="k">def</span> <span class="nf">plot_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="RBF.plot_points">
+<a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.plot_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to plot the control points. It is possible to save the resulting</span>
 <span class="sd">        figure.</span>
 
@@ -544,75 +531,71 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RBF.compute_weights"><a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.compute_weights">[docs]</a>    <span class="k">def</span> <span class="nf">compute_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RBF.compute_weights">
+<a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.compute_weights">[docs]</a>
+    <span class="k">def</span> <span class="nf">compute_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method compute the weights according to the</span>
 <span class="sd">        `original_control_points` and `deformed_control_points` arrays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">,</span>
                                          <span class="bp">self</span><span class="o">.</span><span class="n">deformed_control_points</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RBF.__call__"><a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_pts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RBF.__call__">
+<a class="viewcode-back" href="../../rbf.html#pygem.rbf.RBF.__call__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_pts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method performs the deformation of the mesh points. After the</span>
 <span class="sd">        execution it sets `self.modified_mesh_points`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">src_pts</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compute_weights</span><span class="p">()</span>
 
-        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">src_pts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">H</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span>
-            <span class="n">cdist</span><span class="p">(</span><span class="n">src_pts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">),</span> 
-            <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span>
-            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">extra</span><span class="p">)</span>
-        <span class="n">H</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="n">H</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="n">src_pts</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">))</span></div></div>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">src</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                     <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">cdist</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_control_points</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+        <span class="n">basis_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">extra</span><span class="p">)</span>
+
+        <span class="n">H</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">basis_block</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+        <span class="n">H</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">H</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="n">src</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
-      <span class="lastupdated">
-        Last updated on Jul 07, 2021.
-      </span>
-
-    </p>
+    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
+      <span class="lastupdated">Last updated on Dec 11, 2025.
+      </span></p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pygem.cffd &mdash; PyGeM 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyGeM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyGeM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pygem.cffd</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pygem.cffd</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities for performing Constrained Free Form Deformation (CFFD).</span>
+
+<span class="sd">:Theoretical Insight:</span>
+<span class="sd">    </span>
+<span class="sd">    It performs Free Form Deformation while trying to enforce a costraint of the form F(x)=c. </span>
+<span class="sd">    The constraint is enforced exactly (up to numerical errors) if and only if the function is linear.</span>
+<span class="sd">    For details on Free Form Deformation see the mother class.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pygem.ffd</span> <span class="kn">import</span> <span class="n">FFD</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">LinearConstraint</span><span class="p">,</span> <span class="n">differential_evolution</span>
+
+
+<div class="viewcode-block" id="CFFD">
+<a class="viewcode-back" href="../../cffd.html#pygem.cffd.CFFD">[docs]</a>
+<span class="k">class</span> <span class="nc">CFFD</span><span class="p">(</span><span class="n">FFD</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that handles the Constrained Free Form Deformation on the mesh points.</span>
+
+<span class="sd">    :param list n_control_points: number of control points in the x, y, and z</span>
+<span class="sd">        direction. Default is [2, 2, 2].</span>
+<span class="sd">    :param string mode: it can be ``affine`` or ``triaffine``. The first option is for the F that are affine in all the coordinates of the points. </span>
+<span class="sd">        The second one is for functions that are F in the coordinates of the points. The first option implies the second, but is optimal for that class of functions.</span>
+<span class="sd">    :cvar numpy.ndarray box_length: dimension of the FFD bounding box, in the</span>
+<span class="sd">        x, y and z direction (local coordinate system).</span>
+<span class="sd">    :cvar numpy.ndarray box_origin: the x, y and z coordinates of the origin of</span>
+<span class="sd">        the FFD bounding box.</span>
+<span class="sd">    :cvar numpy.ndarray n_control_points: the number of control points in the</span>
+<span class="sd">        x, y, and z direction.</span>
+<span class="sd">    :cvar numpy.ndarray array_mu_x: collects the displacements (weights) along</span>
+<span class="sd">        x, normalized with the box length x.</span>
+<span class="sd">    :cvar numpy.ndarray array_mu_y: collects the displacements (weights) along</span>
+<span class="sd">        y, normalized with the box length y.</span>
+<span class="sd">    :cvar numpy.ndarray array_mu_z: collects the displacements (weights) along</span>
+<span class="sd">        z, normalized with the box length z.</span>
+<span class="sd">    :cvar callable fun: it defines the F of the constraint F(x)=c. Default is the constant 1 function.</span>
+<span class="sd">    :cvar numpy.ndarray fixval: it defines the c of the constraint F(x)=c. Default is 1.</span>
+<span class="sd">    :cvar numpy.ndarray ffd_mask: a boolean tensor that tells to the class </span>
+<span class="sd">        which control points can be moved, and in what direction, to enforce the constraint. </span>
+<span class="sd">        The tensor has shape (n_x,n_y,n_z,3), where the last dimension indicates movement</span>
+<span class="sd">        on x,y,z respectively. Default is all true.</span>
+<span class="sd">    :cvar numpy.ndarray fun_mask: a boolean tensor that tells to the class </span>
+<span class="sd">        on which axis which constraint depends on. The tensor has shape (n_cons,3), where the last dimension indicates dependency on</span>
+<span class="sd">        on x,y,z respectively. Default is all true. It used only in the triaffine mode.</span>
+
+<span class="sd">    :Example:</span>
+<span class="sd">        &gt;&gt;&gt; from pygem import CFFD</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; original_mesh_points = np.load(&quot;tests/test_datasets/test_sphere_cffd.npy&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; A = np.random.rand(3, original_mesh_points[:-4].reshape(-1).shape[0])</span>
+<span class="sd">        &gt;&gt;&gt; fun = lambda x: A @ x.reshape(-1)</span>
+<span class="sd">        &gt;&gt;&gt; b = np.random.rand(3)</span>
+<span class="sd">        &gt;&gt;&gt; cffd = CFFD(b, fun, [2, 2, 2])</span>
+<span class="sd">        &gt;&gt;&gt; cffd.read_parameters(&#39;tests/test_datasets/parameters_test_cffd.prm&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; cffd.adjust_control_points(original_mesh_points[:-4])</span>
+<span class="sd">        &gt;&gt;&gt; assert np.isclose(np.linalg.norm(fun(cffd.ffd(original_mesh_points[:-4])) - b), np.array([0.]), atol = 1e-06)</span>
+<span class="sd">        &gt;&gt;&gt; new_mesh_points = cffd.ffd(original_mesh_points)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">fixval</span><span class="p">,</span>
+                 <span class="n">fun</span><span class="p">,</span>
+                 <span class="n">n_control_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ffd_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fun_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n_control_points</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ffd_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ffd_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                    <span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ffd_mask</span> <span class="o">=</span> <span class="n">ffd_mask</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_cons</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fixval</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fun</span> <span class="o">=</span> <span class="n">fun</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixval</span> <span class="o">=</span> <span class="n">fixval</span>
+        <span class="k">if</span> <span class="n">fun_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fun_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_cons</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fun_mask</span> <span class="o">=</span> <span class="n">fun_mask</span>
+
+<div class="viewcode-block" id="CFFD.adjust_control_points">
+<a class="viewcode-back" href="../../cffd.html#pygem.cffd.CFFD.adjust_control_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">adjust_control_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_pts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Adjust the FFD control points such that fun(ffd(src_pts))=fixval</span>
+<span class="sd">            </span>
+<span class="sd">        :param np.ndarray src_pts: the points whose deformation we want to be </span>
+<span class="sd">            constrained.</span>
+<span class="sd">        :rtype: None.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">hyper_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fun_mask</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">hyper_param</span> <span class="o">=</span> <span class="n">hyper_param</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">hyper_param</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mask_bak</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffd_mask</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">fixval_bak</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixval</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">diffvolume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixval</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffd</span><span class="p">(</span><span class="n">src_pts</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ffd_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                    <span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ffd_mask</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask_bak</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fun</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ffd</span><span class="p">(</span><span class="n">src_pts</span><span class="p">))</span> <span class="o">+</span> <span class="n">hyper_param</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">diffvolume</span><span class="p">)</span>
+            <span class="n">saved_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_parameters</span><span class="p">()</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">)</span> <span class="o">*</span>
+                                <span class="mi">3</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">ffd_mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="n">A</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_linear_map</span><span class="p">(</span><span class="n">src_pts</span><span class="p">,</span> <span class="n">saved_parameters</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                            <span class="n">indices</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fun_mask</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">:]</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fun_mask</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">saved_parameters</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span>
+            <span class="n">fixval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixval</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fun_mask</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="n">deltax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span>
+                <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">])),</span> <span class="p">(</span><span class="n">fixval</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span>
+            <span class="p">])</span>
+            <span class="n">saved_parameters</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">saved_parameters</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">+</span> <span class="n">deltax</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_parameters</span><span class="p">(</span><span class="n">saved_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ffd_mask</span> <span class="o">=</span> <span class="n">mask_bak</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixval</span> <span class="o">=</span> <span class="n">fixval_bak</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CFFD.ffd">
+<a class="viewcode-back" href="../../cffd.html#pygem.cffd.CFFD.ffd">[docs]</a>
+    <span class="k">def</span> <span class="nf">ffd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_pts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Performs Classic Free Form Deformation.</span>
+<span class="sd">    </span>
+<span class="sd">        :param np.ndarray src_pts: the points to deform.</span>
+<span class="sd">        :return: the deformed points.</span>
+<span class="sd">        :rtype: numpy.ndarray</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">src_pts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CFFD._save_parameters">
+<a class="viewcode-back" href="../../cffd.html#pygem.cffd.CFFD._save_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">_save_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Saves the FFD control points in an array of shape [n_x,ny,nz,3].</span>
+
+<span class="sd">        :return: the FFD control points in an array of shape [n_x,ny,nz,3].</span>
+<span class="sd">        :rtype: numpy.ndarray</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="n">tmp</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_mu_x</span>
+        <span class="n">tmp</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_mu_y</span>
+        <span class="n">tmp</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_mu_z</span>
+        <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CFFD._load_parameters">
+<a class="viewcode-back" href="../../cffd.html#pygem.cffd.CFFD._load_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">_load_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Loads the FFD control points from an array of shape [n_x,ny,nz,3].</span>
+
+<span class="sd">        :param np.ndarray tmp: the array of FFD control points.</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_control_points</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array_mu_x</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array_mu_y</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array_mu_z</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CFFD._compute_linear_map">
+<a class="viewcode-back" href="../../cffd.html#pygem.cffd.CFFD._compute_linear_map">[docs]</a>
+    <span class="k">def</span> <span class="nf">_compute_linear_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_pts</span><span class="p">,</span> <span class="n">saved_parameters</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Computes the coefficient and the intercept of the linear map from the control points to the output.</span>
+<span class="sd">        </span>
+<span class="sd">        :param np.ndarray src_pts: the points to deform.</span>
+<span class="sd">        :param np.ndarray saved_parameters: the array of FFD control points.</span>
+<span class="sd">        :return: a tuple containing the coefficient and the intercept.</span>
+<span class="sd">        :rtype: tuple(np.ndarray,np.ndarray)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">n_indices</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_indices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_indices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_indices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixval</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_indices</span> <span class="o">+</span>
+                       <span class="mi">1</span><span class="p">):</span>  <span class="c1">##now we generate the interpolation points</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_indices</span><span class="p">)</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">inputs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">tmp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))])</span>  <span class="c1">#dependent variable</span>
+            <span class="n">saved_parameters</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_parameters</span><span class="p">(</span>
+                <span class="n">saved_parameters</span>
+            <span class="p">)</span>  <span class="c1">#loading the depent variable as a control point</span>
+            <span class="n">def_pts</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span>
+                <span class="n">src_pts</span><span class="p">)</span>  <span class="c1">#computing the deformation with the dependent variable</span>
+            <span class="n">outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fun</span><span class="p">(</span><span class="n">def_pts</span><span class="p">)</span>  <span class="c1">#computing the independent variable</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span>
+                              <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1">#computation of the linear map</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1">#coefficient</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1">#intercept</span>
+        <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
+      <span class="lastupdated">Last updated on Dec 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

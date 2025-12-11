@@ -1,100 +1,54 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Stlhandler &mdash; PyGeM 2.0.3 documentation</title>
-  
+  <title>Stlhandler &mdash; PyGeM 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Openfhandler" href="openfhandler.html" />
     <link rel="prev" title="Vtkhandler" href="vtkhandler.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="index.html" class="icon icon-home"> PyGeM
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            PyGeM
           </a>
-
-          
-            
-            
-              <div class="version">
-                2.0.3
-              </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ffd.html">Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cffd.html">Constrained Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bffd.html">Barycenter Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vffd.html">Volume Free-form Deformation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rbf.html">Radial Basis Function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rbf_factory.html">RBF Factory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="idw.html">Inverse Distance Weighting</a></li>
@@ -104,6 +58,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Stlhandler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="openfhandler.html">Openfhandler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unvhandler.html">Unvhandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="code.html#cad">CAD</a></li>
 <li class="toctree-l2"><a class="reference internal" href="code.html#table-of-contents">Table of contents</a></li>
 </ul>
@@ -114,100 +69,54 @@
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">PyGeM</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="code.html">Code Documentation</a> &raquo;</li>
-        
-      <li>Stlhandler</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="code.html">Code Documentation</a></li>
+      <li class="breadcrumb-item active">Stlhandler</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/stlhandler.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-pygem.stlhandler">
-<span id="stlhandler"></span><h1>Stlhandler<a class="headerlink" href="#module-pygem.stlhandler" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-pygem.stlhandler">
+<span id="stlhandler"></span><h1>Stlhandler<a class="headerlink" href="#module-pygem.stlhandler" title="Link to this heading"></a></h1>
 <p>Derived module from filehandler.py to handle STereoLithography files.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This module will be deprecated in next releases. Follow updates on
 <a class="reference external" href="https://github.com/mathLab">https://github.com/mathLab</a> for news about file handling.</p>
 </div>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 </tbody>
 </table>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">StlHandler</span></span><a class="reference internal" href="_modules/pygem/stlhandler.html#StlHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pygem.filehandler.FileHandler</span></code></p>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StlHandler</span></span><a class="reference internal" href="_modules/pygem/stlhandler.html#StlHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FileHandler</span></code></p>
 <p>STereoLithography file handler class</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables</dt>
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>infile</strong> (<em>string</em>) – name of the input file to be processed.</p></li>
 <li><p><strong>outfile</strong> (<em>string</em>) – name of the output file where to write in.</p></li>
-<li><p><strong>extensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – extensions of the input/output files. It is equal to
+<li><p><strong>extensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – extensions of the input/output files. It is equal to
 [‘.stl’].</p></li>
 </ul>
 </dd>
@@ -218,15 +127,15 @@
 <dd><p>Method to parse the <cite>filename</cite>. It returns a matrix with all the
 coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<em>string</em>) – name of the input file.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>mesh_points: it is a <cite>n_points</cite>-by-3 matrix containing the
 coordinates of the points of the mesh</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -238,9 +147,9 @@ coordinates of the points of the mesh</p>
 self.filename but the coordinates. mesh_points is a matrix that contains
 the new coordinates to write in the stl file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mesh_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – it is a <cite>n_points</cite>-by-3 matrix
+<li><p><strong>mesh_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – it is a <cite>n_points</cite>-by-3 matrix
 containing the coordinates of the points of the mesh.</p></li>
 <li><p><strong>filename</strong> (<em>string</em>) – name of the output file.</p></li>
 <li><p><strong>write_bin</strong> (<em>boolean</em>) – flag to write in the binary format. Default is
@@ -256,18 +165,18 @@ False.</p></li>
 <dd><p>Method to plot an stl file. If <cite>plot_file</cite> is not given it plots
 <cite>self.infile</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>plot_file</strong> (<em>string</em>) – the stl filename you want to plot.</p></li>
-<li><p><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – a flag to save the figure in png or not. If True
+<li><p><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – a flag to save the figure in png or not. If True
 the plot is not shown. The default value is False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>figure: matlplotlib structure for the figure of the chosen
 geometry</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>matplotlib.pyplot.figure</p>
 </dd>
 </dl>
@@ -279,7 +188,7 @@ geometry</p>
 <dd><p>Method to show a vtk file. If <cite>show_file</cite> is not given it shows
 <cite>self.infile</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>show_file</strong> (<em>string</em>) – the vtk filename you want to show.</p>
 </dd>
 </dl>
@@ -287,57 +196,39 @@ geometry</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="openfhandler.html" class="btn btn-neutral float-right" title="Openfhandler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="vtkhandler.html" class="btn btn-neutral float-left" title="Vtkhandler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="openfhandler.html" class="btn btn-neutral float-right" title="Openfhandler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
-      <span class="lastupdated">
-        Last updated on Jul 07, 2021.
-      </span>
-
-    </p>
+    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
+      <span class="lastupdated">Last updated on Dec 11, 2025.
+      </span></p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

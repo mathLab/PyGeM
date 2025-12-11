@@ -1,95 +1,45 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>pygem.filehandler &mdash; PyGeM 2.0.3 documentation</title>
-  
+  <title>pygem.filehandler &mdash; PyGeM 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> PyGeM
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            PyGeM
           </a>
-
-          
-            
-            
-              <div class="version">
-                2.0.3
-              </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Code Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
@@ -98,69 +48,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">PyGeM</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>pygem.filehandler</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pygem.filehandler</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for pygem.filehandler</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Base module with the base class for reading and writing different files.</span>
@@ -174,8 +85,10 @@
 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This module will be deprecated in next releases&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FileHandler"><a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler">[docs]</a><span class="k">class</span> <span class="nc">FileHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="FileHandler">
+<a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">FileHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A base class for file handling.</span>
 
 <span class="sd">    :cvar string infile: name of the input file to be processed.</span>
@@ -189,8 +102,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="FileHandler.parse"><a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="FileHandler.parse">
+<a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Abstract method to parse a specific file.</span>
 
 <span class="sd">        Not implemented, it has to be implemented in subclasses.</span>
@@ -199,8 +114,11 @@
             <span class="s2">&quot;Subclass must implement abstract method &quot;</span> \
          <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;.parse&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FileHandler.write"><a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FileHandler.write">
+<a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Abstract method to write a specific file.</span>
 
 <span class="sd">        Not implemented, it has to be implemented in subclasses.</span>
@@ -209,8 +127,11 @@
             <span class="s2">&quot;Subclass must implement abstract method &quot;</span> \
         <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;.write&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FileHandler._check_extension"><a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler._check_extension">[docs]</a>    <span class="k">def</span> <span class="nf">_check_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FileHandler._check_extension">
+<a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler._check_extension">[docs]</a>
+    <span class="k">def</span> <span class="nf">_check_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This private class method checks if the given `filename` has the proper</span>
 <span class="sd">        `extension` set in the child class. If not it raises a ValueError.</span>
 
@@ -223,9 +144,12 @@
 <span class="s1">                It is </span><span class="si">{0!s}</span><span class="s1">, instead of </span><span class="si">{1!s}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_ext</span><span class="p">,</span>
                                                        <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="FileHandler._check_filename_type"><a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler._check_filename_type">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="FileHandler._check_filename_type">
+<a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler._check_filename_type">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_check_filename_type</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This private static method checks if `filename` is a string. If not it</span>
 <span class="sd">        raises a TypeError.</span>
 
@@ -235,8 +159,11 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s1">&#39;The given filename (</span><span class="si">{0!s}</span><span class="s1">) must be a string&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="FileHandler._check_infile_instantiation"><a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler._check_infile_instantiation">[docs]</a>    <span class="k">def</span> <span class="nf">_check_infile_instantiation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FileHandler._check_infile_instantiation">
+<a class="viewcode-back" href="../../filehandler.html#pygem.filehandler.FileHandler._check_infile_instantiation">[docs]</a>
+    <span class="k">def</span> <span class="nf">_check_infile_instantiation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This private method checks if `self.infile` is instantiated. If not</span>
 <span class="sd">        it means that nobody called the parse method and `self.infile` is None.</span>
 <span class="sd">        If the check fails it raises a RuntimeError.</span>
@@ -244,53 +171,38 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;You can not write a file without having parsed one.&quot;</span><span class="p">)</span></div></div>
+                <span class="s2">&quot;You can not write a file without having parsed one.&quot;</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright Copyright 2017-2021, PyGeM contributors.
-      <span class="lastupdated">
-        Last updated on Jul 07, 2021.
-      </span>
-
-    </p>
+    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
+      <span class="lastupdated">Last updated on Dec 11, 2025.
+      </span></p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

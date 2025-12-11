@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constrained Free-form Deformation &mdash; PyGeM 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Barycenter Free-form Deformation" href="bffd.html" />
+    <link rel="prev" title="Free-form Deformation" href="ffd.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyGeM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="code.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ffd.html">Free-form Deformation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Constrained Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bffd.html">Barycenter Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vffd.html">Volume Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rbf.html">Radial Basis Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rbf_factory.html">RBF Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idw.html">Inverse Distance Weighting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_deformation.html">Custom Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filehandler.html">Filehandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtkhandler.html">Vtkhandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stlhandler.html">Stlhandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="openfhandler.html">Openfhandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unvhandler.html">Unvhandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code.html#cad">CAD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code.html#table-of-contents">Table of contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyGeM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="code.html">Code Documentation</a></li>
+      <li class="breadcrumb-item active">Constrained Free-form Deformation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cffd.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pygem.cffd">
+<span id="constrained-free-form-deformation"></span><h1>Constrained Free-form Deformation<a class="headerlink" href="#module-pygem.cffd" title="Link to this heading"></a></h1>
+<p>Utilities for performing Constrained Free Form Deformation (CFFD).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Theoretical Insight<span class="colon">:</span></dt>
+<dd class="field-odd"><p>It performs Free Form Deformation while trying to enforce a costraint of the form F(x)=c. 
+The constraint is enforced exactly (up to numerical errors) if and only if the function is linear.
+For details on Free Form Deformation see the mother class.</p>
+</dd>
+</dl>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CFFD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ffd_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fun_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cffd.html#CFFD"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FFD</span></code></p>
+<p>Class that handles the Constrained Free Form Deformation on the mesh points.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_control_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – number of control points in the x, y, and z
+direction. Default is [2, 2, 2].</p></li>
+<li><p><strong>mode</strong> (<em>string</em>) – it can be <code class="docutils literal notranslate"><span class="pre">affine</span></code> or <code class="docutils literal notranslate"><span class="pre">triaffine</span></code>. The first option is for the F that are affine in all the coordinates of the points. 
+The second one is for functions that are F in the coordinates of the points. The first option implies the second, but is optimal for that class of functions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>box_length</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – dimension of the FFD bounding box, in the
+x, y and z direction (local coordinate system).</p></li>
+<li><p><strong>box_origin</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – the x, y and z coordinates of the origin of
+the FFD bounding box.</p></li>
+<li><p><strong>n_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – the number of control points in the
+x, y, and z direction.</p></li>
+<li><p><strong>array_mu_x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+x, normalized with the box length x.</p></li>
+<li><p><strong>array_mu_y</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+y, normalized with the box length y.</p></li>
+<li><p><strong>array_mu_z</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+z, normalized with the box length z.</p></li>
+<li><p><strong>fun</strong> (<em>callable</em>) – it defines the F of the constraint F(x)=c. Default is the constant 1 function.</p></li>
+<li><p><strong>fixval</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – it defines the c of the constraint F(x)=c. Default is 1.</p></li>
+<li><p><strong>ffd_mask</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – a boolean tensor that tells to the class 
+which control points can be moved, and in what direction, to enforce the constraint. 
+The tensor has shape (n_x,n_y,n_z,3), where the last dimension indicates movement
+on x,y,z respectively. Default is all true.</p></li>
+<li><p><strong>fun_mask</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – a boolean tensor that tells to the class 
+on which axis which constraint depends on. The tensor has shape (n_cons,3), where the last dimension indicates dependency on
+on x,y,z respectively. Default is all true. It used only in the triaffine mode.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygem</span> <span class="kn">import</span> <span class="n">CFFD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">original_mesh_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;tests/test_datasets/test_sphere_cffd.npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">original_mesh_points</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">A</span> <span class="o">@</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cffd</span> <span class="o">=</span> <span class="n">CFFD</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cffd</span><span class="o">.</span><span class="n">read_parameters</span><span class="p">(</span><span class="s1">&#39;tests/test_datasets/parameters_test_cffd.prm&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cffd</span><span class="o">.</span><span class="n">adjust_control_points</span><span class="p">(</span><span class="n">original_mesh_points</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">fun</span><span class="p">(</span><span class="n">cffd</span><span class="o">.</span><span class="n">ffd</span><span class="p">(</span><span class="n">original_mesh_points</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]))</span> <span class="o">-</span> <span class="n">b</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-06</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_mesh_points</span> <span class="o">=</span> <span class="n">cffd</span><span class="o">.</span><span class="n">ffd</span><span class="p">(</span><span class="n">original_mesh_points</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">adjust_control_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_pts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cffd.html#CFFD.adjust_control_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Adjust the FFD control points such that fun(ffd(src_pts))=fixval</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>src_pts</strong> (<em>np.ndarray</em>) – the points whose deformation we want to be 
+constrained.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ffd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_pts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cffd.html#CFFD.ffd"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Performs Classic Free Form Deformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>src_pts</strong> (<em>np.ndarray</em>) – the points to deform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the deformed points.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_save_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cffd.html#CFFD._save_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Saves the FFD control points in an array of shape [n_x,ny,nz,3].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the FFD control points in an array of shape [n_x,ny,nz,3].</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_load_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cffd.html#CFFD._load_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Loads the FFD control points from an array of shape [n_x,ny,nz,3].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tmp</strong> (<em>np.ndarray</em>) – the array of FFD control points.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_compute_linear_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_pts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saved_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cffd.html#CFFD._compute_linear_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Computes the coefficient and the intercept of the linear map from the control points to the output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_pts</strong> (<em>np.ndarray</em>) – the points to deform.</p></li>
+<li><p><strong>saved_parameters</strong> (<em>np.ndarray</em>) – the array of FFD control points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a tuple containing the coefficient and the intercept.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>(np.ndarray,np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ffd.html" class="btn btn-neutral float-left" title="Free-form Deformation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bffd.html" class="btn btn-neutral float-right" title="Barycenter Free-form Deformation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
+      <span class="lastupdated">Last updated on Dec 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

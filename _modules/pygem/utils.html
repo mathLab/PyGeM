@@ -1,0 +1,234 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pygem.utils &mdash; PyGeM 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyGeM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyGeM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pygem.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pygem.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities for the affine transformations of the bounding box of the Free Form</span>
+<span class="sd">Deformation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="angles2matrix">
+<a class="viewcode-back" href="../../utils.html#pygem.utils.angles2matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">angles2matrix</span><span class="p">(</span><span class="n">rot_z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rot_y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rot_x</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method returns the rotation matrix for given rotations around z, y and</span>
+<span class="sd">    x axes.  The output rotation matrix is equal to the composition of the</span>
+<span class="sd">    individual rotations.  Rotations are counter-clockwise. The default value of</span>
+<span class="sd">    the three rotations is zero.</span>
+
+<span class="sd">    :param float rot_z: rotation angle (in radians) around z-axis.</span>
+<span class="sd">    :param float rot_y: rotation angle (in radians) around y-axis.</span>
+<span class="sd">    :param float rot_x: rotation angle (in radians) around x-axis.</span>
+
+<span class="sd">    :return: rot_matrix: rotation matrix for the given angles. The matrix shape</span>
+<span class="sd">        is always (3, 3).</span>
+<span class="sd">    :rtype: numpy.ndarray</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; import pygem.affine as at</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from math import radians</span>
+<span class="sd">    &gt;&gt;&gt; # Example of a rotation around x, y, z axis</span>
+<span class="sd">    &gt;&gt;&gt; rotz = radians(10)</span>
+<span class="sd">    &gt;&gt;&gt; roty = radians(20)</span>
+<span class="sd">    &gt;&gt;&gt; rotx = radians(30)</span>
+<span class="sd">    &gt;&gt;&gt; rot_matrix = at.angles2matrix(rotz, roty, rotx)</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        - The direction of rotation is given by the right-hand rule.</span>
+<span class="sd">        - When applying the rotation to a vector, the vector should be column</span>
+<span class="sd">            vector to the right of the rotation matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rot_matrix</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">rot_z</span><span class="p">:</span>
+        <span class="n">cos</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rot_z</span><span class="p">)</span>
+        <span class="n">sin</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rot_z</span><span class="p">)</span>
+        <span class="n">rot_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cos</span><span class="p">,</span> <span class="o">-</span><span class="n">sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">rot_y</span><span class="p">:</span>
+        <span class="n">cos</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rot_y</span><span class="p">)</span>
+        <span class="n">sin</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rot_y</span><span class="p">)</span>
+        <span class="n">rot_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cos</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cos</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">rot_x</span><span class="p">:</span>
+        <span class="n">cos</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rot_x</span><span class="p">)</span>
+        <span class="n">sin</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rot_x</span><span class="p">)</span>
+        <span class="n">rot_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="o">-</span><span class="n">sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">rot_matrix</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">,</span> <span class="n">rot_matrix</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="fit_affine_transformation">
+<a class="viewcode-back" href="../../utils.html#pygem.utils.fit_affine_transformation">[docs]</a>
+<span class="k">def</span> <span class="nf">fit_affine_transformation</span><span class="p">(</span><span class="n">points_start</span><span class="p">,</span> <span class="n">points_end</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fit an affine transformation from starting points to ending points through a</span>
+<span class="sd">    least square procedure.</span>
+
+<span class="sd">    :param numpy.ndarray points_start: set of starting points.</span>
+<span class="sd">    :param numpy.ndarray points_end: set of ending points.</span>
+
+<span class="sd">    :return: transform_vector: function that transforms a vector according to</span>
+<span class="sd">        the affine map. It takes a source vector and return a vector transformed</span>
+<span class="sd">        by the reduced row echelon form of the map.</span>
+<span class="sd">    :rtype: function</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; import pygem.affine as at</span>
+
+<span class="sd">    &gt;&gt;&gt; # Example of a rotation (affine transformation)</span>
+<span class="sd">    &gt;&gt;&gt; p_start = np.array([[1,0,0], [0,1,0], [0,0,1], [0,0,0]])</span>
+<span class="sd">    &gt;&gt;&gt; p_end = np.array([[0,1,0], [-1,0,0], [0,0,1], [0,0,0]])</span>
+<span class="sd">    &gt;&gt;&gt; v_test = np.array([1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; transformation = at.affine_points_fit(p_start, p_end)</span>
+<span class="sd">    &gt;&gt;&gt; v_trans = transformation(v_test)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points_start</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points_end</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;points_start and points_end must be of same size.&quot;</span><span class="p">)</span>
+
+    <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points_start</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points_start</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">dim</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;Too few starting points =&gt; under-determined system.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">pad_column_ones</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Add right column of 1.0 to the given 2D numpy array &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))])</span>
+
+    <span class="k">def</span> <span class="nf">unpad_column</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Remove last column to the given 2D numpy array &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="n">pad_column_ones</span><span class="p">(</span><span class="n">points_start</span><span class="p">)</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">pad_column_ones</span><span class="p">(</span><span class="n">points_end</span><span class="p">)</span>
+
+        <span class="n">A</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># TODO add check condition number</span>
+        <span class="c1">#if np.linalg.cond(A) &gt;= 1 / sys.float_info.epsilon:</span>
+        <span class="c1">#    raise RuntimeError(</span>
+        <span class="c1">#            &quot;Error: singular matrix. Points are probably coplanar.&quot;)</span>
+        <span class="k">return</span> <span class="n">unpad_column</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
+                    <span class="n">pad_column_ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">src</span><span class="p">)),</span>
+                    <span class="n">A</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">transform</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
+      <span class="lastupdated">Last updated on Dec 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

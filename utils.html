@@ -1,0 +1,228 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Utils &mdash; PyGeM 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CAD Deformation" href="cad_deformation.html" />
+    <link rel="prev" title="Unvhandler" href="unvhandler.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyGeM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="code.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ffd.html">Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cffd.html">Constrained Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bffd.html">Barycenter Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vffd.html">Volume Free-form Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rbf.html">Radial Basis Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rbf_factory.html">RBF Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idw.html">Inverse Distance Weighting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_deformation.html">Custom Deformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filehandler.html">Filehandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtkhandler.html">Vtkhandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stlhandler.html">Stlhandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="openfhandler.html">Openfhandler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unvhandler.html">Unvhandler</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pygem.utils.angles2matrix"><code class="docutils literal notranslate"><span class="pre">angles2matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pygem.utils.fit_affine_transformation"><code class="docutils literal notranslate"><span class="pre">fit_affine_transformation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="code.html#cad">CAD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code.html#table-of-contents">Table of contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyGeM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="code.html">Code Documentation</a></li>
+      <li class="breadcrumb-item active">Utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pygem.utils">
+<span id="utils"></span><h1>Utils<a class="headerlink" href="#module-pygem.utils" title="Link to this heading"></a></h1>
+<p>Utilities for the affine transformations of the bounding box of the Free Form
+Deformation.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="pygem.utils.angles2matrix">
+<span class="sig-name descname"><span class="pre">angles2matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rot_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rot_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rot_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/utils.html#angles2matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygem.utils.angles2matrix" title="Link to this definition"></a></dt>
+<dd><p>This method returns the rotation matrix for given rotations around z, y and
+x axes.  The output rotation matrix is equal to the composition of the
+individual rotations.  Rotations are counter-clockwise. The default value of
+the three rotations is zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rot_z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – rotation angle (in radians) around z-axis.</p></li>
+<li><p><strong>rot_y</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – rotation angle (in radians) around y-axis.</p></li>
+<li><p><strong>rot_x</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – rotation angle (in radians) around x-axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>rot_matrix: rotation matrix for the given angles. The matrix shape
+is always (3, 3).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pygem.affine</span> <span class="k">as</span> <span class="nn">at</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">radians</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Example of a rotation around x, y, z axis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotz</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">roty</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotx</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot_matrix</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">angles2matrix</span><span class="p">(</span><span class="n">rotz</span><span class="p">,</span> <span class="n">roty</span><span class="p">,</span> <span class="n">rotx</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The direction of rotation is given by the right-hand rule.</p></li>
+<li><dl class="simple">
+<dt>When applying the rotation to a vector, the vector should be column</dt><dd><p>vector to the right of the rotation matrix.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygem.utils.fit_affine_transformation">
+<span class="sig-name descname"><span class="pre">fit_affine_transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/utils.html#fit_affine_transformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygem.utils.fit_affine_transformation" title="Link to this definition"></a></dt>
+<dd><p>Fit an affine transformation from starting points to ending points through a
+least square procedure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points_start</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – set of starting points.</p></li>
+<li><p><strong>points_end</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>) – set of ending points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>transform_vector: function that transforms a vector according to
+the affine map. It takes a source vector and return a vector transformed
+by the reduced row echelon form of the map.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pygem.affine</span> <span class="k">as</span> <span class="nn">at</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Example of a rotation (affine transformation)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transformation</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">affine_points_fit</span><span class="p">(</span><span class="n">p_start</span><span class="p">,</span> <span class="n">p_end</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v_trans</span> <span class="o">=</span> <span class="n">transformation</span><span class="p">(</span><span class="n">v_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="unvhandler.html" class="btn btn-neutral float-left" title="Unvhandler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cad_deformation.html" class="btn btn-neutral float-right" title="CAD Deformation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
+      <span class="lastupdated">Last updated on Dec 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
