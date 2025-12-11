@@ -1,4 +1,4 @@
-name: "Deploy Documentation"
+name: "Continuous Deployment"
 
 on: 
   push:
@@ -6,7 +6,10 @@ on:
       - "*"
 
 jobs:
-  docs:
+
+  #############################################################################
+  # Create and online deployment of the documentation #########################
+  docs: #######################################################################
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -17,35 +20,28 @@ jobs:
         auto-update-conda: true
         python-version: 3.10
 
-    - name: Conda install dependencies
-      shell: bash -l {0}
-      run: conda install --yes -c conda-forge pythonocc-core numpy scipy matplotlib vtk nose setuptools coveralls sphinx_rtd_theme sphinx python=3.10
-
-    - name: Conda info
-      shell: bash -l {0}
-      run: conda info
+    - name: Install Dependencies (conda and pip)
+      shell: bash
+      run: |
+        conda install --yes -c conda-forge pythonocc-core 
+        python -m pip install --upgrade pip
+        python -m pip install .[doc]
 
     - name: Build Documentation
-      shell: bash -l {0}
-      run: cd docs && sphinx-build -b html -d build/doctrees  --keep-going --no-color -w '/tmp/sphinx-log' source build/html
-
-    #- name: Create the new documentation
-      #uses: ammaraskar/sphinx-action@master
-      #with:
-        #docs-folder: "docs/"
-        #pre-build-command: "ls -l /usr/share"
-        #build-command: "sphinx-build -b html -d build/doctrees  --keep-going --no-color -w '/tmp/sphinx-log' source build/html"
-
+      run: |
+        make html
+      working-directory: docs/
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        #deploy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         publish_dir: ./docs/build/html
         allow_empty_commit: true
-
-  release_github: 
+  
+  #############################################################################      
+  ## Create a public "Release" on the Github page #############################
+  release_github: #############################################################
     runs-on: ubuntu-latest
     permissions:
       contents: write
