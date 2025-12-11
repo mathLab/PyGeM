@@ -52,7 +52,7 @@ See the [**Examples**](#examples) section below and the [**Tutorials**](tutorial
 ## Dependencies and installation
 **PyGeM** requires `numpy`, `scipy`, `matplotlib`, `sphinx` (for the
 documentation) and `pytest` (for local test). They can be easily installed via
-`pip`. The code has been tested with Python3.7 version, but it should be
+`pip`. The code has been tested with Python>=3.9 version, but it should be
 compatible with a generic Python3.x. The Python2 support is no longer maintained.
 To enable the `CAD`
 [submodule](https://github.com/mathLab/PyGeM/tree/master/pygem/cad), the
