@@ -19,19 +19,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # serve per i tag
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Configure Git
+      - name: Configure git with PAT
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${{ secrets.PAT_PYGEM_PUSH }}@github.com/${{ github.repository }}.git"
 
       - name: Check if the tag is already existing
         run: |
           TAG="${{ inputs.tag_name }}"
           git fetch --tags
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-            echo "❌ Tag $TAG esiste già"
+            echo "❌ Tag $TAG already exists"
             exit 1
           fi
 
