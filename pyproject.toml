@@ -1,10 +1,6 @@
 [project]
 name = "pygem"
-<<<<<<< HEAD
 version = "2.0.4"
-=======
-version = "2.0.1"
->>>>>>> f834adf (docs: resolve CAD rendering)
 description = "Python Geometrical Morphing"
 readme = {file = "README.md", content-type = "text/markdown"}
 keywords = [
