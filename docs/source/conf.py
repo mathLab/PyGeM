@@ -27,6 +27,33 @@ import pygem
 
 # -- General configuration ------------------------------------------------
 
+autodoc_mock_imports = [
+    "OCC",
+    "OCC.Core",
+    "OCC.Core.TopoDS",
+    "OCC.Core.TopExp",
+    "OCC.Core.TopAbs",
+    "OCC.Core.TopTools",
+    "OCC.Core.GeomConvert",
+    "OCC.Core.BRep",
+    "OCC.Core.BRepBuilderAPI",
+    "OCC.Core.BRepPrimAPI",
+    "OCC.Core.BRepAlgoAPI",
+    "OCC.Core.STEPControl",
+    "OCC.Core.Interface",
+    "OCC.Core.IFSelect",
+    "OCC.Core.gp",
+    "OCC.Core.TColgp",
+    "OCC.Core.BRepOffsetAPI",
+    "OCC.Core.BRepFilletAPI",
+    "OCC.Core.Geom",
+    "OCC.Extend",
+    "OCC.Extend.TopologyUtils",
+    "vtk",
+    "vtk.util",
+    "vtk.util.numpy_support"
+]
+
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
@@ -321,3 +348,8 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 # texinfo_no_detailmenu = False
 autodoc_member_order = "bysource"
+
+
+# -- MathJax configuration -------------------------------------------------
+# This ensures that math formulae render correctly on hosted sites like GitHub Pages
+mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
