@@ -235,6 +235,26 @@ class FFD(Deformation):
         self.array_mu_x.fill(0.0)
         self.array_mu_y.fill(0.0)
         self.array_mu_z.fill(0.0)
+    
+    def fit_to_points(self, points, padding_factor=0.05):
+        """
+        Automatically set the FFD box_origin and box_length based on the input points.
+
+        The method computes the axis-aligned bounding box of the input points, adds a small padding, and sets the FFD lattice to exactly
+        enclose the points. This provides a convenient default for the morphing setup.
+
+        :param numpy.ndarray points: The original mesh points (N x 3).
+        :param float padding_factor: Additional space around the object as a fraction of its size. Default is 0.05 (5%).
+        """
+        points = np.asarray(points)
+        min_coords = np.min(points, axis=0)
+        max_coords = np.max(points, axis=0)
+
+        side_lengths = max_coords - min_coords
+        padding = side_lengths * padding_factor
+        self.box_length = side_lengths + 2 * padding
+        self.box_origin = min_coords - padding
+
 
     def read_parameters(self, filename='parameters.prm'):
         """
