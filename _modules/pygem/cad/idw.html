@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pygem.cad.idw &mdash; PyGeM 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyGeM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../code.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../LICENSE.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyGeM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pygem.cad.idw</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pygem.cad.idw</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module focused on the Inverse Distance Weighting interpolation technique.</span>
+<span class="sd">The IDW algorithm is an average moving interpolation that is usually applied to</span>
+<span class="sd">highly variable data. The main idea of this interpolation strategy lies in</span>
+<span class="sd">fact that it is not desirable to honour local high/low values but rather to look</span>
+<span class="sd">at a moving average of nearby data points and estimate the local trends.</span>
+<span class="sd">The node value is calculated by averaging the weighted sum of all the points.</span>
+<span class="sd">Data points that lie progressively farther from the node inuence much less the</span>
+<span class="sd">computed value than those lying closer to the node.</span>
+
+<span class="sd">:Theoretical Insight:</span>
+
+<span class="sd">    This implementation is based on the simplest form of inverse distance</span>
+<span class="sd">    weighting interpolation, proposed by D. Shepard, A two-dimensional</span>
+<span class="sd">    interpolation function for irregularly-spaced data, Proceedings of the 23 rd</span>
+<span class="sd">    ACM National Conference.</span>
+
+<span class="sd">    The interpolation value :math:`u` of a given point :math:`\\mathrm{x}`</span>
+<span class="sd">    from a set of samples :math:`u_k = u(\\mathrm{x}_k)`, with</span>
+<span class="sd">    :math:`k = 1,2,\\dotsc,\\mathcal{N}`, is given by:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        u(\\mathrm{x}) = \\displaystyle\\sum_{k=1}^\\mathcal{N}</span>
+<span class="sd">        \\frac{w(\\mathrm{x},\\mathrm{x}_k)}</span>
+<span class="sd">        {\\displaystyle\\sum_{j=1}^\\mathcal{N} w(\\mathrm{x},\\mathrm{x}_j)}</span>
+<span class="sd">        u_k</span>
+
+<span class="sd">    where, in general, :math:`w(\\mathrm{x}, \\mathrm{x}_i)` represents the</span>
+<span class="sd">    weighting function:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        w(\\mathrm{x}, \\mathrm{x}_i) = \\| \\mathrm{x} - \\mathrm{x}_i \\|^{-p}</span>
+
+<span class="sd">    being :math:`\\| \\mathrm{x} - \\mathrm{x}_i \\|^{-p} \\ge 0` is the</span>
+<span class="sd">    Euclidean distance between :math:`\\mathrm{x}` and data point</span>
+<span class="sd">    :math:`\\mathrm{x}_i` and :math:`p` is a power parameter, typically equal to</span>
+<span class="sd">    2.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pygem</span> <span class="kn">import</span> <span class="n">IDW</span> <span class="k">as</span> <span class="n">OriginalIDW</span>
+<span class="kn">from</span> <span class="nn">.cad_deformation</span> <span class="kn">import</span> <span class="n">CADDeformation</span>
+
+<div class="viewcode-block" id="IDW">
+<a class="viewcode-back" href="../../../idwcad.html#pygem.cad.idw.IDW">[docs]</a>
+<span class="k">class</span> <span class="nc">IDW</span><span class="p">(</span><span class="n">CADDeformation</span><span class="p">,</span> <span class="n">OriginalIDW</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that perform the Inverse Distance Weighting (IDW) on CAD geometries.</span>
+
+<span class="sd">    :param int power: the power parameter. The default value is 2.</span>
+<span class="sd">    :param numpy.ndarray original_control_points: it is an</span>
+<span class="sd">        (*n_control_points*, *3*) array with the coordinates of the original</span>
+<span class="sd">        interpolation control points before the deformation. The default is the</span>
+<span class="sd">        vertices of the unit cube.</span>
+<span class="sd">    :param numpy.ndarray deformed_control_points: it is an</span>
+<span class="sd">        (*n_control_points*, *3*) array with the coordinates of the</span>
+<span class="sd">        interpolation control points after the deformation. The default is the</span>
+<span class="sd">        vertices of the unit cube.</span>
+<span class="sd">    :param int u_knots_to_add: the number of knots to add to the NURBS surfaces</span>
+<span class="sd">        along `u` direction before the deformation. This parameter is useful</span>
+<span class="sd">        whenever the gradient of the imposed deformation present spatial scales</span>
+<span class="sd">        that are smaller than the local distance among the original poles of</span>
+<span class="sd">        the surface/curve. Enriching the poles will allow for a more accurate</span>
+<span class="sd">        application of the deformation, and might also reduce possible</span>
+<span class="sd">        mismatches between bordering faces. On the orther hand, it might result</span>
+<span class="sd">        in higher computational cost and bigger output files. Default is 0.</span>
+<span class="sd">    :param int v_knots_to_add: the number of knots to add to the NURBS surfaces</span>
+<span class="sd">        along `v` direction before the deformation. This parameter is useful</span>
+<span class="sd">        whenever the gradient of the imposed deformation present spatial scales</span>
+<span class="sd">        that are smaller than the local distance among the original poles of</span>
+<span class="sd">        the surface/curve. Enriching the poles will allow for a more accurate</span>
+<span class="sd">        application of the deformation, and might also reduce possible</span>
+<span class="sd">        mismatches between bordering faces. On the orther hand, it might result</span>
+<span class="sd">        in higher computational cost and bigger output files.  Default is 0.</span>
+<span class="sd">    :param int t_knots_to_add: the number of knots to add to the NURBS curves</span>
+<span class="sd">        before the deformation. This parameter is useful whenever the gradient</span>
+<span class="sd">        of the imposed deformation present spatial scales that are smaller than</span>
+<span class="sd">        the local distance among the original poles of the surface/curve.</span>
+<span class="sd">        Enriching the poles will allow for a more accurate application of the</span>
+<span class="sd">        deformation, and might also reduce possible mismatches between</span>
+<span class="sd">        bordering faces. On the orther hand, it might result in higher</span>
+<span class="sd">        computational cost and bigger output files. Default is 0.</span>
+<span class="sd">    :param float tolerance: the tolerance involved in several internal</span>
+<span class="sd">        operations of the procedure (joining wires in a single curve before</span>
+<span class="sd">        deformation and placing new poles on curves and surfaces). Change the</span>
+<span class="sd">        default value only if the input file scale is significantly different</span>
+<span class="sd">        form mm, making some of the aforementioned operations fail. Default is</span>
+<span class="sd">        0.0001.</span>
+<span class="sd">        </span>
+<span class="sd">    :cvar int power: the power parameter. The default value is 2.</span>
+<span class="sd">    :cvar numpy.ndarray original_control_points: it is an</span>
+<span class="sd">        (*n_control_points*, *3*) array with the coordinates of the original</span>
+<span class="sd">        interpolation control points before the deformation. The default is the</span>
+<span class="sd">        vertices of the unit cube.</span>
+<span class="sd">    :cvar numpy.ndarray deformed_control_points: it is an</span>
+<span class="sd">        (*n_control_points*, *3*) array with the coordinates of the</span>
+<span class="sd">        interpolation control points after the deformation. The default is the</span>
+<span class="sd">        vertices of the unit cube.</span>
+<span class="sd">    :cvar int u_knots_to_add: the number of knots to add to the NURBS surfaces</span>
+<span class="sd">        along `u` direction before the deformation. This parameter is useful</span>
+<span class="sd">        whenever the gradient of the imposed deformation present spatial scales</span>
+<span class="sd">        that are smaller than the local distance among the original poles of</span>
+<span class="sd">        the surface/curve. Enriching the poles will allow for a more accurate</span>
+<span class="sd">        application of the deformation, and might also reduce possible</span>
+<span class="sd">        mismatches between bordering faces. On the orther hand, it might result</span>
+<span class="sd">        in higher computational cost and bigger output files. Default is 0.</span>
+<span class="sd">    :cvar int v_knots_to_add: the number of knots to add to the NURBS surfaces</span>
+<span class="sd">        along `v` direction before the deformation. This parameter is useful</span>
+<span class="sd">        whenever the gradient of the imposed deformation present spatial scales</span>
+<span class="sd">        that are smaller than the local distance among the original poles of</span>
+<span class="sd">        the surface/curve. Enriching the poles will allow for a more accurate</span>
+<span class="sd">        application of the deformation, and might also reduce possible</span>
+<span class="sd">        mismatches between bordering faces. On the orther hand, it might result</span>
+<span class="sd">        in higher computational cost and bigger output files.  Default is 0.</span>
+<span class="sd">    :cvar int t_knots_to_add: the number of knots to add to the NURBS curves</span>
+<span class="sd">        before the deformation. This parameter is useful whenever the gradient</span>
+<span class="sd">        of the imposed deformation present spatial scales that are smaller than</span>
+<span class="sd">        the local distance among the original poles of the surface/curve.</span>
+<span class="sd">        Enriching the poles will allow for a more accurate application of the</span>
+<span class="sd">        deformation, and might also reduce possible mismatches between</span>
+<span class="sd">        bordering faces. On the orther hand, it might result in higher</span>
+<span class="sd">        computational cost and bigger output files. Default is 0.</span>
+<span class="sd">    :cvar float tolerance: the tolerance involved in several internal</span>
+<span class="sd">        operations of the procedure (joining wires in a single curve before</span>
+<span class="sd">        deformation and placing new poles on curves and surfaces). Change the</span>
+<span class="sd">        default value only if the input file scale is significantly different</span>
+<span class="sd">        form mm, making some of the aforementioned operations fail. Default is</span>
+<span class="sd">        0.0001.</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">        &gt;&gt;&gt; from pygem.cad import IDW</span>
+<span class="sd">        &gt;&gt;&gt; idw = IDW()</span>
+<span class="sd">        &gt;&gt;&gt; idw.read_parameters(</span>
+<span class="sd">        &gt;&gt;&gt;        &#39;tests/test_datasets/parameters_test_idw_iges.prm&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; input_cad_file_name = &quot;input.iges&quot;</span>
+<span class="sd">        &gt;&gt;&gt; modified_cad_file_name = &quot;output.iges&quot;</span>
+<span class="sd">        &gt;&gt;&gt; idw(input_cad_file_name, modified_cad_file_name)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">original_control_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">deformed_control_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">power</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">u_knots_to_add</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">v_knots_to_add</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">t_knots_to_add</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+        <span class="n">OriginalIDW</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">original_control_points</span><span class="o">=</span><span class="n">original_control_points</span><span class="p">,</span>
+                             <span class="n">deformed_control_points</span><span class="o">=</span><span class="n">deformed_control_points</span><span class="p">,</span>
+                             <span class="n">power</span><span class="o">=</span><span class="n">power</span><span class="p">)</span>
+        <span class="n">CADDeformation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                <span class="n">u_knots_to_add</span><span class="o">=</span><span class="n">u_knots_to_add</span><span class="p">,</span>
+                                <span class="n">v_knots_to_add</span><span class="o">=</span><span class="n">v_knots_to_add</span><span class="p">,</span>
+                                <span class="n">t_knots_to_add</span><span class="o">=</span><span class="n">t_knots_to_add</span><span class="p">,</span>
+                                <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Copyright 2017-2026, PyGeM contributors.
+      <span class="lastupdated">Last updated on Apr 09, 2026.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

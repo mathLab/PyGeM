@@ -8,15 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Deformation [CAD] &mdash; PyGeM 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=51b770b3"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -101,12 +101,83 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="custom-deformation-cad">
-<h1>Custom Deformation [CAD]<a class="headerlink" href="#custom-deformation-cad" title="Link to this heading"></a></h1>
+  <section id="module-pygem.cad.custom_deformation">
+<span id="custom-deformation-cad"></span><h1>Custom Deformation [CAD]<a class="headerlink" href="#module-pygem.cad.custom_deformation" title="Link to this heading"></a></h1>
+<p>Module for custom deformations to CAD geometries.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 </tbody>
 </table>
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">CustomDeformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cad/custom_deformation.html#CustomDeformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CADDeformation</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CustomDeformation</span></code></p>
+<p>Class to perform a custom deformation to the CAD geometries.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>callable</em>) – the function definying the deformation of the input
+points. This function should take as input: <em>i</em>) a 2D array of shape
+(<em>n_points</em>, <em>3</em>) in which the points are arranged by row, or <em>ii</em>) an
+iterable object with 3 components. In this last case, computation of
+deformation is not vectorizedand the overall cost may become heavy.</p></li>
+<li><p><strong>u_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>u</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>v_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>v</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files.  Default is 0.</p></li>
+<li><p><strong>t_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS curves
+before the deformation. This parameter is useful whenever the gradient
+of the imposed deformation present spatial scales that are smaller than
+the local distance among the original poles of the surface/curve.
+Enriching the poles will allow for a more accurate application of the
+deformation, and might also reduce possible mismatches between
+bordering faces. On the orther hand, it might result in higher
+computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – the tolerance involved in several internal
+operations of the procedure (joining wires in a single curve before
+deformation and placing new poles on curves and surfaces). Change the
+default value only if the input file scale is significantly different
+form mm, making some of the aforementioned operations fail. Default is
+0.0001.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>u_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>u</cite> direction before the deformation.</p></li>
+<li><p><strong>v_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>v</cite> direction before the deformation.</p></li>
+<li><p><strong>t_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS curves
+before the deformation.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – the tolerance involved in several internal
+operations of the procedure (joining wires in a single curve before
+deformation and placing new poles on curves and surfaces).</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygem.cad</span> <span class="kn">import</span> <span class="n">CustomDeformation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deform</span> <span class="o">=</span> <span class="n">CustomDeformation</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deform</span><span class="p">(</span><span class="s1">&#39;original_shape.iges&#39;</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;new_shape.iges&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -120,8 +191,8 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
-      <span class="lastupdated">Last updated on Dec 11, 2025.
+    <p>&#169; Copyright Copyright 2017-2026, PyGeM contributors.
+      <span class="lastupdated">Last updated on Apr 09, 2026.
       </span></p>
   </div>
 

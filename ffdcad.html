@@ -8,15 +8,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Free-form Deformation [CAD] &mdash; PyGeM 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=51b770b3"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -101,12 +102,153 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="free-form-deformation-cad">
-<h1>Free-form Deformation [CAD]<a class="headerlink" href="#free-form-deformation-cad" title="Link to this heading"></a></h1>
+  <section id="module-pygem.cad.ffd">
+<span id="free-form-deformation-cad"></span><h1>Free-form Deformation [CAD]<a class="headerlink" href="#module-pygem.cad.ffd" title="Link to this heading"></a></h1>
+<p>Utilities for performing Free Form Deformation (FFD) to CAD geometries.</p>
+<dl class="field-list">
+<dt class="field-odd">Theoretical Insight<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Free Form Deformation is a technique for the efficient, smooth and accurate
+geometrical parametrization. It has been proposed the first time in
+<em>Sederberg, Thomas W., and Scott R. Parry. “Free-form deformation of solid
+geometric models.” ACM SIGGRAPH computer graphics 20.4 (1986): 151-160</em>. It
+consists in three different step:</p>
+<ul class="simple">
+<li><p>Mapping the physical domain to the reference one with map
+<span class="math notranslate nohighlight">\(\boldsymbol{\psi}\)</span>.  In the code it is named <em>transformation</em>.</p></li>
+<li><p>Moving some control points to deform the lattice with <span class="math notranslate nohighlight">\(\hat{T}\)</span>.
+The movement of the control points is basically the weight (or
+displacement) <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span> we set in the <em>parameters file</em>.</p></li>
+<li><p>Mapping back to the physical domain with map
+<span class="math notranslate nohighlight">\(\boldsymbol{\psi}^{-1}\)</span>.  In the code it is named
+<em>inverse_transformation</em>.</p></li>
+</ul>
+<p>FFD map (<span class="math notranslate nohighlight">\(T\)</span>) is the composition of the three maps, that is</p>
+<div class="math notranslate nohighlight">
+\[T(\cdot, \boldsymbol{\mu}) = (\Psi^{-1} \circ \hat{T} \circ
+\Psi) (\cdot, \boldsymbol{\mu})\]</div>
+<p>In this way, every point inside the FFD box changes it position according to</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{P} = \boldsymbol{\psi}^{-1} \left( \sum_{l=0}^L
+\sum_{m=0}^M \sum_{n=0}^N
+\mathsf{b}_{lmn}(\boldsymbol{\psi}(\boldsymbol{P}_0))
+\boldsymbol{\mu}_{lmn} \right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathsf{b}_{lmn}\)</span> are Bernstein polynomials.  We improve the
+traditional version by allowing a rotation of the FFD lattice in order to
+give more flexibility to the tool.</p>
+<p>You can try to add more shapes to the lattice to allow more and more
+involved transformations.</p>
+</dd>
+</dl>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 </tbody>
 </table>
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">FFD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cad/ffd.html#FFD"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CADDeformation</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">FFD</span></code></p>
+<p>Class that handles the Free Form Deformation on CAD geometries.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_control_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – number of control points in the x, y, and z
+direction. If not provided it is set to [2, 2, 2].</p></li>
+<li><p><strong>u_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>u</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>v_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>v</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files.  Default is 0.</p></li>
+<li><p><strong>t_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS curves
+before the deformation. This parameter is useful whenever the gradient
+of the imposed deformation present spatial scales that are smaller than
+the local distance among the original poles of the surface/curve.
+Enriching the poles will allow for a more accurate application of the
+deformation, and might also reduce possible mismatches between
+bordering faces. On the orther hand, it might result in higher
+computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – the tolerance involved in several internal
+operations of the procedure (joining wires in a single curve before
+deformation and placing new poles on curves and surfaces). Change the
+default value only if the input file scale is significantly different
+form mm, making some of the aforementioned operations fail. Default is
+0.0001.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>box_length</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – dimension of the FFD bounding box, in the
+x, y and z direction (local coordinate system).</p></li>
+<li><p><strong>box_origin</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – the x, y and z coordinates of the origin of
+the FFD bounding box.</p></li>
+<li><p><strong>rot_angle</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – rotation angle around x, y and z axis of the
+FFD bounding box.</p></li>
+<li><p><strong>n_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – the number of control points in the
+x, y, and z direction.</p></li>
+<li><p><strong>array_mu_x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+x, normalized with the box length x.</p></li>
+<li><p><strong>array_mu_y</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+y, normalized with the box length y.</p></li>
+<li><p><strong>array_mu_z</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – collects the displacements (weights) along
+z, normalized with the box length z.</p></li>
+<li><p><strong>u_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>u</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>v_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>v</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files.  Default is 0.</p></li>
+<li><p><strong>t_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS curves
+before the deformation. This parameter is useful whenever the gradient
+of the imposed deformation present spatial scales that are smaller than
+the local distance among the original poles of the surface/curve.
+Enriching the poles will allow for a more accurate application of the
+deformation, and might also reduce possible mismatches between
+bordering faces. On the orther hand, it might result in higher
+computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – the tolerance involved in several internal
+operations of the procedure (joining wires in a single curve before
+deformation and placing new poles on curves and surfaces). Change the
+default value only if the input file scale is significantly different
+form mm, making some of the aforementioned operations fail. Default is
+0.0001.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygem.cad</span> <span class="kn">import</span> <span class="n">FFD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygem.cad</span> <span class="kn">import</span> <span class="n">CADDeformation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ffd</span> <span class="o">=</span> <span class="n">FFD</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ffd</span><span class="o">.</span><span class="n">read_parameters</span><span class="p">(</span><span class="s1">&#39;parameters_test_ffd_iges.prm&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">input_cad_file_name</span> <span class="o">=</span> <span class="s2">&quot;input.iges&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modified_cad_file_name</span> <span class="o">=</span> <span class="s2">&quot;output.iges&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ffd</span><span class="p">(</span><span class="n">input_cad_file_name</span><span class="p">,</span> <span class="n">modified_cad_file_name</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># is equivalent to</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_shape</span> <span class="o">=</span> <span class="n">ffd</span><span class="p">(</span><span class="n">CADDeformation</span><span class="o">.</span><span class="n">read_shape</span><span class="p">(</span><span class="n">input_cad_file_name</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -120,8 +262,8 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
-      <span class="lastupdated">Last updated on Dec 11, 2025.
+    <p>&#169; Copyright Copyright 2017-2026, PyGeM contributors.
+      <span class="lastupdated">Last updated on Apr 09, 2026.
       </span></p>
   </div>
 

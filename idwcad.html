@@ -8,15 +8,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inverse Distance Weighting [CAD] &mdash; PyGeM 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=51b770b3"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -101,12 +102,150 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="inverse-distance-weighting-cad">
-<h1>Inverse Distance Weighting [CAD]<a class="headerlink" href="#inverse-distance-weighting-cad" title="Link to this heading"></a></h1>
+  <section id="module-pygem.cad.idw">
+<span id="inverse-distance-weighting-cad"></span><h1>Inverse Distance Weighting [CAD]<a class="headerlink" href="#module-pygem.cad.idw" title="Link to this heading"></a></h1>
+<p>Module focused on the Inverse Distance Weighting interpolation technique.
+The IDW algorithm is an average moving interpolation that is usually applied to
+highly variable data. The main idea of this interpolation strategy lies in
+fact that it is not desirable to honour local high/low values but rather to look
+at a moving average of nearby data points and estimate the local trends.
+The node value is calculated by averaging the weighted sum of all the points.
+Data points that lie progressively farther from the node inuence much less the
+computed value than those lying closer to the node.</p>
+<dl class="field-list">
+<dt class="field-odd">Theoretical Insight<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This implementation is based on the simplest form of inverse distance
+weighting interpolation, proposed by D. Shepard, A two-dimensional
+interpolation function for irregularly-spaced data, Proceedings of the 23 rd
+ACM National Conference.</p>
+<p>The interpolation value <span class="math notranslate nohighlight">\(u\)</span> of a given point <span class="math notranslate nohighlight">\(\mathrm{x}\)</span>
+from a set of samples <span class="math notranslate nohighlight">\(u_k = u(\mathrm{x}_k)\)</span>, with
+<span class="math notranslate nohighlight">\(k = 1,2,\dotsc,\mathcal{N}\)</span>, is given by:</p>
+<div class="math notranslate nohighlight">
+\[u(\mathrm{x}) = \displaystyle\sum_{k=1}^\mathcal{N}
+\frac{w(\mathrm{x},\mathrm{x}_k)}
+{\displaystyle\sum_{j=1}^\mathcal{N} w(\mathrm{x},\mathrm{x}_j)}
+u_k\]</div>
+<p>where, in general, <span class="math notranslate nohighlight">\(w(\mathrm{x}, \mathrm{x}_i)\)</span> represents the
+weighting function:</p>
+<div class="math notranslate nohighlight">
+\[w(\mathrm{x}, \mathrm{x}_i) = \| \mathrm{x} - \mathrm{x}_i \|^{-p}\]</div>
+<p>being <span class="math notranslate nohighlight">\(\| \mathrm{x} - \mathrm{x}_i \|^{-p} \ge 0\)</span> is the
+Euclidean distance between <span class="math notranslate nohighlight">\(\mathrm{x}\)</span> and data point
+<span class="math notranslate nohighlight">\(\mathrm{x}_i\)</span> and <span class="math notranslate nohighlight">\(p\)</span> is a power parameter, typically equal to
+2.</p>
+</dd>
+</dl>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 </tbody>
 </table>
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">IDW</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deformed_control_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_knots_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygem/cad/idw.html#IDW"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CADDeformation</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">IDW</span></code></p>
+<p>Class that perform the Inverse Distance Weighting (IDW) on CAD geometries.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>power</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the power parameter. The default value is 2.</p></li>
+<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – it is an
+(<em>n_control_points</em>, <em>3</em>) array with the coordinates of the original
+interpolation control points before the deformation. The default is the
+vertices of the unit cube.</p></li>
+<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – it is an
+(<em>n_control_points</em>, <em>3</em>) array with the coordinates of the
+interpolation control points after the deformation. The default is the
+vertices of the unit cube.</p></li>
+<li><p><strong>u_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>u</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>v_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>v</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files.  Default is 0.</p></li>
+<li><p><strong>t_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS curves
+before the deformation. This parameter is useful whenever the gradient
+of the imposed deformation present spatial scales that are smaller than
+the local distance among the original poles of the surface/curve.
+Enriching the poles will allow for a more accurate application of the
+deformation, and might also reduce possible mismatches between
+bordering faces. On the orther hand, it might result in higher
+computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – the tolerance involved in several internal
+operations of the procedure (joining wires in a single curve before
+deformation and placing new poles on curves and surfaces). Change the
+default value only if the input file scale is significantly different
+form mm, making some of the aforementioned operations fail. Default is
+0.0001.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>power</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the power parameter. The default value is 2.</p></li>
+<li><p><strong>original_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – it is an
+(<em>n_control_points</em>, <em>3</em>) array with the coordinates of the original
+interpolation control points before the deformation. The default is the
+vertices of the unit cube.</p></li>
+<li><p><strong>deformed_control_points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>numpy.ndarray</em></a>) – it is an
+(<em>n_control_points</em>, <em>3</em>) array with the coordinates of the
+interpolation control points after the deformation. The default is the
+vertices of the unit cube.</p></li>
+<li><p><strong>u_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>u</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>v_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS surfaces
+along <cite>v</cite> direction before the deformation. This parameter is useful
+whenever the gradient of the imposed deformation present spatial scales
+that are smaller than the local distance among the original poles of
+the surface/curve. Enriching the poles will allow for a more accurate
+application of the deformation, and might also reduce possible
+mismatches between bordering faces. On the orther hand, it might result
+in higher computational cost and bigger output files.  Default is 0.</p></li>
+<li><p><strong>t_knots_to_add</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – the number of knots to add to the NURBS curves
+before the deformation. This parameter is useful whenever the gradient
+of the imposed deformation present spatial scales that are smaller than
+the local distance among the original poles of the surface/curve.
+Enriching the poles will allow for a more accurate application of the
+deformation, and might also reduce possible mismatches between
+bordering faces. On the orther hand, it might result in higher
+computational cost and bigger output files. Default is 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – the tolerance involved in several internal
+operations of the procedure (joining wires in a single curve before
+deformation and placing new poles on curves and surfaces). Change the
+default value only if the input file scale is significantly different
+form mm, making some of the aforementioned operations fail. Default is
+0.0001.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygem.cad</span> <span class="kn">import</span> <span class="n">IDW</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">idw</span> <span class="o">=</span> <span class="n">IDW</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">idw</span><span class="o">.</span><span class="n">read_parameters</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s1">&#39;tests/test_datasets/parameters_test_idw_iges.prm&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">input_cad_file_name</span> <span class="o">=</span> <span class="s2">&quot;input.iges&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modified_cad_file_name</span> <span class="o">=</span> <span class="s2">&quot;output.iges&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">idw</span><span class="p">(</span><span class="n">input_cad_file_name</span><span class="p">,</span> <span class="n">modified_cad_file_name</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -120,8 +259,8 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright Copyright 2017-2025, PyGeM contributors.
-      <span class="lastupdated">Last updated on Dec 11, 2025.
+    <p>&#169; Copyright Copyright 2017-2026, PyGeM contributors.
+      <span class="lastupdated">Last updated on Apr 09, 2026.
       </span></p>
   </div>
 
