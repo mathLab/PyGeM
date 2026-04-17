@@ -382,3 +382,39 @@ class TestFFD(TestCase):
             'tests/test_datasets/meshpoints_sphere_mod.npy')
         mesh_points_test = ffd(mesh_points)
         np.testing.assert_array_almost_equal(mesh_points_test, mesh_points_ref)
+
+    def test_fit_to_points_default_padding(self):
+        params = FFD()
+        points = np.array([[0., 0., 0.], [10., 10., 10.]])
+        params.fit_to_points(points)
+
+        expected_length = np.array([11., 11., 11.])
+        expected_origin = np.array([-0.5, -0.5, -0.5])
+
+        np.testing.assert_array_almost_equal(params.box_length, expected_length)
+        np.testing.assert_array_almost_equal(params.box_origin, expected_origin)
+
+    def test_fit_to_points_custom_padding(self):
+        params = FFD()
+        points = np.array([[-5., 2., 0.], [5., 6., 10.]])
+        # Test with 10% padding
+        params.fit_to_points(points, padding_factor=0.1)
+
+        expected_length = np.array([12., 4.8, 12.])
+        expected_origin = np.array([-6., 1.6, -1.])
+
+        np.testing.assert_array_almost_equal(params.box_length, expected_length)
+        np.testing.assert_array_almost_equal(params.box_origin, expected_origin)
+
+    def test_fit_to_points_zero_padding(self):
+        params = FFD()
+        points = np.array([[1., 1., 1.], [3., 4., 5.]])
+        
+        # Test with exactly bounding the points (0% padding)
+        params.fit_to_points(points, padding_factor=0.0)
+
+        expected_length = np.array([2., 3., 4.])
+        expected_origin = np.array([1., 1., 1.])
+
+        np.testing.assert_array_almost_equal(params.box_length, expected_length)
+        np.testing.assert_array_almost_equal(params.box_origin, expected_origin)
