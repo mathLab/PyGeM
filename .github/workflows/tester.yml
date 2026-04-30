@@ -1,0 +1,110 @@
+name: "Testing Pull Request"
+
+on:
+  pull_request:
+    branches:
+      - "master"
+      - "dev"
+
+jobs:
+  unittests: #################################################################
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]        
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Installing conda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}
+        channels: conda-forge
+    
+    - name: Installing packages
+      shell: bash -el {0}
+      run: |
+        conda install --yes -c conda-forge pythonocc-core pip
+        python -m pip install --upgrade pip
+        python -m pip install .[test]
+    
+    - name: Test with pytest
+      shell: bash -el {0}
+      run: |
+        python -m pytest
+
+  linter: ####################################################################
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Black formatter (check mode)
+        uses: psf/black@stable
+        with:
+          src: "./pygem"
+
+  testdocs: ##################################################################
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Installing conda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: "3.10"
+        channels: conda-forge
+
+    - name: Install Python dependencies
+      shell: bash -el {0}
+      run: |
+        conda install --yes -c conda-forge pythonocc-core
+        python -m pip install --upgrade pip
+        python -m pip install .[docs]
+
+    - name: Build Documentation
+      shell: bash -el {0}
+      run: |
+        make html SPHINXOPTS+='-W'
+      working-directory: docs/
+
+  coverage: ##################################################################
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installing conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: "3.10"
+          channels: conda-forge
+
+      - name: Install Python dependencies
+        shell: bash -el {0}
+        run: |
+          conda install --yes -c conda-forge pythonocc-core
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-cov
+          python -m pip install .[test]
+        
+      - name: Generate coverage report
+        shell: bash -el {0}
+        run: |
+            python -m pytest --cov-report term --cov-report xml:cobertura.xml --cov=pygem
+
+      - name: Produce the coverage report
+        uses: insightsengineering/coverage-action@v2
+        with:
+          path: ./cobertura.xml
+          threshold: 80.0
+          fail: true
+          publish: true
+          coverage-summary-title: "Code Coverage Summary"

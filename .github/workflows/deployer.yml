@@ -1,4 +1,4 @@
-name: "Continuous Deployment"
+name: "Deployer"
 
 on: 
   push:
@@ -7,8 +7,6 @@ on:
 
 jobs:
 
-  #############################################################################
-  # Create and online deployment of the documentation #########################
   docs: #######################################################################
     runs-on: ubuntu-latest
     steps:
@@ -21,13 +19,14 @@ jobs:
         python-version: "3.10"
 
     - name: Install Dependencies (conda and pip)
-      shell: bash
+      shell: bash -el {0}
       run: |
-        conda install --yes -c conda-forge pythonocc-core 
+        conda install --yes -c conda-forge pythonocc-core pip
         python -m pip install --upgrade pip
         python -m pip install .[docs]
 
     - name: Build Documentation
+      shell: bash -el {0}
       run: |
         make html
       working-directory: docs/
@@ -38,9 +37,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/build/html
         allow_empty_commit: true
-  
-  #############################################################################      
-  ## Create a public "Release" on the Github page #############################
+
   release_github: #############################################################
     runs-on: ubuntu-latest
     permissions:
@@ -50,3 +47,27 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+
+  pypi: #######################################################################
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    - name: Install build
+      run: >-
+        python -m pip install build
+
+    - name: Build a binary wheel and a source tarball
+      run: >-
+        python -m build --sdist --wheel --outdir dist/ .
+
+    - name: Publish distribution to PyPI
+      if: startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
