@@ -61,7 +61,7 @@ jobs:
     - name: Install Python dependencies
       shell: bash -el {0}
       run: |
-        conda install --yes -c conda-forge pythonocc-core
+        conda install --yes -c conda-forge pythonocc-core pip
         python -m pip install --upgrade pip
         python -m pip install .[docs]
 
@@ -90,7 +90,7 @@ jobs:
       - name: Install Python dependencies
         shell: bash -el {0}
         run: |
-          conda install --yes -c conda-forge pythonocc-core
+          conda install --yes -c conda-forge pythonocc-core pip
           python -m pip install --upgrade pip
           python -m pip install pytest pytest-cov
           python -m pip install .[test]
@@ -101,10 +101,11 @@ jobs:
             python -m pytest --cov-report term --cov-report xml:cobertura.xml --cov=pygem
 
       - name: Produce the coverage report
+        if: github.event.pull_request.head.repo.full_name == github.repository
         uses: insightsengineering/coverage-action@v2
         with:
           path: ./cobertura.xml
           threshold: 80.0
           fail: true
-          publish: true
+          publish: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
           coverage-summary-title: "Code Coverage Summary"
