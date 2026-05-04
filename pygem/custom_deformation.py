@@ -1,9 +1,11 @@
 """
 Module for a custom deformation.
 """
+
 import numpy as np
 
 from pygem import Deformation
+
 
 class CustomDeformation(Deformation):
     """

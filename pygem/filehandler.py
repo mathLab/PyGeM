@@ -3,11 +3,15 @@ Base module with the base class for reading and writing different files.
 
 .. warning::
     This module will be deprecated in next releases. Follow updates on
-    https://github.com/mathLab for news about file handling. 
+    https://github.com/mathLab for news about file handling.
 """
+
 import os
 import warnings
-warnings.warn("This module will be deprecated in next releases", DeprecationWarning)
+
+warnings.warn(
+    "This module will be deprecated in next releases", DeprecationWarning
+)
 
 
 class FileHandler(object):
@@ -32,8 +36,10 @@ class FileHandler(object):
         Not implemented, it has to be implemented in subclasses.
         """
         raise NotImplementedError(
-            "Subclass must implement abstract method " \
-         + self.__class__.__name__ + ".parse")
+            "Subclass must implement abstract method "
+            + self.__class__.__name__
+            + ".parse"
+        )
 
     def write(self, *args):
         """
@@ -42,8 +48,10 @@ class FileHandler(object):
         Not implemented, it has to be implemented in subclasses.
         """
         raise NotImplementedError(
-            "Subclass must implement abstract method " \
-        + self.__class__.__name__ + ".write")
+            "Subclass must implement abstract method "
+            + self.__class__.__name__
+            + ".write"
+        )
 
     def _check_extension(self, filename):
         """
@@ -55,9 +63,11 @@ class FileHandler(object):
         __, file_ext = os.path.splitext(filename)
         if file_ext not in self.extensions:
             raise ValueError(
-                'The input file does not have the proper extension. \
-                It is {0!s}, instead of {1!s}.'.format(file_ext,
-                                                       self.extensions))
+                "The input file does not have the proper extension. \
+                It is {0!s}, instead of {1!s}.".format(
+                    file_ext, self.extensions
+                )
+            )
 
     @staticmethod
     def _check_filename_type(filename):
@@ -69,7 +79,8 @@ class FileHandler(object):
         """
         if not isinstance(filename, str):
             raise TypeError(
-                'The given filename ({0!s}) must be a string'.format(filename))
+                "The given filename ({0!s}) must be a string".format(filename)
+            )
 
     def _check_infile_instantiation(self):
         """
@@ -80,4 +91,5 @@ class FileHandler(object):
         """
         if not self.infile:
             raise RuntimeError(
-                "You can not write a file without having parsed one.")
+                "You can not write a file without having parsed one."
+            )

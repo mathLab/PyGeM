@@ -1,10 +1,11 @@
 """
 Factory class for radial basis functions
 """
+
 import numpy as np
 
 
-class classproperty():
+class classproperty:
     def __init__(self, f):
         self.f = f
 
@@ -12,18 +13,19 @@ class classproperty():
         return self.f(owner)
 
 
-class RBFFactory():
+class RBFFactory:
     """
     Factory class that spawns the radial basis functions.
 
     :Example:
-        
+
         >>> from pygem import RBFFactory
         >>> import numpy as np
         >>> x = np.linspace(0, 1)
         >>> for fname in RBFFactory.bases:
         >>>     y = RBFFactory(fname)(x)
     """
+
     @staticmethod
     def gaussian_spline(X, r=1):
         """
@@ -89,11 +91,11 @@ class RBFFactory():
          With k=2 the function is "radius free", that means independent of radius value.
 
         :param numpy.ndarray X: the norm x in the formula above.
-        :param float r: the parameter r in the formula above. 
+        :param float r: the parameter r in the formula above.
         :param float k: the parameter k in the formula above.
-         
+
         :return: result: the result of the formula above.
-        :rtype: float      
+        :rtype: float
         """
         arg = X / r
         result = np.power(arg, k)
@@ -106,7 +108,7 @@ class RBFFactory():
         It implements the following formula:
 
         .. math::
-            \\varphi(\\boldsymbol{x}) = 
+            \\varphi(\\boldsymbol{x}) =
             \\left( 1 - \\frac{\\boldsymbol{x}}{r}\\right)^4 +
             \\left( 4 \\frac{ \\boldsymbol{x} }{r} + 1 \\right)
 
@@ -158,9 +160,11 @@ class RBFFactory():
             return np.power(r_sc, k)
 
         # k even
-        result = np.where(r_sc < 1,
-                          np.power(r_sc, k - 1) * np.log(np.power(r_sc, r_sc)),
-                          np.power(r_sc, k) * np.log(r_sc))
+        result = np.where(
+            r_sc < 1,
+            np.power(r_sc, k - 1) * np.log(np.power(r_sc, r_sc)),
+            np.power(r_sc, k) * np.log(r_sc),
+        )
         return result
 
     ############################################################################
@@ -171,14 +175,12 @@ class RBFFactory():
     ##                                                                        ##
     ############################################################################
     __bases = {
-        'gaussian_spline': gaussian_spline.__func__,
-        'multi_quadratic_biharmonic_spline': 
-        multi_quadratic_biharmonic_spline.__func__,
-        'inv_multi_quadratic_biharmonic_spline':
-        inv_multi_quadratic_biharmonic_spline.__func__,
-        'thin_plate_spline': thin_plate_spline.__func__,
-        'beckert_wendland_c2_basis': beckert_wendland_c2_basis.__func__,
-        'polyharmonic_spline': polyharmonic_spline.__func__
+        "gaussian_spline": gaussian_spline.__func__,
+        "multi_quadratic_biharmonic_spline": multi_quadratic_biharmonic_spline.__func__,
+        "inv_multi_quadratic_biharmonic_spline": inv_multi_quadratic_biharmonic_spline.__func__,
+        "thin_plate_spline": thin_plate_spline.__func__,
+        "beckert_wendland_c2_basis": beckert_wendland_c2_basis.__func__,
+        "polyharmonic_spline": polyharmonic_spline.__func__,
     }
 
     def __new__(self, fname):
@@ -190,7 +192,8 @@ class RBFFactory():
         raise NameError(
             """The name of the basis function in the parameters file is not
             correct or not implemented. Check the documentation for
-            all the available functions.""")
+            all the available functions."""
+        )
 
     @classproperty
     def bases(self):

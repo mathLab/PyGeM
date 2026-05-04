@@ -12,7 +12,7 @@ __all__ = [
 
 
 def get_current_year():
-    """ Return current year """
+    """Return current year"""
     from datetime import datetime
 
     return datetime.now().year

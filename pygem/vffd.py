@@ -1,12 +1,14 @@
 from pygem.cffd import CFFD
 import numpy as np
+
+
 class VFFD(CFFD):
-    '''
+    """
     Class that handles the Volumetric Free Form Deformation on the mesh points.
- 
+
     :param list n_control_points: number of control points in the x, y, and z
         direction. Default is [2, 2, 2].
-    :param string mode: it can be ``affine`` or ``triaffine``. The first option is for the F that are affine in all the coordinates of the points. 
+    :param string mode: it can be ``affine`` or ``triaffine``. The first option is for the F that are affine in all the coordinates of the points.
         The second one is for functions that are F in the coordinates of the points. The first option implies the second, but is optimal for that class of functions.
     :cvar numpy.ndarray box_length: dimension of the FFD bounding box, in the
         x, y and z direction (local coordinate system).
@@ -22,11 +24,11 @@ class VFFD(CFFD):
         z, normalized with the box length z.
     :cvar callable fun: it defines the F of the constraint F(x)=c. Default is the constant 1 function.
     :cvar numpy.ndarray fixval: it defines the c of the constraint F(x)=c. Default is 1.
-    :cvar numpy.ndarray ffd_mask: a boolean tensor that tells to the class 
-        which control points can be moved, and in what direction, to enforce the constraint. 
+    :cvar numpy.ndarray ffd_mask: a boolean tensor that tells to the class
+        which control points can be moved, and in what direction, to enforce the constraint.
         The tensor has shape (n_x,n_y,n_z,3), where the last dimension indicates movement
         on x,y,z respectively. Default is all true.
-    :cvar numpy.ndarray fun_mask: a boolean tensor that tells to the class 
+    :cvar numpy.ndarray fun_mask: a boolean tensor that tells to the class
         on which axis which constraint depends on. The tensor has shape (n_cons,3), where the last dimension indicates dependency on
         on x,y,z respectively. Default is all true. It used only in the triaffine mode.
 
@@ -45,7 +47,8 @@ class VFFD(CFFD):
         >>> new_mesh_points = vffd(original_mesh_points)
         >>> assert np.isclose(np.linalg.norm(vffd.fun(new_mesh_points) - b), np.array([0.]), atol=1e-07)
 
-    '''
+    """
+
     def __init__(self, triangles, fixval, n_control_points=None, ffd_mask=None):
         super().__init__(fixval, None, n_control_points, ffd_mask, None)
 
@@ -63,5 +66,3 @@ def _volume(x, triangles):
     x = x.reshape(-1, 3)
     mesh = x[triangles]
     return np.array([np.sum(np.linalg.det(mesh))])
-
-

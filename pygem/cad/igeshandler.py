@@ -1,8 +1,12 @@
 """
 Derived module from filehandler.py to handle iges and igs files.
 """
-from OCC.Core.IGESControl import (IGESControl_Reader, IGESControl_Writer,
-                             IGESControl_Controller_Init)
+
+from OCC.Core.IGESControl import (
+    IGESControl_Reader,
+    IGESControl_Writer,
+    IGESControl_Controller_Init,
+)
 from OCC.Core.IFSelect import IFSelect_RetDone
 from pygem.cad import NurbsHandler
 
@@ -31,7 +35,7 @@ class IgesHandler(NurbsHandler):
 
     def __init__(self):
         super(IgesHandler, self).__init__()
-        self.extensions = ['.iges', '.igs']
+        self.extensions = [".iges", ".igs"]
 
     def load_shape_from_file(self, filename):
         """
