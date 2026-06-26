@@ -76,7 +76,7 @@ The official distribution is on GitHub, and you can clone the repository using
 To install the package just type:
 
 ```bash
-> python setup.py install
+> pip install .
 ```
 
 To uninstall the package you have to rerun the installation and record the installed files in order to remove them:
